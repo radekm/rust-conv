@@ -5,6 +5,7 @@ const Writer = std.io.Writer;
 
 const Token = enum {
     // Keywords.
+    kw_mod,
     kw_pub,
     kw_use,
     kw_struct,
@@ -383,6 +384,247 @@ fn tokenize(
     return try s.toToks();
 }
 
+const FieldInfo = struct {
+    name: []const u8,
+};
+
+const FieldIndex = usize;
+
+const StructInfo = struct {
+    public: bool,
+    name: []const u8,
+    fields_from: FieldIndex,
+    fields_to_excl: FieldIndex,
+};
+
+const Structs = struct {
+    structs: []StructInfo,
+    fields: []FieldInfo,
+
+    fn deinit(self: *const Structs, allocator: Allocator) void {
+        allocator.free(self.structs);
+        allocator.free(self.fields);
+    }
+};
+
+const StructReaderSate = struct {
+    structs: std.ArrayList(StructInfo),
+    fields: std.ArrayList(FieldInfo),
+
+    fn init(allocator: Allocator) StructReaderSate {
+        return .{
+            .structs = std.ArrayList(StructInfo).init(allocator),
+            .fields = std.ArrayList(FieldInfo).init(allocator),
+        };
+    }
+
+    fn toStructs(self: *StructReaderSate) !Structs {
+        const structs = try self.structs.toOwnedSlice();
+        errdefer self.structs.allocator.free(structs);
+
+        const fields = try self.fields.toOwnedSlice();
+        errdefer self.fields.allocator.free(fields);
+
+        return .{
+            .structs = structs,
+            .fields = fields,
+        };
+    }
+
+    fn deinit(self: *const StructReaderSate) void {
+        self.structs.deinit();
+        self.fields.deinit();
+    }
+};
+
+const ParserError = error{
+    StopTokenNotFound,
+    TooManyClosingBrackets,
+    ClosingBracketNotFound,
+    Other,
+};
+
+/// Counts number of tokens to the first `stop` token (including the stop token).
+/// Stop tokens inside brackets are ignored.
+fn bracketedCountUntilAny(tokens: []const Token, stop: []const Token) ParserError!usize {
+    var count: usize = 0;
+    var open: usize = 0; // We don't check whether closing bracket matches opening.
+    while (count < tokens.len) : (count += 1) {
+        const t = tokens[count];
+
+        // Because `stop` can contain brackets following if statement must be before switch.
+        if (open == 0) {
+            if (std.mem.indexOfScalar(Token, stop, t)) |_| {
+                return count + 1;
+            }
+        }
+
+        switch (t) {
+            .@"(", .@"[", .@"{" => open += 1,
+            .@")", .@"]", .@"}" => if (open == 0) {
+                return ParserError.TooManyClosingBrackets;
+            } else {
+                open -= 1;
+            },
+            else => {},
+        }
+    }
+    return ParserError.StopTokenNotFound;
+}
+
+fn bracketedCountUntil(tokens: []const Token, stop: Token) ParserError!usize {
+    return bracketedCountUntilAny(tokens, &.{stop});
+}
+
+fn startsWith(tokens: []const Token, needle: []const Token) ?usize {
+    if (std.mem.startsWith(Token, tokens, needle))
+        return needle.len
+    else
+        return null;
+}
+
+const LenAndData = struct {
+    len: usize,
+    data: []const u8,
+};
+
+fn startsWithAndGetData(
+    tokens: []const Token,
+    token_data: []?[]const u8,
+    needle: []const Token,
+) ?LenAndData {
+    if (std.mem.startsWith(Token, tokens, needle)) {
+        for (token_data) |data| {
+            if (data) |d|
+                return .{ .len = needle.len, .data = d };
+        }
+        return null;
+    } else {
+        return null;
+    }
+}
+
+fn startsWithAny(tokens: []const Token, needles: []const []const Token) ?usize {
+    for (needles) |needle| {
+        if (startsWith(tokens, needle)) |len|
+            return len;
+    }
+    return null;
+}
+
+// TODO: Report tokens where error occurred.
+fn readStructsAndTheirFields(
+    toks: Toks,
+    allocator: Allocator,
+) (ParserError || Allocator.Error)!Structs {
+    var s = StructReaderSate.init(allocator);
+    defer s.deinit();
+
+    const i = try readStructsAndTheirFieldsInModule(&s, 0, toks);
+
+    if (i < toks.tokens.len) {
+        return ParserError.Other;
+    }
+
+    return s.toStructs();
+}
+
+fn readStructsAndTheirFieldsInModule(
+    s: *StructReaderSate,
+    pos: usize,
+    toks: Toks,
+) (ParserError || Allocator.Error)!usize {
+    var i: usize = pos;
+
+    while (i < toks.tokens.len) {
+        const public = toks.tokens[i] == .kw_pub;
+        if (public) {
+            i += 1;
+        }
+
+        if (startsWith(toks.tokens[i..], &.{ .@"#", .@"!", .@"[" })) |len| {
+            i += len;
+            i += try bracketedCountUntil(toks.tokens[i..], .@"]");
+        } else if (startsWith(toks.tokens[i..], &.{ .@"#", .@"[" })) |len| {
+            i += len;
+            i += try bracketedCountUntil(toks.tokens[i..], .@"]");
+        } else if (startsWith(toks.tokens[i..], &.{.kw_use})) |len| {
+            i += len;
+            i += try bracketedCountUntil(toks.tokens[i..], .@";");
+        } else if (startsWithAny(
+            toks.tokens[i..],
+            &.{ &.{.kw_impl}, &.{.kw_fn} },
+        )) |len| {
+            i += len;
+            i += try bracketedCountUntil(toks.tokens[i..], .@"{");
+            i += try bracketedCountUntil(toks.tokens[i..], .@"}");
+        } else if (startsWith(toks.tokens[i..], &.{ .kw_mod, .d_ident, .@"{" })) |len| {
+            i += len;
+            i = try readStructsAndTheirFieldsInModule(s, i, toks);
+
+            if (i < toks.tokens.len and toks.tokens[i] == .@"}") {
+                i += 1;
+            } else {
+                return ParserError.ClosingBracketNotFound;
+            }
+        } else if (startsWithAndGetData(
+            toks.tokens[i..],
+            toks.token_data[i..],
+            &.{ .kw_struct, .d_ident, .@"{" },
+        )) |ld| {
+            const struct_name = ld.data;
+            try s.structs.append(.{
+                .public = public,
+                .name = struct_name,
+                .fields_from = s.fields.items.len,
+                .fields_to_excl = s.fields.items.len,
+            });
+            i += ld.len;
+            while (true) {
+                // Skip public modifier.
+                const public_field = i < toks.tokens.len and toks.tokens[i] == .kw_pub;
+                if (public_field) {
+                    i += 1;
+                }
+
+                if (startsWithAndGetData(
+                    toks.tokens[i..],
+                    toks.token_data[i..],
+                    &.{ .d_ident, .@":" },
+                )) |ld2| {
+                    const field_name = ld2.data;
+                    try s.fields.append(.{ .name = field_name });
+                    s.structs.items[s.structs.items.len - 1].fields_to_excl += 1;
+
+                    // Skip type.
+                    i += try bracketedCountUntilAny(toks.tokens[i..], &.{ .@",", .@"}" }) - 1;
+
+                    if (i < toks.tokens.len and toks.tokens[i] == .@",") {
+                        i += 1;
+                    } else {
+                        break; // We must stop reading fields.
+                    }
+                } else if (public_field) {
+                    // We read `pub` which is not followed by field.
+                    return ParserError.Other;
+                } else {
+                    break;
+                }
+            }
+
+            if (i < toks.tokens.len and toks.tokens[i] == .@"}")
+                i += 1
+            else
+                return ParserError.ClosingBracketNotFound; // Module is not closed by brace.
+        } else {
+            // Probably end of module.
+            return i;
+        }
+    }
+
+    return i;
+}
+
 pub fn main() !void {
     const file = try std.fs.cwd().openFile("sample.rs", .{});
     defer file.close();
@@ -413,6 +655,18 @@ pub fn main() !void {
 
         if (toks.comment_after_token[i]) |j| {
             std.debug.print("    AFTER: {s}", .{toks.comments[j]});
+        }
+    }
+
+    const structs = try readStructsAndTheirFields(toks, allocator);
+    defer structs.deinit(allocator);
+
+    // Print structures and their fields.
+    for (structs.structs) |s| {
+        std.debug.print("Struct {s}\n", .{s.name});
+        for (s.fields_from..s.fields_to_excl) |i| {
+            const field = structs.fields[i];
+            std.debug.print("    Field {s}\n", .{field.name});
         }
     }
 }
