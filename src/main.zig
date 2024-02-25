@@ -512,7 +512,6 @@ fn startsWithAny(tokens: []const Token, needles: []const []const Token) ?usize {
     return null;
 }
 
-// TODO: Report tokens where error occurred.
 fn readStructsAndTheirFields(
     toks: Toks,
     allocator: Allocator,
@@ -520,9 +519,22 @@ fn readStructsAndTheirFields(
     var s = StructReaderSate.init(allocator);
     defer s.deinit();
 
-    const i = try readStructsAndTheirFieldsInModule(&s, 0, toks);
+    var i: usize = 0;
+
+    readStructsAndTheirFieldsInModule(&s, toks, &i) catch |err| {
+        // Reports tokens where error ocurred.
+        std.debug.print("Error {} while reading structs {any}\n", .{
+            err,
+            if (toks.tokens[i..].len < 20) toks.tokens[i..] else toks.tokens[i..][0..20],
+        });
+        return err;
+    };
 
     if (i < toks.tokens.len) {
+        // Reports tokens where error ocurred.
+        std.debug.print("Reading structs finished prematurely {any}\n", .{
+            if (toks.tokens[i..].len < 20) toks.tokens[i..] else toks.tokens[i..][0..20],
+        });
         return ParserError.Other;
     }
 
@@ -531,45 +543,43 @@ fn readStructsAndTheirFields(
 
 fn readStructsAndTheirFieldsInModule(
     s: *StructReaderSate,
-    pos: usize,
     toks: Toks,
-) (ParserError || Allocator.Error)!usize {
-    var i: usize = pos;
-
-    while (i < toks.tokens.len) {
-        const public = toks.tokens[i] == .kw_pub;
+    i: *usize,
+) (ParserError || Allocator.Error)!void {
+    while (i.* < toks.tokens.len) {
+        const public = toks.tokens[i.*] == .kw_pub;
         if (public) {
-            i += 1;
+            i.* += 1;
         }
 
-        if (startsWith(toks.tokens[i..], &.{ .@"#", .@"!", .@"[" })) |len| {
-            i += len;
-            i += try bracketedCountUntil(toks.tokens[i..], .@"]");
-        } else if (startsWith(toks.tokens[i..], &.{ .@"#", .@"[" })) |len| {
-            i += len;
-            i += try bracketedCountUntil(toks.tokens[i..], .@"]");
-        } else if (startsWith(toks.tokens[i..], &.{.kw_use})) |len| {
-            i += len;
-            i += try bracketedCountUntil(toks.tokens[i..], .@";");
+        if (startsWith(toks.tokens[i.*..], &.{ .@"#", .@"!", .@"[" })) |len| {
+            i.* += len;
+            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@"]");
+        } else if (startsWith(toks.tokens[i.*..], &.{ .@"#", .@"[" })) |len| {
+            i.* += len;
+            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@"]");
+        } else if (startsWith(toks.tokens[i.*..], &.{.kw_use})) |len| {
+            i.* += len;
+            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@";");
         } else if (startsWithAny(
-            toks.tokens[i..],
+            toks.tokens[i.*..],
             &.{ &.{.kw_impl}, &.{.kw_fn} },
         )) |len| {
-            i += len;
-            i += try bracketedCountUntil(toks.tokens[i..], .@"{");
-            i += try bracketedCountUntil(toks.tokens[i..], .@"}");
-        } else if (startsWith(toks.tokens[i..], &.{ .kw_mod, .d_ident, .@"{" })) |len| {
-            i += len;
-            i = try readStructsAndTheirFieldsInModule(s, i, toks);
+            i.* += len;
+            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@"{");
+            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@"}");
+        } else if (startsWith(toks.tokens[i.*..], &.{ .kw_mod, .d_ident, .@"{" })) |len| {
+            i.* += len;
+            try readStructsAndTheirFieldsInModule(s, toks, i);
 
-            if (i < toks.tokens.len and toks.tokens[i] == .@"}") {
-                i += 1;
+            if (i.* < toks.tokens.len and toks.tokens[i.*] == .@"}") {
+                i.* += 1;
             } else {
                 return ParserError.ClosingBracketNotFound;
             }
         } else if (startsWithAndGetData(
-            toks.tokens[i..],
-            toks.token_data[i..],
+            toks.tokens[i.*..],
+            toks.token_data[i.*..],
             &.{ .kw_struct, .d_ident, .@"{" },
         )) |ld| {
             const struct_name = ld.data;
@@ -579,17 +589,17 @@ fn readStructsAndTheirFieldsInModule(
                 .fields_from = s.fields.items.len,
                 .fields_to_excl = s.fields.items.len,
             });
-            i += ld.len;
+            i.* += ld.len;
             while (true) {
                 // Skip public modifier.
-                const public_field = i < toks.tokens.len and toks.tokens[i] == .kw_pub;
+                const public_field = i.* < toks.tokens.len and toks.tokens[i.*] == .kw_pub;
                 if (public_field) {
-                    i += 1;
+                    i.* += 1;
                 }
 
                 if (startsWithAndGetData(
-                    toks.tokens[i..],
-                    toks.token_data[i..],
+                    toks.tokens[i.*..],
+                    toks.token_data[i.*..],
                     &.{ .d_ident, .@":" },
                 )) |ld2| {
                     const field_name = ld2.data;
@@ -597,10 +607,10 @@ fn readStructsAndTheirFieldsInModule(
                     s.structs.items[s.structs.items.len - 1].fields_to_excl += 1;
 
                     // Skip type.
-                    i += try bracketedCountUntilAny(toks.tokens[i..], &.{ .@",", .@"}" }) - 1;
+                    i.* += try bracketedCountUntilAny(toks.tokens[i.*..], &.{ .@",", .@"}" }) - 1;
 
-                    if (i < toks.tokens.len and toks.tokens[i] == .@",") {
-                        i += 1;
+                    if (i.* < toks.tokens.len and toks.tokens[i.*] == .@",") {
+                        i.* += 1;
                     } else {
                         break; // We must stop reading fields.
                     }
@@ -612,17 +622,15 @@ fn readStructsAndTheirFieldsInModule(
                 }
             }
 
-            if (i < toks.tokens.len and toks.tokens[i] == .@"}")
-                i += 1
+            if (i.* < toks.tokens.len and toks.tokens[i.*] == .@"}")
+                i.* += 1
             else
                 return ParserError.ClosingBracketNotFound; // Module is not closed by brace.
         } else {
             // Probably end of module.
-            return i;
+            return;
         }
     }
-
-    return i;
 }
 
 pub fn main() !void {
