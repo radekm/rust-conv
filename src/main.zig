@@ -870,6 +870,683 @@ fn readStructsAndTheirFieldsInModule(
     }
 }
 
+/// Writes tokens with spaces between them.
+fn writeTokens(writer: anytype, toks: Toks, from: usize, to_excl: usize) !void {
+    var first = true;
+    for (from..to_excl) |i| {
+        if (!first) {
+            try writer.print(" ", .{});
+        }
+        first = false;
+
+        const token = toks.tokens[i];
+        if (tokenToOperatorStr(token) orelse tokenToKeywordStr(token)) |str| {
+            try writer.print("{s}", .{str});
+        } else if (toks.token_data[i]) |data| {
+            try writer.print("{s}", .{data});
+        } else {
+            @panic("Unknown token");
+        }
+    }
+}
+
+fn writeCommentBefore(writer: anytype, toks: Toks, i: usize) !void {
+    if (toks.comments_before_token[i]) |comment_range| {
+        for (comment_range.from..comment_range.to_excl) |j| {
+            _ = try writer.write(toks.comments[j]);
+        }
+    }
+}
+
+/// Comment after usually contains new line (unless it was terminated by eof).
+fn writeCommentAfterOrNewLine(writer: anytype, toks: Toks, i: usize) !void {
+    if (toks.comment_after_token[i]) |j| {
+        _ = try writer.write(toks.comments[j]);
+    } else {
+        _ = try writer.write("\n");
+    }
+}
+
+/// `prefix` is written at the beginning of the comment.
+/// Tokens follow the prefix.
+fn writeCommentWithTokens(
+    writer: anytype,
+    toks: Toks,
+    from: usize,
+    to_excl: usize,
+    prefix: []const u8,
+) !void {
+    try writer.print("// {s}", .{prefix});
+    try writeTokens(writer, toks, from, to_excl);
+    _ = try writer.write("\n");
+}
+
+/// Works only for ASCII.
+fn writeInCamelCase(writer: anytype, snake_case: []const u8) !void {
+    var found_letter = false;
+    var capitalize_next = false;
+    for (snake_case) |c| {
+        if (found_letter) {
+            if (c == '_') {
+                capitalize_next = true;
+            } else if (capitalize_next) {
+                _ = try writer.write(&.{std.ascii.toUpper(c)});
+                capitalize_next = false;
+            } else {
+                _ = try writer.write(&.{c});
+            }
+        } else {
+            _ = try writer.write(&.{c});
+            found_letter = std.ascii.isAlphabetic(c);
+        }
+    }
+}
+
+fn translate(writer: anytype, toks: Toks, i: *usize, token: Token) !void {
+    if (i.* < toks.tokens.len and toks.tokens[i.*] == token) {
+        try writeTokens(writer, toks, i.*, i.* + 1);
+        i.* += 1;
+    } else return ParserError.Other;
+}
+
+fn translateOptional(writer: anytype, toks: Toks, i: *usize, token: Token) !void {
+    if (i.* < toks.tokens.len and toks.tokens[i.*] == token) {
+        try writeTokens(writer, toks, i.*, i.* + 1);
+        i.* += 1;
+    }
+}
+
+// TODO: Translate `self_type` everywhere (eg. in generics) and not only when type is simple identifier.
+// TODO: Consider generalizing `translateType`.
+fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8) !void {
+    if (toks.matchEql(i.*, "impl trait_name < type_name >", .{ .trait_name = "Into" })) |m| {
+        try writer.print("{s}", .{m.type_name});
+        i.* += m.len;
+    } else if (toks.matchEql(i.*, "option < type_name >", .{ .option = "Option" })) |m| {
+        try writer.print("?{s}", .{m.type_name});
+        i.* += m.len;
+    } else if (toks.matchEql(i.*, "range < type_name >", .{ .range = "Range" })) |m| {
+        try writer.print("Range({s})", .{m.type_name});
+        i.* += m.len;
+    } else if (toks.matchEql(i.*, "vec < type_name >", .{ .vec = "Vec" })) |m| {
+        try writer.print("ArrayList({s})", .{m.type_name});
+        i.* += m.len;
+    } else if (toks.matchEql(i.*, "vec < vec2 < type_name > >", .{ .vec = "Vec", .vec2 = "Vec" })) |m| {
+        // I doubt that nested `ArrayList` is good option in Zig.
+        try writer.print("/* Ziggify: Vec<Vec<{s}>> */", .{m.type_name});
+        i.* += m.len;
+    } else if (toks.startsWithAndGetData(i.*, &.{.d_ident})) |ld| {
+        if (std.mem.eql(u8, ld.data, "Self")) {
+            try writer.print("{s}", .{self_type orelse ld.data});
+        } else {
+            try writer.print("{s}", .{ld.data});
+        }
+        i.* += ld.len;
+    } else if (toks.startsWith(i.*, &.{.@"["})) |len| {
+        i.* += len;
+
+        // In Rust array type is `[T; n]` but in Zig it's `[n]T`.
+        // So we use buffer `buf` to delay writing `T` after `n`.
+        var buf: [500]u8 = undefined;
+        var fbs = std.io.fixedBufferStream(&buf);
+        try translateType(fbs.writer(), toks, i, self_type);
+
+        if (toks.match(i.*, "; size:num ]")) |m| {
+            try writer.print("[{s}]{s}", .{ m.size, fbs.getWritten() });
+            i.* += m.len;
+        } else {
+            // Expected semicolon and length a closing bracket weren't found.
+            return ParserError.Other;
+        }
+    }
+}
+
+fn translateStruct(
+    writer: anytype,
+    toks: Toks,
+    i: *usize,
+) !bool {
+    if (toks.match(i.*, "struct name {")) |m| {
+        try writer.print("const {s} = struct {{\n", .{m.name});
+        i.* += m.len;
+    } else return false;
+
+    while (i.* < toks.tokens.len) {
+        // Process comment before field or before end of struct.
+        try writeCommentBefore(writer, toks, i.*);
+
+        // Ignore field visibility.
+        const public = toks.tokens[i.*] == .kw_pub;
+        if (public) {
+            i.* += 1;
+        }
+
+        if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":" })) |ld| {
+            const field_name = ld.data;
+            try writer.print("{s}: ", .{field_name});
+            i.* += ld.len;
+
+            try translateType(writer, toks, i, null);
+            try writer.print(",", .{});
+
+            try writeCommentAfterOrNewLine(writer, toks, i.*);
+        } else {
+            // Field doesn't start here.
+            break;
+        }
+
+        if (toks.startsWith(i.*, &.{.@","})) |len| {
+            i.* += len;
+        }
+    }
+
+    try translate(writer, toks, i, .@"}");
+
+    return true;
+}
+
+/// Translates body of a function, if, else, for, while or loop.
+/// Also translates control expression of if, for, while and match.
+///
+/// Does not translate opening `{` and closing `}` because control expressions are not wrapped
+/// in `{` and `}`.
+///
+/// `translateBody` doesn't parse closing `}` or `]` unless it parsed corresponding opening bracket.
+/// Currently this is not true with parens.
+fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8) !void {
+    while (i.* < toks.tokens.len) {
+        // Process comment before construct or before end of module.
+        try writeCommentBefore(writer, toks, i.*);
+
+        if (toks.match(i.*, "&mut |")) |m| {
+            _ = try writer.write("/* Ziggify: ");
+            try writeTokens(writer, toks, i.*, i.* + m.len);
+            i.* += m.len;
+
+            const len = try toks.bracketedCountUntil(i.*, .@"|");
+            try writeTokens(writer, toks, i.*, i.* + len);
+            _ = try writer.write(" */ ");
+            i.* += len;
+
+            try translate(writer, toks, i, .@"{");
+            _ = try writer.write("\n");
+
+            try translateBody(writer, toks, i, self_type);
+
+            _ = try writer.write("\n");
+            try translate(writer, toks, i, .@"}");
+            _ = try writer.write("\n");
+        } else if (toks.match(i.*, "&&")) |m| {
+            _ = try writer.write(" and ");
+            i.* += m.len;
+        } else if (toks.match(i.*, "||")) |m| {
+            _ = try writer.write(" or ");
+            i.* += m.len;
+        } else if (toks.match(i.*, ";")) |m| {
+            // This doesn't match `;` inside array construction -
+            // that is translated by `[` part.
+            _ = try writer.write(";");
+            // We must increment `i` after writing comment.
+            try writeCommentAfterOrNewLine(writer, toks, i.*);
+            i.* += m.len;
+        } else if (toks.match(i.*, "::")) |m| {
+            // Double colon doesn't exist in Zig.
+            _ = try writer.write(" . ");
+            i.* += m.len;
+        } else if (toks.startsWithAny(
+            i.*,
+            &.{
+                &.{.@"..="}, &.{.@".."}, &.{.@"=="}, &.{.@"<="}, &.{.@"<"},
+                &.{.@">="},  &.{.@">"},  &.{.@"."},  &.{.@"|"},  &.{.@"!"},
+                &.{.@"&"},   &.{.@","},  &.{.@"*"},  &.{.@"/"},  &.{.@"+"},
+                &.{.@"-"},   &.{.@":"},  &.{.@"="},  &.{.@"("},  &.{.@")"},
+            },
+        )) |len| {
+            // Operators which are translated to themselves.
+            //
+            // Note that some of these translations are wrong.
+            // Eg. `|` as a bitwise or is correctly translated to itself.
+            // But `|` from lambda (eg. from `|t: f32| t <= 1.0 && t >= 0.0`)
+            // can't be simply translated to Zig because Zig doesn't have lambdas
+            // and translating it to itself is wrong.
+            _ = try writer.write(" ");
+            try writeTokens(writer, toks, i.*, i.* + len);
+            _ = try writer.write(" ");
+            i.* += len;
+        } else if (toks.match(i.*, "[")) |_| {
+            try translate(writer, toks, i, .@"[");
+
+            // If there's `;` before closing brace `]` then
+            // we need to translate array construction `[expression with value; array size]`.
+            // Otherwise we're indexing.
+            const len_before = try toks.bracketedCountUntilAny(i.*, &.{ .@";", .@"]" }) - 1;
+            if (toks.tokens[i.* + len_before] == .@";") {
+                // Array construction.
+                try translateBody(writer, toks.restrict(i.* + len_before), i, self_type);
+                // We don't want to translate `;` by `translateBody` because it puts newline after semicolon.
+                try translate(writer, toks, i, .@";");
+                try translateBody(writer, toks, i, self_type);
+                try translate(writer, toks, i, .@"]");
+            } else {
+                // Indexing.
+                try translateBody(writer, toks, i, self_type);
+                try translate(writer, toks, i, .@"]");
+            }
+        } else if (toks.match(i.*, "name {")) |m_struct| {
+            // Struct construction `identifier {` may clash with the end of control
+            // expression in if, for, while or match (eg. `if a + b {`).
+            //
+            // Currently we assume that control expression doesn't contain opening `{` -
+            // ie. we assume that opening `{` is beginning of the body of if, for, while or match expression.
+            // This may be wrong. We may need more involved analysis
+            // (eg. if identifier in `identifier {` starts with uppercase letter
+            // then assume it's struct construction).
+            if (std.mem.eql(u8, m_struct.name, "Self"))
+                try writer.print("{s} {{", .{self_type orelse m_struct.name})
+            else
+                try writer.print("{s} {{", .{m_struct.name});
+            i.* += m_struct.len;
+
+            // Translate assignment to fields.
+            while (i.* < toks.tokens.len) {
+                if (toks.match(i.*, "name ,")) |m_field| {
+                    try writer.print(".{s} = {s},", .{ m_field.name, m_field.name });
+                    i.* += m_field.len;
+                } else if (toks.match(i.*, "name )")) |m_field| {
+                    try writer.print(".{s} = {s}", .{ m_field.name, m_field.name });
+                    i.* += m_field.len - 1; // Don't skip closing paren.
+                } else if (toks.match(i.*, "name :")) |m_field| {
+                    try writer.print(".{s} = ", .{m_field.name});
+                    i.* += m_field.len;
+
+                    const len_before = try toks.bracketedCountUntilAny(i.*, &.{ .@",", .@"}" }) - 1;
+                    try translateBody(writer, toks.restrict(i.* + len_before), i, self_type);
+
+                    // Translate comma (if any).
+                    try translateOptional(writer, toks, i, .@",");
+                } else break;
+            }
+
+            try translate(writer, toks, i, .@"}");
+        } else if (toks.match(i.*, "fn_name (")) |m| {
+            // Function call - we have to convert function name to camel case.
+
+            try writeInCamelCase(writer, m.fn_name);
+            i.* += m.len - 1; // We're not translating `(`.
+        } else if (toks.match(i.*, "ident")) |m| {
+            // TODO: Are spaces around necessary or is it ok without them?
+            _ = try writer.write(m.ident);
+            i.* += m.len;
+        } else if (toks.match(i.*, "number:num")) |m| {
+            // TODO: Are spaces around necessary or is it ok without them?
+            _ = try writer.write(m.number);
+            i.* += m.len;
+        } else if (toks.match(i.*, "string:str")) |m| {
+            // TODO: Are spaces around necessary or is it ok without them?
+            _ = try writer.write(m.string);
+            i.* += m.len;
+        } else if (toks.match(i.*, "let mut ident =")) |m| {
+            try writer.print("var {s} = ", .{m.ident});
+            i.* += m.len;
+        } else if (toks.match(i.*, "let ident =")) |m| {
+            try writer.print("const {s} = ", .{m.ident});
+            i.* += m.len;
+        } else if (toks.match(i.*, "let")) |m| {
+            _ = try writer.write("const ");
+            i.* += m.len;
+
+            // Complex patterns are not translated.
+            const len_before = try toks.bracketedCountUntil(i.*, .@"=") - 1;
+            _ = try writer.write("/* Ziggify: ");
+            try writeTokens(writer, toks, i.*, i.* + len_before);
+            _ = try writer.write(" */ ");
+            i.* += len_before;
+
+            try translate(writer, toks, i, .@"=");
+        } else if (toks.match(i.*, "for elem in")) |m| {
+            _ = try writer.write("for (");
+            i.* += m.len;
+
+            // Translate expression after `in` to the first `{`.
+            // Note it may happen that `{` belongs to struct construction and not to `for` body.
+            const len_before_brace = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
+            try writer.print(") |{s}|", .{m.elem});
+
+            try translate(writer, toks, i, .@"{");
+            _ = try writer.write("\n");
+
+            try translateBody(writer, toks, i, self_type);
+
+            _ = try writer.write("\n");
+            try translate(writer, toks, i, .@"}");
+            _ = try writer.write("\n");
+        } else if (toks.match(i.*, "for (index, elem) in")) |m| {
+            // Note it may happen that `{` belongs to struct construction and not to `for` body.
+            const for_start_len = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            const enumerate_len = 8;
+
+            // If expression after `in` ends with `.iter().enumerate()`.
+            if (toks.matchEql(
+                i.* + for_start_len - enumerate_len,
+                ".iter().enumerate()",
+                .{ .iter = "iter", .enumerate = "enumerate" },
+            )) |_| {
+                _ = try writer.write("for (");
+
+                // Translate expression after `in` except `.iter().enumerate()`.
+                // We create `temp_toks` which doesn't contain `.iter().enumerate()`.
+                const token_count = i.* + for_start_len - enumerate_len;
+                const temp_toks = toks.restrict(token_count);
+                var temp_i = i.* + m.len; // We don't want to update `i`.
+                try translateBody(writer, temp_toks, &temp_i, self_type);
+                if (temp_i != token_count)
+                    @panic("Expression after in not processed whole");
+                try writer.print(", 0..) |{s}, {s}|", .{ m.elem, m.index });
+                i.* += for_start_len;
+
+                try translate(writer, toks, i, .@"{");
+                _ = try writer.write("\n");
+
+                try translateBody(writer, toks, i, self_type);
+
+                _ = try writer.write("\n");
+                try translate(writer, toks, i, .@"}");
+                _ = try writer.write("\n");
+            } else @panic("Control expression of for doesn't end with .iter().enumerate()");
+        } else if (toks.startsWithAny(i.*, &.{&.{.kw_if}})) |len| {
+            try writeTokens(writer, toks, i.*, i.* + len);
+            i.* += len;
+
+            _ = try writer.write("(");
+            // Translate control expression to the first `{`.
+            // Note it may happen that `{` belongs to struct construction and not to `if` body.
+            const len_before_brace = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
+            _ = try writer.write(")");
+
+            try translate(writer, toks, i, .@"{");
+            _ = try writer.write("\n");
+
+            try translateBody(writer, toks, i, self_type);
+
+            _ = try writer.write("\n");
+            try translate(writer, toks, i, .@"}");
+            _ = try writer.write("\n");
+        } else if (toks.match(i.*, "else {")) |_| {
+            try translate(writer, toks, i, .kw_else);
+            try translate(writer, toks, i, .@"{");
+            _ = try writer.write("\n");
+
+            try translateBody(writer, toks, i, self_type);
+
+            _ = try writer.write("\n");
+            try translate(writer, toks, i, .@"}");
+            _ = try writer.write("\n");
+        } else if (toks.startsWith(i.*, &.{.kw_match})) |len| {
+            _ = try writer.write("switch (");
+            i.* += len;
+
+            // Translate match control expression to the first `{`.
+            // Note it may happen that `{` belongs to struct construction and not to `match` body.
+            const len_before_brace = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
+            _ = try writer.write(")");
+
+            try translate(writer, toks, i, .@"{");
+            _ = try writer.write("\n");
+
+            // Translate each case.
+            while (i.* < toks.tokens.len) {
+                // Translate pattern.
+                const pattern_len = try toks.bracketedCountUntilAny(i.*, &.{ .@"=>", .@"}" }) - 1;
+                if (pattern_len == 0) break; // No more patterns.
+                _ = try writer.write("/* Ziggify: ");
+                try writeTokens(writer, toks, i.*, i.* + pattern_len);
+                _ = try writer.write(" */");
+                i.* += pattern_len;
+                try translate(writer, toks, i, .@"=>");
+
+                if (toks.startsWith(i.*, &.{.@"{"})) |_| {
+                    // Code for current case is enclosed in braces.
+                    try translate(writer, toks, i, .@"{");
+                    _ = try writer.write("\n");
+
+                    try translateBody(writer, toks, i, self_type);
+
+                    _ = try writer.write("\n");
+                    try translate(writer, toks, i, .@"}");
+                } else {
+                    // Code for current case is terminated by `,` or `}` ending the body of `match`.
+                    const case_len = try toks.bracketedCountUntilAny(i.*, &.{ .@",", .@"}" }) - 1;
+                    try translateBody(writer, toks.restrict(i.* + case_len), i, self_type);
+
+                    try translateOptional(writer, toks, i, .@",");
+                }
+                _ = try writer.write("\n");
+            }
+
+            _ = try writer.write("\n");
+            try translate(writer, toks, i, .@"}");
+            _ = try writer.write("\n");
+        } else {
+            // Nothing was parsed we have to stop.
+            // Probably end of body. Or some unknown construct.
+            break;
+        }
+    }
+}
+
+fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: ?[]const u8) !bool {
+    if (toks.startsWithAndGetData(i.*, &.{ .kw_fn, .d_ident })) |ld| {
+        const fn_name = ld.data;
+        if (public)
+            try writer.print("pub fn ", .{})
+        else
+            try writer.print("fn ", .{});
+
+        try writeInCamelCase(writer, fn_name);
+        i.* += ld.len;
+
+        const len_before_paren = try toks.bracketedCountWithAngleBracketsUntil(i.*, .@"(") - 1;
+        if (len_before_paren > 0) {
+            _ = try writer.write(" /* ");
+            try writeTokens(writer, toks, i.*, i.* + len_before_paren);
+            _ = try writer.write(" */ ");
+            i.* += len_before_paren;
+        }
+
+        try translate(writer, toks, i, .@"(");
+
+        // Translate first parameter where type can be omitted.
+        if (self_type) |tpe| {
+            if (toks.startsWithAnyAndGetData(
+                i.*,
+                &.{
+                    // There may be comma or closing paren after the first param.
+                    &.{ .d_ident, .@"," },
+                    &.{ .d_ident, .@")" },
+                    &.{ .@"&", .d_ident, .@"," },
+                    &.{ .@"&", .d_ident, .@")" },
+                },
+            )) |ld_param| {
+                const param_name = ld_param.data;
+                try writer.print("{s}: {s}", .{ param_name, tpe });
+                i.* += ld_param.len;
+
+                if (toks.tokens[i.* - 1] == .@",") {
+                    _ = try writer.write(",");
+                } else {
+                    i.* -= 1; // Don't skip `)` token.
+                }
+            }
+        }
+
+        while (i.* < toks.tokens.len) {
+            if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":", .@"&", .kw_mut })) |ld_param| {
+                const param_name = ld_param.data;
+                try writer.print("{s}: *", .{param_name});
+                i.* += ld_param.len;
+
+                try translateType(writer, toks, i, self_type);
+            } else if (toks.startsWithAnyAndGetData(
+                i.*,
+                &.{
+                    &.{ .d_ident, .@":", .@"&" },
+                    &.{ .d_ident, .@":" },
+                },
+            )) |ld_param| {
+                // Immutable param.
+                const param_name = ld_param.data;
+                try writer.print("{s}: ", .{param_name});
+                i.* += ld_param.len;
+
+                try translateType(writer, toks, i, self_type);
+            } else break;
+
+            if (toks.startsWith(i.*, &.{.@","})) |len| {
+                _ = try writer.write(",");
+                i.* += len;
+            }
+
+            // TODO: Read comment associated with a parameter (it's before or after? or both?).
+        }
+
+        if (toks.startsWith(i.*, &.{.@")"})) |len| {
+            _ = try writer.write(")");
+            i.* += len;
+        } else {
+            return ParserError.ClosingBracketNotFound;
+        }
+
+        // Translate optional return type.
+        if (toks.startsWith(i.*, &.{.@"->"})) |len| {
+            i.* += len;
+            // TODO: Instead of returning self return actual type.
+            try translateType(writer, toks, i, self_type);
+        } else {
+            _ = try writer.write("void");
+        }
+
+        // Translate optional where clause - just wrap it in comment.
+        if (toks.startsWith(i.*, &.{.kw_where})) |_| {
+            const where_len = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            _ = try writer.write(" /* ");
+            try writeTokens(writer, toks, i.*, i.* + where_len);
+            _ = try writer.write(" */ ");
+            i.* += where_len;
+        }
+
+        try translate(writer, toks, i, .@"{");
+        _ = try writer.write("\n");
+
+        try translateBody(writer, toks, i, self_type);
+
+        _ = try writer.write("\n");
+        try translate(writer, toks, i, .@"}");
+        _ = try writer.write("\n");
+
+        return true;
+    }
+    return false;
+}
+
+fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
+    const impl_from = i.*;
+
+    var self_type_name: []const u8 = undefined;
+    if (toks.startsWithAndGetData(i.*, &.{ .kw_impl, .d_ident, .@"{" })) |ld| {
+        self_type_name = ld.data;
+        i.* += ld.len;
+    } else if (toks.match(i.*, "impl trait_name < p > for type_name {")) |m| {
+        self_type_name = m.type_name;
+        i.* += m.len;
+    } else return false;
+
+    const impl_to_excl = i.* - 1;
+
+    try writeCommentWithTokens(writer, toks, impl_from, impl_to_excl, "BEGIN: ");
+
+    while (i.* < toks.tokens.len) {
+        // Process comment before function.
+        try writeCommentBefore(writer, toks, i.*);
+
+        // Ignore visibility.
+        const public = toks.tokens[i.*] == .kw_pub;
+        if (public) {
+            i.* += 1;
+        }
+
+        // TODO: Remove code duplication. Same code is in `translateRustToZig`.
+        //       Maybe we shall generalize `translateRustToZig` to translate both
+        //       module body and impl body.
+        if (toks.startsWith(i.*, &.{ .@"#", .@"!", .@"[" })) |len| {
+            i.* += len;
+            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+        } else if (toks.startsWith(i.*, &.{ .@"#", .@"[" })) |len| {
+            i.* += len;
+            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+        } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
+            i.* += len;
+            i.* += try toks.bracketedCountUntil(i.*, .@";");
+        } else if (try translateFn(writer, toks, i, public, self_type_name)) {} else {
+            break;
+        }
+    }
+
+    _ = try writer.write("\n");
+    try translate(writer, toks, i, .@"}");
+    _ = try writer.write("\n");
+
+    try writeCommentWithTokens(writer, toks, impl_from, impl_to_excl, "END: ");
+
+    return true;
+}
+
+fn translateRustToZig(writer: anytype, structs: Structs, toks: Toks, i: *usize) !void {
+    while (i.* < toks.tokens.len) {
+        // Process comment before construct or before end of module.
+        try writeCommentBefore(writer, toks, i.*);
+
+        const public = toks.tokens[i.*] == .kw_pub;
+        if (public) {
+            i.* += 1;
+        }
+
+        if (toks.startsWith(i.*, &.{ .@"#", .@"!", .@"[" })) |len| {
+            i.* += len;
+            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+        } else if (toks.startsWith(i.*, &.{ .@"#", .@"[" })) |len| {
+            i.* += len;
+            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+        } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
+            i.* += len;
+            i.* += try toks.bracketedCountUntil(i.*, .@";");
+        } else if (try translateStruct(writer, toks, i)) {
+            //
+        } else if (try translateImpl(writer, toks, i)) {
+            //
+        } else if (try translateFn(writer, toks, i, public, null)) {
+            //
+        } else if (toks.match(i.*, "mod name {")) |m| {
+            // TODO: Translate Rust modules into structs?
+            const mod_from = i.*;
+            const mod_to_excl = i.* + m.len - 1;
+            try writeCommentWithTokens(writer, toks, mod_from, mod_to_excl, "BEGIN: ");
+            i.* += m.len;
+
+            try translateRustToZig(writer, structs, toks, i);
+
+            _ = try writer.write("\n");
+            try translate(writer, toks, i, .@"}");
+            _ = try writer.write("\n");
+            try writeCommentWithTokens(writer, toks, mod_from, mod_to_excl, "END: ");
+        } else {
+            break;
+        }
+    }
+}
+
 pub fn main() !void {
     const file = try std.fs.cwd().openFile("sample.rs", .{});
     defer file.close();
@@ -914,4 +1591,20 @@ pub fn main() !void {
             std.debug.print("    Field {s}\n", .{field.name});
         }
     }
+
+    const stdout_file = std.io.getStdOut().writer();
+    var bw = std.io.bufferedWriter(stdout_file);
+    var i: usize = 0;
+    translateRustToZig(
+        bw.writer(),
+        structs,
+        toks,
+        &i,
+    ) catch |e| {
+        std.debug.print("Chyba: {}\n", .{e});
+        std.debug.print("Unknown construct while translating {any}\n", .{
+            if (toks.tokens[i..].len < 20) toks.tokens[i..] else toks.tokens[i..][0..20],
+        });
+    };
+    try bw.flush();
 }
