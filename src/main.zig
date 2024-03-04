@@ -11,15 +11,22 @@ const Token = enum {
     kw_struct,
     kw_union,
     kw_fn,
+    kw_where,
     kw_trait,
     kw_impl,
     kw_for,
+    kw_if,
+    kw_else,
+    kw_match,
     kw_let,
     kw_mut,
 
     // Operators.
+    @"=>",
     @"::",
     @":",
+    @"..=",
+    @"..",
     @"==",
     @"=",
     @"{",
@@ -30,7 +37,9 @@ const Token = enum {
     @"]",
     @"->",
     @"#",
+    @"<=",
     @"<",
+    @">=",
     @">",
     @".",
     @"|",
@@ -72,6 +81,13 @@ const operators = compute_operators: {
 
     break :compute_operators arr;
 };
+fn tokenToOperatorStr(token: Token) ?[]const u8 {
+    for (operators) |op| {
+        if (op.token == token)
+            return op.str;
+    }
+    return null;
+}
 
 const Keyword = struct {
     token: Token,
@@ -97,6 +113,13 @@ const keywords = compute_keywords: {
 
     break :compute_keywords arr;
 };
+fn tokenToKeywordStr(token: Token) ?[]const u8 {
+    for (keywords) |kw| {
+        if (kw.token == token)
+            return kw.str;
+    }
+    return null;
+}
 
 const TokenizerError = error{
     MultilineStringsNotSupported,
@@ -104,6 +127,7 @@ const TokenizerError = error{
     UnrecognizedToken,
 };
 
+/// Used in `tokenize`.
 fn getLineComment(data: []const u8) ?[]const u8 {
     if (std.mem.startsWith(u8, data, "//")) {
         if (std.mem.indexOfScalar(u8, data, '\n')) |i| {
@@ -117,6 +141,7 @@ fn getLineComment(data: []const u8) ?[]const u8 {
     return null;
 }
 
+/// Used in `tokenize` and `Match.parsePattern`.
 fn getOperator(data: []const u8) ?Operator {
     var found: ?Operator = null;
 
@@ -136,6 +161,7 @@ fn getOperator(data: []const u8) ?Operator {
     return found;
 }
 
+/// Used in `tokenize` and `Match.parsePattern`.
 fn getIdentifier(data: []const u8) ?[]const u8 {
     if (std.ascii.isAlphabetic(data[0]) or data[0] == '_') {
         var i: usize = 1;
@@ -145,6 +171,7 @@ fn getIdentifier(data: []const u8) ?[]const u8 {
     return null;
 }
 
+/// Used in `tokenize` and `Match.parsePattern`.
 fn isIdentifierKeyword(identifier: []const u8) ?Token {
     for (keywords) |k| {
         if (std.mem.eql(u8, identifier, k.str)) {
@@ -154,6 +181,7 @@ fn isIdentifierKeyword(identifier: []const u8) ?Token {
     return null;
 }
 
+/// Used in `tokenize`.
 fn getString(data: []const u8) TokenizerError!?[]const u8 {
     if (data[0] == '"') {
         var i: usize = 1;
@@ -182,7 +210,7 @@ fn getString(data: []const u8) TokenizerError!?[]const u8 {
     return null;
 }
 
-// Parse decimal numbers.
+/// Used in `tokenize` to tokenize both integers and decimal numbers.
 fn getNumber(data: []const u8) ?[]const u8 {
     const isDigit = std.ascii.isDigit;
     // CONSIDER: Parse initial sign as a part of the number?
@@ -220,8 +248,133 @@ fn getNumber(data: []const u8) ?[]const u8 {
     return null;
 }
 
+const LenAndData = struct {
+    len: usize,
+    data: []const u8,
+};
+
+fn LenAndMultiData(n: comptime_int) type {
+    return struct {
+        len: usize,
+        data: [n][]const u8,
+    };
+}
+
 const CommentIndex = usize; // Index into `comments`.
 const CommentRange = struct { from: CommentIndex, to_excl: CommentIndex };
+
+const Match = struct {
+    const Pattern = struct {
+        tokens: []const Token,
+        // Names of struct fields into which token data will be captured.
+        capture_field_names: []const ?[]const u8,
+        // Number of non-null `capture_field_names`.
+        capture_count: usize,
+    };
+
+    /// Used to process `Toks.match` patterns.
+    /// These patterns are used to match against Rust tokens.
+    /// Patterns use operators and keywords from Rust to match themselves
+    /// and identifiers to match identifiers or strings or numbers.
+    /// By default identifier matches identifier but optional kinds `:str` and `:num`
+    /// after the identifier make it match string or number.
+    ///
+    /// Identifiers which don't start by underscore capture `token_data`.
+    /// Structs returned by `Toks.match` have fields with captured `token_data`.
+    /// These fields are named after identifiers in the original pattern.
+    fn parsePattern(comptime pattern: []const u8) Pattern {
+        comptime var n = 0;
+        comptime var tokens = [1]Token{undefined} ** pattern.len;
+        comptime var capture_field_names = [1]?[]const u8{null} ** pattern.len;
+        comptime var capture_count = 0;
+        comptime var data = pattern;
+        while (data.len > 0) {
+            if (data[0] == ' ') {
+                data = data[1..];
+            } else if (data[0] == '\n') {
+                @compileError("Pattern must not contain new lines");
+            } else if (getOperator(data)) |operator| {
+                data = data[operator.str.len..];
+                tokens[n] = operator.token;
+                n += 1;
+            } else if (getIdentifier(data)) |identifier| {
+                data = data[identifier.len..];
+                if (isIdentifierKeyword(identifier)) |keyword| {
+                    tokens[n] = keyword;
+                    n += 1;
+                } else {
+                    tokens[n] = .d_ident;
+                    // Optional token type.
+                    // There must not be any spaces between colon and token kind.
+                    if (std.mem.startsWith(u8, data, ":str")) {
+                        data = data[4..];
+                        tokens[n] = .d_string;
+                    } else if (std.mem.startsWith(u8, data, ":num")) {
+                        data = data[4..];
+                        tokens[n] = .d_number;
+                    } else if (std.mem.startsWith(u8, data, ":")) {
+                        // Unknown token kinds are not allowed.
+                        @panic("Unknown token kind or are you missing a space before colon?");
+                    }
+
+                    // Leading underscore signifies that value shall not be captured.
+                    if (std.mem.startsWith(u8, identifier, "_")) {
+                        // No capturing in this case.
+                    } else {
+                        capture_field_names[n] = identifier;
+                        capture_count += 1;
+                    }
+
+                    n += 1;
+                }
+            } else {
+                @compileError("Unrecognized pattern part: " ++ data);
+            }
+        }
+        return .{
+            .tokens = tokens[0..n],
+            .capture_field_names = capture_field_names[0..n],
+            .capture_count = capture_count,
+        };
+    }
+
+    fn Result(comptime pattern: []const u8) type {
+        const pat = parsePattern(pattern);
+        var n = 0;
+        var fields: [pat.capture_count + 1]std.builtin.Type.StructField = undefined;
+
+        fields[n] = std.builtin.Type.StructField{
+            .name = "len",
+            .type = usize,
+            .default_value = null,
+            .is_comptime = false,
+            .alignment = 0,
+        };
+        n += 1;
+        for (pat.capture_field_names) |capture_field_name| {
+            if (capture_field_name) |field_name| {
+                fields[n] = std.builtin.Type.StructField{
+                    .name = field_name ++ "",
+                    .type = []const u8,
+                    .default_value = null,
+                    .is_comptime = false,
+                    .alignment = 0,
+                };
+                n += 1;
+            }
+        }
+
+        if (n != pat.capture_count + 1)
+            @panic("Unexpected number of fields in struct");
+
+        return @Type(.{ .Struct = .{
+            .layout = .Auto,
+            .fields = &fields,
+            .decls = &.{},
+            .is_tuple = false,
+        } });
+    }
+};
 
 const Toks = struct {
     tokens: []Token,
@@ -229,6 +382,169 @@ const Toks = struct {
     comments_before_token: []?CommentRange,
     comment_after_token: []?CommentIndex,
     comments: [][]const u8,
+
+    fn match(self: Toks, i: usize, comptime pattern: []const u8) ?Match.Result(pattern) {
+        const pat = comptime Match.parsePattern(pattern);
+        if (std.mem.startsWith(Token, self.tokens[i..], pat.tokens)) {
+            var result: Match.Result(pattern) = undefined;
+            result.len = pat.tokens.len;
+            inline for (pat.capture_field_names, 0..) |capture_field_name, pat_i| {
+                if (capture_field_name) |field_name| {
+                    if (self.token_data[i + pat_i]) |data| {
+                        @field(result, field_name) = data;
+                    } else {
+                        @panic("No value captured for field " ++ field_name);
+                    }
+                }
+            }
+            return result;
+        }
+        return null;
+    }
+
+    fn matchEql(self: Toks, i: usize, comptime pattern: []const u8, comptime expected: anytype) ?Match.Result(pattern) {
+        const ti = switch (@typeInfo(@TypeOf(expected))) {
+            .Struct => |s| s,
+            else => @compileError("Type of expected is not struct"),
+        };
+
+        if (self.match(i, pattern)) |result| {
+            inline for (ti.fields) |field| {
+                if (!std.mem.eql(u8, @field(result, field.name), @field(expected, field.name)))
+                    return null;
+            }
+            return result;
+        }
+        return null;
+    }
+
+    fn startsWith(self: Toks, i: usize, needle: []const Token) ?usize {
+        if (std.mem.startsWith(Token, self.tokens[i..], needle))
+            return needle.len
+        else
+            return null;
+    }
+
+    fn startsWithAny(self: Toks, i: usize, needles: []const []const Token) ?usize {
+        for (needles) |needle| {
+            if (self.startsWith(i, needle)) |len|
+                return len;
+        }
+        return null;
+    }
+
+    fn startsWithAndGetData(self: Toks, i: usize, needle: []const Token) ?LenAndData {
+        if (std.mem.startsWith(Token, self.tokens[i..], needle)) {
+            for (self.token_data[i..][0..needle.len]) |data| {
+                if (data) |d|
+                    return .{ .len = needle.len, .data = d };
+            }
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    fn startsWithAnyAndGetData(self: Toks, i: usize, needles: []const []const Token) ?LenAndData {
+        for (needles) |needle| {
+            if (self.startsWithAndGetData(i, needle)) |ld|
+                return ld;
+        }
+        return null;
+    }
+
+    // CONSIDER: Infer `n` from comptime `needle`.
+    //           Or replace this function by `match`?
+    fn startsWithAndGetMultiData(self: Toks, n: comptime_int, i: usize, needle: []const Token) ?LenAndMultiData(n) {
+        if (self.startsWith(i, needle)) |len| {
+            var found: usize = 0;
+            var result: LenAndMultiData(n) = .{ .len = len, .data = undefined };
+            for (self.token_data[i..][0..needle.len]) |data| {
+                if (data) |d| {
+                    result.data[found] = d;
+                    found += 1;
+                    if (found == n)
+                        return result;
+                }
+            }
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    fn genericBracketedCountUntilAny(
+        self: Toks,
+        i: usize,
+        opening: []const Token,
+        closing: []const Token,
+        stop: []const Token,
+    ) ParserError!usize {
+        const tokens = self.tokens[i..];
+        var count: usize = 0;
+        var open: usize = 0; // We don't check whether closing bracket matches opening.
+        while (count < tokens.len) : (count += 1) {
+            const t = tokens[count];
+
+            // Because `stop` can contain brackets following if statement must be before switch.
+            if (open == 0) {
+                if (std.mem.indexOfScalar(Token, stop, t)) |_| {
+                    return count + 1;
+                }
+            }
+
+            if (std.mem.indexOfScalar(Token, opening, t)) |_| {
+                open += 1;
+            } else if (std.mem.indexOfScalar(Token, closing, t)) |_| {
+                if (open == 0)
+                    return ParserError.TooManyClosingBrackets
+                else
+                    open -= 1;
+            }
+        }
+        return ParserError.StopTokenNotFound;
+    }
+
+    /// Counts number of tokens to the first `stop` token (including the stop token).
+    /// Stop tokens inside brackets are ignored.
+    fn bracketedCountUntilAny(self: Toks, i: usize, stop: []const Token) ParserError!usize {
+        return self.genericBracketedCountUntilAny(
+            i,
+            &.{ .@"(", .@"[", .@"{" },
+            &.{ .@")", .@"]", .@"}" },
+            stop,
+        );
+    }
+
+    fn bracketedCountUntil(self: Toks, i: usize, stop: Token) ParserError!usize {
+        return bracketedCountUntilAny(self, i, &.{stop});
+    }
+
+    /// Counts number of tokens to the first `stop` token (including the stop token).
+    /// Stop tokens inside brackets are ignored.
+    fn bracketedCountWithAngleBracketsUntilAny(self: Toks, i: usize, stop: []const Token) ParserError!usize {
+        return self.genericBracketedCountUntilAny(
+            i,
+            &.{ .@"(", .@"[", .@"{", .@"<" },
+            &.{ .@")", .@"]", .@"}", .@">" },
+            stop,
+        );
+    }
+
+    fn bracketedCountWithAngleBracketsUntil(self: Toks, i: usize, stop: Token) ParserError!usize {
+        return bracketedCountWithAngleBracketsUntilAny(self, i, &.{stop});
+    }
+
+    /// Restricts `self` to the first `token_count` tokens.
+    fn restrict(self: Toks, token_count: usize) Toks {
+        return .{
+            .tokens = self.tokens[0..token_count],
+            .token_data = self.token_data[0..token_count],
+            .comments_before_token = self.comments_before_token[0 .. token_count + 1],
+            .comment_after_token = self.comment_after_token[0..token_count],
+            .comments = self.comments,
+        };
+    }
 
     fn deinit(self: *const Toks, allocator: Allocator) void {
         allocator.free(self.tokens);
@@ -444,74 +760,6 @@ const ParserError = error{
     Other,
 };
 
-/// Counts number of tokens to the first `stop` token (including the stop token).
-/// Stop tokens inside brackets are ignored.
-fn bracketedCountUntilAny(tokens: []const Token, stop: []const Token) ParserError!usize {
-    var count: usize = 0;
-    var open: usize = 0; // We don't check whether closing bracket matches opening.
-    while (count < tokens.len) : (count += 1) {
-        const t = tokens[count];
-
-        // Because `stop` can contain brackets following if statement must be before switch.
-        if (open == 0) {
-            if (std.mem.indexOfScalar(Token, stop, t)) |_| {
-                return count + 1;
-            }
-        }
-
-        switch (t) {
-            .@"(", .@"[", .@"{" => open += 1,
-            .@")", .@"]", .@"}" => if (open == 0) {
-                return ParserError.TooManyClosingBrackets;
-            } else {
-                open -= 1;
-            },
-            else => {},
-        }
-    }
-    return ParserError.StopTokenNotFound;
-}
-
-fn bracketedCountUntil(tokens: []const Token, stop: Token) ParserError!usize {
-    return bracketedCountUntilAny(tokens, &.{stop});
-}
-
-fn startsWith(tokens: []const Token, needle: []const Token) ?usize {
-    if (std.mem.startsWith(Token, tokens, needle))
-        return needle.len
-    else
-        return null;
-}
-
-const LenAndData = struct {
-    len: usize,
-    data: []const u8,
-};
-
-fn startsWithAndGetData(
-    tokens: []const Token,
-    token_data: []?[]const u8,
-    needle: []const Token,
-) ?LenAndData {
-    if (std.mem.startsWith(Token, tokens, needle)) {
-        for (token_data) |data| {
-            if (data) |d|
-                return .{ .len = needle.len, .data = d };
-        }
-        return null;
-    } else {
-        return null;
-    }
-}
-
-fn startsWithAny(tokens: []const Token, needles: []const []const Token) ?usize {
-    for (needles) |needle| {
-        if (startsWith(tokens, needle)) |len|
-            return len;
-    }
-    return null;
-}
-
 fn readStructsAndTheirFields(
     toks: Toks,
     allocator: Allocator,
@@ -552,23 +800,20 @@ fn readStructsAndTheirFieldsInModule(
             i.* += 1;
         }
 
-        if (startsWith(toks.tokens[i.*..], &.{ .@"#", .@"!", .@"[" })) |len| {
+        if (toks.startsWith(i.*, &.{ .@"#", .@"!", .@"[" })) |len| {
             i.* += len;
-            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@"]");
-        } else if (startsWith(toks.tokens[i.*..], &.{ .@"#", .@"[" })) |len| {
+            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+        } else if (toks.startsWith(i.*, &.{ .@"#", .@"[" })) |len| {
             i.* += len;
-            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@"]");
-        } else if (startsWith(toks.tokens[i.*..], &.{.kw_use})) |len| {
+            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+        } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
             i.* += len;
-            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@";");
-        } else if (startsWithAny(
-            toks.tokens[i.*..],
-            &.{ &.{.kw_impl}, &.{.kw_fn} },
-        )) |len| {
+            i.* += try toks.bracketedCountUntil(i.*, .@";");
+        } else if (toks.startsWithAny(i.*, &.{ &.{.kw_impl}, &.{.kw_fn} })) |len| {
             i.* += len;
-            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@"{");
-            i.* += try bracketedCountUntil(toks.tokens[i.*..], .@"}");
-        } else if (startsWith(toks.tokens[i.*..], &.{ .kw_mod, .d_ident, .@"{" })) |len| {
+            i.* += try toks.bracketedCountUntil(i.*, .@"{");
+            i.* += try toks.bracketedCountUntil(i.*, .@"}");
+        } else if (toks.startsWith(i.*, &.{ .kw_mod, .d_ident, .@"{" })) |len| {
             i.* += len;
             try readStructsAndTheirFieldsInModule(s, toks, i);
 
@@ -577,11 +822,7 @@ fn readStructsAndTheirFieldsInModule(
             } else {
                 return ParserError.ClosingBracketNotFound;
             }
-        } else if (startsWithAndGetData(
-            toks.tokens[i.*..],
-            toks.token_data[i.*..],
-            &.{ .kw_struct, .d_ident, .@"{" },
-        )) |ld| {
+        } else if (toks.startsWithAndGetData(i.*, &.{ .kw_struct, .d_ident, .@"{" })) |ld| {
             const struct_name = ld.data;
             try s.structs.append(.{
                 .public = public,
@@ -597,17 +838,13 @@ fn readStructsAndTheirFieldsInModule(
                     i.* += 1;
                 }
 
-                if (startsWithAndGetData(
-                    toks.tokens[i.*..],
-                    toks.token_data[i.*..],
-                    &.{ .d_ident, .@":" },
-                )) |ld2| {
+                if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":" })) |ld2| {
                     const field_name = ld2.data;
                     try s.fields.append(.{ .name = field_name });
                     s.structs.items[s.structs.items.len - 1].fields_to_excl += 1;
 
                     // Skip type.
-                    i.* += try bracketedCountUntilAny(toks.tokens[i.*..], &.{ .@",", .@"}" }) - 1;
+                    i.* += try toks.bracketedCountUntilAny(i.*, &.{ .@",", .@"}" }) - 1;
 
                     if (i.* < toks.tokens.len and toks.tokens[i.*] == .@",") {
                         i.* += 1;
