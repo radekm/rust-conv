@@ -634,6 +634,7 @@ fn tokenize(
     allocator: Allocator,
 ) (Allocator.Error || TokenizerError)!Toks {
     var s = try TokenizerState.init(allocator);
+    defer s.deinit();
     var data = source_code;
     var token_count_when_line_started: usize = 0; // Used when processing line comments.
 
