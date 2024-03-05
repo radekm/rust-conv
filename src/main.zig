@@ -36,6 +36,7 @@ const Token = enum {
     @"[",
     @"]",
     @"->",
+    @"'", // Or should we instead add `d_lifetime`?
     @"#",
     @"<=",
     @"<",
@@ -55,6 +56,7 @@ const Token = enum {
     // Tokens with associated data.
     d_string,
     d_number,
+    d_char,
     d_ident,
 };
 
@@ -248,6 +250,44 @@ fn getNumber(data: []const u8) ?[]const u8 {
     return null;
 }
 
+/// Used in `tokenize`.
+fn getChar(data: []const u8) ?[]const u8 {
+    // If it has less than 3 bytes then it can't contain char.
+    if (data.len >= 3 and data[0] == '\'') {
+        if (data[1] == '\\') {
+            // We have char for sure because lifetimes don't contain slashes.
+
+            if (data[2] == '\'')
+                // Either escaped single quote or something invalid.
+                return if (data.len >= 4 and data[3] == '\'') data[0..4] else null;
+
+            if (std.mem.indexOfScalarPos(u8, data, 2, '\'')) |i| {
+                // Escape sequence ends with single quote.
+                return data[0 .. i + 1];
+            }
+        } else {
+            // Not sure if it's char or lifetime.
+            // We need to read one utf-8 code point and if the byte after it
+            // is single quote then we have single quoted char.
+            // Otherwise we have lifetime.
+
+            // zig fmt: off
+            const codepoint_len: usize =
+                if (data[1] & 0b1000_0000 == 0) 1
+                else if (data[1] & 0b1110_0000 == 0b1100_0000) 2
+                else if (data[1] & 0b1111_0000 == 0b1110_0000) 3
+                else if (data[1] & 0b1111_1000 == 0b1111_0000) 4
+                else return null;
+            // zig fmt: on
+
+            const i = codepoint_len + 1;
+
+            if (i < data.len and data[i] == '\'') return data[0 .. i + 1];
+        }
+    }
+    return null;
+}
+
 const LenAndData = struct {
     len: usize,
     data: []const u8,
@@ -276,8 +316,8 @@ const Match = struct {
     /// These patterns are used to match against Rust tokens.
     /// Patterns use operators and keywords from Rust to match themselves
     /// and identifiers to match identifiers or strings or numbers.
-    /// By default identifier matches identifier but optional kinds `:str` and `:num`
-    /// after the identifier make it match string or number.
+    /// By default identifier matches identifier but optional kinds `:str`, `:num` and `:char`
+    /// after the identifier make it match string or number or char.
     ///
     /// Identifiers which don't start by underscore capture `token_data`.
     /// Structs returned by `Toks.match` have fields with captured `token_data`.
@@ -312,6 +352,9 @@ const Match = struct {
                     } else if (std.mem.startsWith(u8, data, ":num")) {
                         data = data[4..];
                         tokens[n] = .d_number;
+                    } else if (std.mem.startsWith(u8, data, ":char")) {
+                        data = data[5..];
+                        tokens[n] = .d_char;
                     } else if (std.mem.startsWith(u8, data, ":")) {
                         // Unknown token kinds are not allowed.
                         @panic("Unknown token kind or are you missing a space before colon?");
@@ -677,9 +720,6 @@ fn tokenize(
             // (or end of file in which case `token_count_when_line_started` value doesn't matter).
             token_count_when_line_started = s.tokens.items.len;
             data = data[comment.len..];
-        } else if (getOperator(data)) |operator| {
-            data = data[operator.str.len..];
-            try s.addToken(operator.token);
         } else if (getIdentifier(data)) |identifier| {
             data = data[identifier.len..];
             if (isIdentifierKeyword(identifier)) |keyword| {
@@ -693,6 +733,13 @@ fn tokenize(
         } else if (getNumber(data)) |number| {
             data = data[number.len..];
             try s.addTokenWithData(.d_number, number);
+        } else if (getChar(data)) |char| {
+            // `getChar` must be before `getOperator`.
+            data = data[char.len..];
+            try s.addTokenWithData(.d_char, char);
+        } else if (getOperator(data)) |operator| {
+            data = data[operator.str.len..];
+            try s.addToken(operator.token);
         } else {
             return TokenizerError.UnrecognizedToken;
         }
