@@ -1,0 +1,7137 @@
+Token main.Token.#
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: allow
+Token main.Token.(
+Token main.Token.d_ident: clippy
+Token main.Token.::
+Token main.Token.d_ident: many_single_char_names
+Token main.Token.)
+Token main.Token.]
+Token main.Token.#
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: allow
+Token main.Token.(
+Token main.Token.d_ident: clippy
+Token main.Token.::
+Token main.Token.d_ident: wrong_self_convention
+Token main.Token.)
+Token main.Token.]
+    AFTER: // False positives
+Token main.Token.kw_use
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: ops
+Token main.Token.::
+Token main.Token.d_ident: Range
+Token main.Token.;
+Token main.Token.kw_use
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.{
+Token main.Token.d_ident: shape
+Token main.Token.::
+Token main.Token.d_ident: Shape
+Token main.Token.,
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.d_ident: PathShape
+Token main.Token.,
+Token main.Token.d_ident: Stroke
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_use
+Token main.Token.d_ident: emath
+Token main.Token.::
+Token main.Token.*
+Token main.Token.;
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: /// A cubic [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
+    BEFORE: ///
+    BEFORE: /// See also [`QuadraticBezierShape`].
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Copy
+Token main.Token.,
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.,
+Token main.Token.d_ident: PartialEq
+Token main.Token.)
+Token main.Token.]
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: cfg_attr
+Token main.Token.(
+Token main.Token.d_ident: feature
+Token main.Token.=
+Token main.Token.d_string: "serde"
+Token main.Token.,
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Deserialize
+Token main.Token.,
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Serialize
+Token main.Token.)
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+    BEFORE: /// The first point is the starting point and the last one is the ending point of the curve.
+    BEFORE: /// The middle points are the control points.
+Token main.Token.kw_pub
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.;
+Token main.Token.d_number: 4
+Token main.Token.]
+Token main.Token.,
+Token main.Token.kw_pub
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.kw_pub
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.kw_pub
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+    BEFORE: /// Creates a cubic Bézier curve based on 4 points and stroke.
+    BEFORE: ///
+    BEFORE: /// The first point is the starting point and the last one is the ending point of the curve.
+    BEFORE: /// The middle points are the control points.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: from_points_stroke
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.;
+Token main.Token.d_number: 4
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Transform the curve with the given transform.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: transform
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: transform
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: RectTransform
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: points
+Token main.Token.=
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_number: 4
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_for
+Token main.Token.(
+Token main.Token.d_ident: i
+Token main.Token.,
+Token main.Token.d_ident: origin_point
+Token main.Token.)
+Token main.Token.d_ident: in
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: iter
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: enumerate
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_ident: i
+Token main.Token.]
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.*
+Token main.Token.d_ident: origin_point
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: closed
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Convert the cubic Bézier curve to one or two [`PathShape`]'s.
+    BEFORE: /// When the curve is closed and it has to intersect with the base line, it will be converted into two shapes.
+    BEFORE: /// Otherwise, it will be converted into one shape.
+    BEFORE: /// The `tolerance` will be used to control the max distance between the curve and the base line.
+    BEFORE: /// The `epsilon` is used when comparing two floats.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: to_path_shapes
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: epsilon
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: PathShape
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: pathshapes
+Token main.Token.=
+Token main.Token.d_ident: Vec
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: points_vec
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: flatten_closed
+Token main.Token.(
+Token main.Token.d_ident: tolerance
+Token main.Token.,
+Token main.Token.d_ident: epsilon
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_for
+Token main.Token.d_ident: points
+Token main.Token.d_ident: in
+Token main.Token.d_ident: points_vec
+Token main.Token..
+Token main.Token.d_ident: drain
+Token main.Token.(
+Token main.Token...
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: pathshape
+Token main.Token.=
+Token main.Token.d_ident: PathShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: closed
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.d_ident: pathshapes
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pathshape
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: pathshapes
+Token main.Token.}
+    BEFORE: /// The visual bounding rectangle (includes stroke width)
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.==
+Token main.Token.d_ident: Color32
+Token main.Token.::
+Token main.Token.d_ident: TRANSPARENT
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: is_empty
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: NOTHING
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: logical_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Logical bounding rectangle (ignoring stroke width)
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: logical_bounding_rect
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Rect
+Token main.Token.{
+    BEFORE: //temporary solution
+Token main.Token.kw_let
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: min_x
+Token main.Token.,
+Token main.Token.kw_mut
+Token main.Token.d_ident: max_x
+Token main.Token.)
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.<
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: min_y
+Token main.Token.,
+Token main.Token.kw_mut
+Token main.Token.d_ident: max_y
+Token main.Token.)
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.<
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.}
+Token main.Token.;
+    BEFORE: // find the inflection points and get the x value
+Token main.Token.d_ident: cubic_for_each_local_extremum
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: x
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: x
+Token main.Token.<
+Token main.Token.d_ident: min_x
+Token main.Token.{
+Token main.Token.d_ident: min_x
+Token main.Token.=
+Token main.Token.d_ident: x
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: x
+Token main.Token.>
+Token main.Token.d_ident: max_x
+Token main.Token.{
+Token main.Token.d_ident: max_x
+Token main.Token.=
+Token main.Token.d_ident: x
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+    BEFORE: // find the inflection points and get the y value
+Token main.Token.d_ident: cubic_for_each_local_extremum
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: y
+Token main.Token.<
+Token main.Token.d_ident: min_y
+Token main.Token.{
+Token main.Token.d_ident: min_y
+Token main.Token.=
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: y
+Token main.Token.>
+Token main.Token.d_ident: max_y
+Token main.Token.{
+Token main.Token.d_ident: max_y
+Token main.Token.=
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.d_ident: min
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_ident: min_x
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_ident: min_y
+Token main.Token.}
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_ident: max_x
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_ident: max_y
+Token main.Token.}
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// split the original cubic curve into a new one within a range.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: split_range
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: t_range
+Token main.Token.:
+Token main.Token.d_ident: Range
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.d_ident: epaint_assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: start
+Token main.Token.>=
+Token main.Token.d_number: 0.0
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: end
+Token main.Token.<=
+Token main.Token.d_number: 1.0
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: start
+Token main.Token.<=
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: end
+Token main.Token.,
+Token main.Token.d_string: "range should be in [0.0,1.0]"
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: from
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: start
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: to
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: end
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: d_from
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: d_ctrl
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: d_to
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: q
+Token main.Token.=
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: d_from
+Token main.Token.,
+Token main.Token.d_ident: d_ctrl
+Token main.Token.,
+Token main.Token.d_ident: d_to
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: closed
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: delta_t
+Token main.Token.=
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: end
+Token main.Token.-
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: start
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: q_start
+Token main.Token.=
+Token main.Token.d_ident: q
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: start
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: q_end
+Token main.Token.=
+Token main.Token.d_ident: q
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: t_range
+Token main.Token..
+Token main.Token.d_ident: end
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: ctrl1
+Token main.Token.=
+Token main.Token.d_ident: from
+Token main.Token.+
+Token main.Token.d_ident: q_start
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: delta_t
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: ctrl2
+Token main.Token.=
+Token main.Token.d_ident: to
+Token main.Token.-
+Token main.Token.d_ident: q_end
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: delta_t
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: from
+Token main.Token.,
+Token main.Token.d_ident: ctrl1
+Token main.Token.,
+Token main.Token.d_ident: ctrl2
+Token main.Token.,
+Token main.Token.d_ident: to
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: closed
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: // copied from lyon::geom::flattern_cubic.rs
+    BEFORE: // Computes the number of quadratic bézier segments to approximate a cubic one.
+    BEFORE: // Derived by Raph Levien from section 10.6 of Sedeberg's CAGD notes
+    BEFORE: // https://scholarsarchive.byu.edu/cgi/viewcontent.cgi?article=1000&context=facpub#section.10.6
+    BEFORE: // and the error metric from the caffein owl blog post http://caffeineowl.com/graphics/2d/vectorial/cubic2quad01.html
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: num_quadratics
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: u32
+Token main.Token.{
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.d_ident: epaint_assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: tolerance
+Token main.Token.>
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_string: "the tolerance should be positive"
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: x
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: err
+Token main.Token.=
+Token main.Token.d_ident: x
+Token main.Token.*
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_ident: y
+Token main.Token.*
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.(
+Token main.Token.d_ident: err
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_number: 432.0
+Token main.Token.*
+Token main.Token.d_ident: tolerance
+Token main.Token.*
+Token main.Token.d_ident: tolerance
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: powf
+Token main.Token.(
+Token main.Token.d_number: 1.0
+Token main.Token./
+Token main.Token.d_number: 6.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: ceil
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token.(
+Token main.Token.d_number: 1.0
+Token main.Token.)
+Token main.Token.d_ident: as
+Token main.Token.d_ident: u32
+Token main.Token.}
+    BEFORE: /// Find out the t value for the point where the curve is intersected with the base line.
+    BEFORE: /// The base line is the line from P0 to P3.
+    BEFORE: /// If the curve only has two intersection points with the base line, they should be 0.0 and 1.0.
+    BEFORE: /// In this case, the "fill" will be simple since the curve is a convex line.
+    BEFORE: /// If the curve has more than two intersection points with the base line, the "fill" will be a problem.
+    BEFORE: /// We need to find out where is the 3rd t value (0<t<1)
+    BEFORE: /// And the original cubic curve will be split into two curves (0.0..t and t..1.0).
+    BEFORE: /// B(t) = (1-t)^3*P0 + 3*t*(1-t)^2*P1 + 3*t^2*(1-t)*P2 + t^3*P3
+    BEFORE: /// or B(t) = (P3 - 3*P2 + 3*P1 - P0)*t^3 + (3*P2 - 6*P1 + 3*P0)*t^2 + (3*P1 - 3*P0)*t + P0
+    BEFORE: /// this B(t) should be on the line between P0 and P3. Therefore:
+    BEFORE: /// (B.x - P0.x)/(P3.x - P0.x) = (B.y - P0.y)/(P3.y - P0.y), or:
+    BEFORE: /// B.x * (P3.y - P0.y) - B.y * (P3.x - P0.x) + P0.x * (P0.y - P3.y) + P0.y * (P3.x - P0.x) = 0
+    BEFORE: /// B.x = (P3.x - 3 * P2.x + 3 * P1.x - P0.x) * t^3 + (3 * P2.x - 6 * P1.x + 3 * P0.x) * t^2 + (3 * P1.x - 3 * P0.x) * t + P0.x
+    BEFORE: /// B.y = (P3.y - 3 * P2.y + 3 * P1.y - P0.y) * t^3 + (3 * P2.y - 6 * P1.y + 3 * P0.y) * t^2 + (3 * P1.y - 3 * P0.y) * t + P0.y
+    BEFORE: /// Combine the above three equations and iliminate B.x and B.y, we get:
+    BEFORE: /// t^3 * ( (P3.x - 3*P2.x + 3*P1.x - P0.x) * (P3.y - P0.y) - (P3.y - 3*P2.y + 3*P1.y - P0.y) * (P3.x - P0.x))
+    BEFORE: /// + t^2 * ( (3 * P2.x - 6 * P1.x + 3 * P0.x) * (P3.y - P0.y) - (3 * P2.y - 6 * P1.y + 3 * P0.y) * (P3.x - P0.x))
+    BEFORE: /// + t^1 * ( (3 * P1.x - 3 * P0.x) * (P3.y - P0.y) - (3 * P1.y - 3 * P0.y) * (P3.x - P0.x))
+    BEFORE: /// + (P0.x * (P3.y - P0.y) - P0.y * (P3.x - P0.x)) + P0.x * (P0.y - P3.y) + P0.y * (P3.x - P0.x)
+    BEFORE: /// = 0
+    BEFORE: /// or a * t^3 + b * t^2 + c * t + d = 0
+    BEFORE: ///
+    BEFORE: /// let x = t - b / (3 * a), then we have:
+    BEFORE: /// x^3 + p * x + q = 0, where:
+    BEFORE: /// p = (3.0 * a * c - b^2) / (3.0 * a^2)
+    BEFORE: /// q = (2.0 * b^3 - 9.0 * a * b * c + 27.0 * a^2 * d) / (27.0 * a^3)
+    BEFORE: ///
+    BEFORE: /// when p > 0, there will be one real root, two complex roots
+    BEFORE: /// when p = 0, there will be two real roots, when p=q=0, there will be three real roots but all 0.
+    BEFORE: /// when p < 0, there will be three unique real roots. this is what we need. (x1, x2, x3)
+    BEFORE: ///  t = x + b / (3 * a), then we have: t1, t2, t3.
+    BEFORE: /// the one between 0.0 and 1.0 is what we need.
+    BEFORE: /// <`https://baike.baidu.com/item/%E4%B8%80%E5%85%83%E4%B8%89%E6%AC%A1%E6%96%B9%E7%A8%8B/8388473 /`>
+    BEFORE: ///
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: find_cross_t
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: epsilon
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: p0
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: p1
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: p2
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: p3
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: a
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p2
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p1
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.-
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p2
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p1
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: b
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p2
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 6.0
+Token main.Token.*
+Token main.Token.d_ident: p1
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.-
+Token main.Token.(
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p2
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 6.0
+Token main.Token.*
+Token main.Token.d_ident: p1
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: c
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p1
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.-
+Token main.Token.(
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p1
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: d
+Token main.Token.=
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: h
+Token main.Token.=
+Token main.Token.-
+Token main.Token.d_ident: b
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: p
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.*
+Token main.Token.d_ident: c
+Token main.Token.-
+Token main.Token.d_ident: b
+Token main.Token.*
+Token main.Token.d_ident: b
+Token main.Token.)
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: q
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: b
+Token main.Token.*
+Token main.Token.d_ident: b
+Token main.Token.*
+Token main.Token.d_ident: b
+Token main.Token.-
+Token main.Token.d_number: 9.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.*
+Token main.Token.d_ident: b
+Token main.Token.*
+Token main.Token.d_ident: c
+Token main.Token.+
+Token main.Token.d_number: 27.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.*
+Token main.Token.d_ident: d
+Token main.Token.)
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_number: 27.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: p
+Token main.Token.>
+Token main.Token.d_number: 0.0
+Token main.Token.{
+Token main.Token.d_ident: return
+Token main.Token.d_ident: None
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: r
+Token main.Token.=
+Token main.Token.(
+Token main.Token.-
+Token main.Token.d_number: 1.0
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p
+Token main.Token./
+Token main.Token.d_number: 3.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: powi
+Token main.Token.(
+Token main.Token.d_number: 3
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: sqrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: theta
+Token main.Token.=
+Token main.Token.(
+Token main.Token.-
+Token main.Token.d_number: 1.0
+Token main.Token.*
+Token main.Token.d_ident: q
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: r
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: acos
+Token main.Token.(
+Token main.Token.)
+Token main.Token./
+Token main.Token.d_number: 3.0
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: t1
+Token main.Token.=
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: r
+Token main.Token..
+Token main.Token.d_ident: cbrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: theta
+Token main.Token..
+Token main.Token.d_ident: cos
+Token main.Token.(
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: h
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: t2
+Token main.Token.=
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: r
+Token main.Token..
+Token main.Token.d_ident: cbrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: theta
+Token main.Token.+
+Token main.Token.d_number: 120.0
+Token main.Token.*
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: f32
+Token main.Token.::
+Token main.Token.d_ident: consts
+Token main.Token.::
+Token main.Token.d_ident: PI
+Token main.Token./
+Token main.Token.d_number: 180.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: cos
+Token main.Token.(
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: h
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: t3
+Token main.Token.=
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: r
+Token main.Token..
+Token main.Token.d_ident: cbrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: theta
+Token main.Token.+
+Token main.Token.d_number: 240.0
+Token main.Token.*
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: f32
+Token main.Token.::
+Token main.Token.d_ident: consts
+Token main.Token.::
+Token main.Token.d_ident: PI
+Token main.Token./
+Token main.Token.d_number: 180.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: cos
+Token main.Token.(
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: h
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: t1
+Token main.Token.>
+Token main.Token.d_ident: epsilon
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: t1
+Token main.Token.<
+Token main.Token.d_number: 1.0
+Token main.Token.-
+Token main.Token.d_ident: epsilon
+Token main.Token.{
+Token main.Token.d_ident: return
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: t1
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: t2
+Token main.Token.>
+Token main.Token.d_ident: epsilon
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: t2
+Token main.Token.<
+Token main.Token.d_number: 1.0
+Token main.Token.-
+Token main.Token.d_ident: epsilon
+Token main.Token.{
+Token main.Token.d_ident: return
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: t2
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: t3
+Token main.Token.>
+Token main.Token.d_ident: epsilon
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: t3
+Token main.Token.<
+Token main.Token.d_number: 1.0
+Token main.Token.-
+Token main.Token.d_ident: epsilon
+Token main.Token.{
+Token main.Token.d_ident: return
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: t3
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: None
+Token main.Token.}
+    BEFORE: /// Calculate the point (x,y) at t based on the cubic Bézier curve equation.
+    BEFORE: /// t is in [0.0,1.0]
+    BEFORE: /// [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B.C3.A9zier_curves)
+    BEFORE: ///
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: t
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.d_ident: epaint_assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.>=
+Token main.Token.d_number: 0.0
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: t
+Token main.Token.<=
+Token main.Token.d_number: 1.0
+Token main.Token.,
+Token main.Token.d_string: "the sample value should be in [0.0,1.0]"
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: h
+Token main.Token.=
+Token main.Token.d_number: 1.0
+Token main.Token.-
+Token main.Token.d_ident: t
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: a
+Token main.Token.=
+Token main.Token.d_ident: t
+Token main.Token.*
+Token main.Token.d_ident: t
+Token main.Token.*
+Token main.Token.d_ident: t
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: b
+Token main.Token.=
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: t
+Token main.Token.*
+Token main.Token.d_ident: t
+Token main.Token.*
+Token main.Token.d_ident: h
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: c
+Token main.Token.=
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.d_ident: t
+Token main.Token.*
+Token main.Token.d_ident: h
+Token main.Token.*
+Token main.Token.d_ident: h
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: d
+Token main.Token.=
+Token main.Token.d_ident: h
+Token main.Token.*
+Token main.Token.d_ident: h
+Token main.Token.*
+Token main.Token.d_ident: h
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.+
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: b
+Token main.Token.+
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: c
+Token main.Token.+
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: d
+Token main.Token.;
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: to_pos2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// find a set of points that approximate the cubic Bézier curve.
+    BEFORE: /// the number of points is determined by the tolerance.
+    BEFORE: /// the points may not be evenly distributed in the range [0.0,1.0] (t value)
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: flatten
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: tolerance
+Token main.Token.=
+Token main.Token.d_ident: tolerance
+Token main.Token..
+Token main.Token.d_ident: unwrap_or
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 0.001
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_ident: tolerance
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: p
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: p
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: result
+Token main.Token.}
+    BEFORE: /// find a set of points that approximate the cubic Bézier curve.
+    BEFORE: /// the number of points is determined by the tolerance.
+    BEFORE: /// the points may not be evenly distributed in the range [0.0,1.0] (t value)
+    BEFORE: /// this api will check whether the curve will cross the base line or not when closed = true.
+    BEFORE: /// The result will be a vec of vec of Pos2. it will store two closed aren in different vec.
+    BEFORE: /// The epsilon is used to compare a float value.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: flatten_closed
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: epsilon
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: tolerance
+Token main.Token.=
+Token main.Token.d_ident: tolerance
+Token main.Token..
+Token main.Token.d_ident: unwrap_or
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 0.001
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: epsilon
+Token main.Token.=
+Token main.Token.d_ident: epsilon
+Token main.Token..
+Token main.Token.d_ident: unwrap_or
+Token main.Token.(
+Token main.Token.d_number: 1.0e-5
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: Vec
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: first_half
+Token main.Token.=
+Token main.Token.d_ident: Vec
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: second_half
+Token main.Token.=
+Token main.Token.d_ident: Vec
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: flipped
+Token main.Token.=
+Token main.Token.d_ident: false
+Token main.Token.;
+Token main.Token.d_ident: first_half
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: cross
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: find_cross_t
+Token main.Token.(
+Token main.Token.d_ident: epsilon
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_match
+Token main.Token.d_ident: cross
+Token main.Token.{
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: cross
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: closed
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_ident: tolerance
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: p
+Token main.Token.,
+Token main.Token.d_ident: t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: t
+Token main.Token.<
+Token main.Token.d_ident: cross
+Token main.Token.{
+Token main.Token.d_ident: first_half
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: p
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.!
+Token main.Token.d_ident: flipped
+Token main.Token.{
+    BEFORE: // when just crossed the base line, flip the order of the points
+    BEFORE: // add the cross point to the first half as the last point
+    BEFORE: // and add the cross point to the second half as the first point
+Token main.Token.d_ident: flipped
+Token main.Token.=
+Token main.Token.d_ident: true
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: cross_point
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: cross
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: first_half
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: cross_point
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: second_half
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: cross_point
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: second_half
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: p
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_ident: tolerance
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: p
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: first_half
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: p
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.d_ident: None
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_ident: tolerance
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: p
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: first_half
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: p
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: first_half
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.!
+Token main.Token.d_ident: second_half
+Token main.Token..
+Token main.Token.d_ident: is_empty
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: second_half
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: result
+Token main.Token.}
+    BEFORE: // from lyon_geom::cubic_bezier.rs
+    BEFORE: /// Iterates through the curve invoking a callback at each point.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.<
+Token main.Token.d_ident: F
+Token main.Token.:
+Token main.Token.d_ident: FnMut
+Token main.Token.(
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.>
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: callback
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: F
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: flatten_cubic_bezier_with_t
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.,
+Token main.Token.d_ident: callback
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.:
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: CubicBezier
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: /// A quadratic [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
+    BEFORE: ///
+    BEFORE: /// See also [`CubicBezierShape`].
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Copy
+Token main.Token.,
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.,
+Token main.Token.d_ident: PartialEq
+Token main.Token.)
+Token main.Token.]
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: cfg_attr
+Token main.Token.(
+Token main.Token.d_ident: feature
+Token main.Token.=
+Token main.Token.d_string: "serde"
+Token main.Token.,
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Deserialize
+Token main.Token.,
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Serialize
+Token main.Token.)
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.{
+    BEFORE: /// The first point is the starting point and the last one is the ending point of the curve.
+    BEFORE: /// The middle point is the control points.
+Token main.Token.kw_pub
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.;
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token.,
+Token main.Token.kw_pub
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.kw_pub
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.kw_pub
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.{
+    BEFORE: /// Create a new quadratic Bézier shape based on the 3 points and stroke.
+    BEFORE: ///
+    BEFORE: /// The first point is the starting point and the last one is the ending point of the curve.
+    BEFORE: /// The middle point is the control points.
+    BEFORE: /// The points should be in the order [start, control, end]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: from_points_stroke
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.;
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Transform the curve with the given transform.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: transform
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: transform
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: RectTransform
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: points
+Token main.Token.=
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_for
+Token main.Token.(
+Token main.Token.d_ident: i
+Token main.Token.,
+Token main.Token.d_ident: origin_point
+Token main.Token.)
+Token main.Token.d_ident: in
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: iter
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: enumerate
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_ident: i
+Token main.Token.]
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.*
+Token main.Token.d_ident: origin_point
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: closed
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Convert the quadratic Bézier curve to one [`PathShape`].
+    BEFORE: /// The `tolerance` will be used to control the max distance between the curve and the base line.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: to_path_shape
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: PathShape
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: points
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: flatten
+Token main.Token.(
+Token main.Token.d_ident: tolerance
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: PathShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: closed
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// The visual bounding rectangle (includes stroke width)
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.==
+Token main.Token.d_ident: Color32
+Token main.Token.::
+Token main.Token.d_ident: TRANSPARENT
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: is_empty
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: NOTHING
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: logical_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Logical bounding rectangle (ignoring stroke width)
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: logical_bounding_rect
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: min_x
+Token main.Token.,
+Token main.Token.kw_mut
+Token main.Token.d_ident: max_x
+Token main.Token.)
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.<
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: min_y
+Token main.Token.,
+Token main.Token.kw_mut
+Token main.Token.d_ident: max_y
+Token main.Token.)
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.<
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.}
+Token main.Token.;
+Token main.Token.d_ident: quadratic_for_each_local_extremum
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: x
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: x
+Token main.Token.<
+Token main.Token.d_ident: min_x
+Token main.Token.{
+Token main.Token.d_ident: min_x
+Token main.Token.=
+Token main.Token.d_ident: x
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: x
+Token main.Token.>
+Token main.Token.d_ident: max_x
+Token main.Token.{
+Token main.Token.d_ident: max_x
+Token main.Token.=
+Token main.Token.d_ident: x
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: quadratic_for_each_local_extremum
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: y
+Token main.Token.<
+Token main.Token.d_ident: min_y
+Token main.Token.{
+Token main.Token.d_ident: min_y
+Token main.Token.=
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: y
+Token main.Token.>
+Token main.Token.d_ident: max_y
+Token main.Token.{
+Token main.Token.d_ident: max_y
+Token main.Token.=
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.d_ident: min
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_ident: min_x
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_ident: min_y
+Token main.Token.}
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_ident: max_x
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_ident: max_y
+Token main.Token.}
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Calculate the point (x,y) at t based on the quadratic Bézier curve equation.
+    BEFORE: /// t is in [0.0,1.0]
+    BEFORE: /// [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Quadratic_B.C3.A9zier_curves)
+    BEFORE: ///
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: t
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.d_ident: epaint_assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.>=
+Token main.Token.d_number: 0.0
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: t
+Token main.Token.<=
+Token main.Token.d_number: 1.0
+Token main.Token.,
+Token main.Token.d_string: "the sample value should be in [0.0,1.0]"
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: h
+Token main.Token.=
+Token main.Token.d_number: 1.0
+Token main.Token.-
+Token main.Token.d_ident: t
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: a
+Token main.Token.=
+Token main.Token.d_ident: t
+Token main.Token.*
+Token main.Token.d_ident: t
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: b
+Token main.Token.=
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: t
+Token main.Token.*
+Token main.Token.d_ident: h
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: c
+Token main.Token.=
+Token main.Token.d_ident: h
+Token main.Token.*
+Token main.Token.d_ident: h
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.+
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: b
+Token main.Token.+
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: c
+Token main.Token.;
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: to_pos2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// find a set of points that approximate the quadratic Bézier curve.
+    BEFORE: /// the number of points is determined by the tolerance.
+    BEFORE: /// the points may not be evenly distributed in the range [0.0,1.0] (t value)
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: flatten
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: tolerance
+Token main.Token.=
+Token main.Token.d_ident: tolerance
+Token main.Token..
+Token main.Token.d_ident: unwrap_or
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 0.001
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_ident: tolerance
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: p
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: p
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: result
+Token main.Token.}
+    BEFORE: // copied from https://docs.rs/lyon_geom/latest/lyon_geom/
+    BEFORE: /// Compute a flattened approximation of the curve, invoking a callback at
+    BEFORE: /// each step.
+    BEFORE: ///
+    BEFORE: /// The callback takes the point and corresponding curve parameter at each step.
+    BEFORE: ///
+    BEFORE: /// This implements the algorithm described by Raph Levien at
+    BEFORE: /// <https://raphlinus.github.io/graphics/curves/2019/12/23/flatten-quadbez.html>
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.<
+Token main.Token.d_ident: F
+Token main.Token.>
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: callback
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: F
+Token main.Token.)
+Token main.Token.kw_where
+Token main.Token.d_ident: F
+Token main.Token.:
+Token main.Token.d_ident: FnMut
+Token main.Token.(
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.,
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: params
+Token main.Token.=
+Token main.Token.d_ident: FlatteningParameters
+Token main.Token.::
+Token main.Token.d_ident: from_curve
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: params
+Token main.Token..
+Token main.Token.d_ident: is_point
+Token main.Token.{
+Token main.Token.d_ident: return
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: count
+Token main.Token.=
+Token main.Token.d_ident: params
+Token main.Token..
+Token main.Token.d_ident: count
+Token main.Token.d_ident: as
+Token main.Token.d_ident: u32
+Token main.Token.;
+Token main.Token.kw_for
+Token main.Token.d_ident: index
+Token main.Token.d_ident: in
+Token main.Token.d_number: 1
+Token main.Token...
+Token main.Token.d_ident: count
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: t
+Token main.Token.=
+Token main.Token.d_ident: params
+Token main.Token..
+Token main.Token.d_ident: t_at_iteration
+Token main.Token.(
+Token main.Token.d_ident: index
+Token main.Token.d_ident: as
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: callback
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: callback
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sample
+Token main.Token.(
+Token main.Token.d_number: 1.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 1.0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.:
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: QuadraticBezier
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: // lyon_geom::flatten_cubic.rs
+    BEFORE: // copied from https://docs.rs/lyon_geom/latest/lyon_geom/
+Token main.Token.kw_fn
+Token main.Token.d_ident: flatten_cubic_bezier_with_t
+Token main.Token.<
+Token main.Token.d_ident: F
+Token main.Token.:
+Token main.Token.d_ident: FnMut
+Token main.Token.(
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.>
+Token main.Token.(
+Token main.Token.d_ident: curve
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: callback
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: F
+Token main.Token.,
+Token main.Token.)
+Token main.Token.{
+    BEFORE: // debug_assert!(tolerance >= S::EPSILON * S::EPSILON);
+Token main.Token.kw_let
+Token main.Token.d_ident: quadratics_tolerance
+Token main.Token.=
+Token main.Token.d_ident: tolerance
+Token main.Token.*
+Token main.Token.d_number: 0.2
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: flattening_tolerance
+Token main.Token.=
+Token main.Token.d_ident: tolerance
+Token main.Token.*
+Token main.Token.d_number: 0.8
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: num_quadratics
+Token main.Token.=
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: num_quadratics
+Token main.Token.(
+Token main.Token.d_ident: quadratics_tolerance
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: step
+Token main.Token.=
+Token main.Token.d_number: 1.0
+Token main.Token./
+Token main.Token.d_ident: num_quadratics
+Token main.Token.d_ident: as
+Token main.Token.d_ident: f32
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: n
+Token main.Token.=
+Token main.Token.d_ident: num_quadratics
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: t0
+Token main.Token.=
+Token main.Token.d_number: 0.0
+Token main.Token.;
+Token main.Token.kw_for
+Token main.Token.d_ident: _
+Token main.Token.d_ident: in
+Token main.Token.d_number: 0
+Token main.Token...
+Token main.Token.(
+Token main.Token.d_ident: n
+Token main.Token.-
+Token main.Token.d_number: 1
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: t1
+Token main.Token.=
+Token main.Token.d_ident: t0
+Token main.Token.+
+Token main.Token.d_ident: step
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: quadratic
+Token main.Token.=
+Token main.Token.d_ident: single_curve_approximation
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: split_range
+Token main.Token.(
+Token main.Token.d_ident: t0
+Token main.Token...
+Token main.Token.d_ident: t1
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: quadratic
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_ident: flattening_tolerance
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: point
+Token main.Token.,
+Token main.Token.d_ident: t_sub
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: t
+Token main.Token.=
+Token main.Token.d_ident: t0
+Token main.Token.+
+Token main.Token.d_ident: step
+Token main.Token.*
+Token main.Token.d_ident: t_sub
+Token main.Token.;
+Token main.Token.d_ident: callback
+Token main.Token.(
+Token main.Token.d_ident: point
+Token main.Token.,
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: t0
+Token main.Token.=
+Token main.Token.d_ident: t1
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // Do the last step manually to make sure we finish at t = 1.0 exactly.
+Token main.Token.kw_let
+Token main.Token.d_ident: quadratic
+Token main.Token.=
+Token main.Token.d_ident: single_curve_approximation
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: split_range
+Token main.Token.(
+Token main.Token.d_ident: t0
+Token main.Token...
+Token main.Token.d_number: 1.0
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: quadratic
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_ident: flattening_tolerance
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: point
+Token main.Token.,
+Token main.Token.d_ident: t_sub
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: t
+Token main.Token.=
+Token main.Token.d_ident: t0
+Token main.Token.+
+Token main.Token.d_ident: step
+Token main.Token.*
+Token main.Token.d_ident: t_sub
+Token main.Token.;
+Token main.Token.d_ident: callback
+Token main.Token.(
+Token main.Token.d_ident: point
+Token main.Token.,
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // from lyon_geom::quadratic_bezier.rs
+    BEFORE: // copied from https://docs.rs/lyon_geom/latest/lyon_geom/
+Token main.Token.kw_struct
+Token main.Token.d_ident: FlatteningParameters
+Token main.Token.{
+Token main.Token.d_ident: count
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: integral_from
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: integral_step
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: inv_integral_from
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: div_inv_integral_diff
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: is_point
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: FlatteningParameters
+Token main.Token.{
+    BEFORE: // https://raphlinus.github.io/graphics/curves/2019/12/23/flatten-quadbez.html
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: from_curve
+Token main.Token.(
+Token main.Token.d_ident: curve
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.,
+Token main.Token.d_ident: tolerance
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+    BEFORE: // Map the quadratic bézier segment to y = x^2 parabola.
+Token main.Token.kw_let
+Token main.Token.d_ident: from
+Token main.Token.=
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: ctrl
+Token main.Token.=
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: to
+Token main.Token.=
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: ddx
+Token main.Token.=
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: ctrl
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: from
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: to
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: ddy
+Token main.Token.=
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: ctrl
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: from
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: to
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: cross
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: to
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: from
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: ddy
+Token main.Token.-
+Token main.Token.(
+Token main.Token.d_ident: to
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: from
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: ddx
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: inv_cross
+Token main.Token.=
+Token main.Token.d_number: 1.0
+Token main.Token./
+Token main.Token.d_ident: cross
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: parabola_from
+Token main.Token.=
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: ctrl
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: from
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: ddx
+Token main.Token.+
+Token main.Token.(
+Token main.Token.d_ident: ctrl
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: from
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: ddy
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: inv_cross
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: parabola_to
+Token main.Token.=
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: to
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: ctrl
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: ddx
+Token main.Token.+
+Token main.Token.(
+Token main.Token.d_ident: to
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: ctrl
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: ddy
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: inv_cross
+Token main.Token.;
+    BEFORE: // Note, scale can be NaN, for example with straight lines. When it happens the NaN will
+    BEFORE: // propagate to other parameters. We catch it all by setting the iteration count to zero
+    BEFORE: // and leave the rest as garbage.
+Token main.Token.kw_let
+Token main.Token.d_ident: scale
+Token main.Token.=
+Token main.Token.d_ident: cross
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_ident: ddx
+Token main.Token..
+Token main.Token.d_ident: hypot
+Token main.Token.(
+Token main.Token.d_ident: ddy
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: parabola_to
+Token main.Token.-
+Token main.Token.d_ident: parabola_from
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: integral_from
+Token main.Token.=
+Token main.Token.d_ident: approx_parabola_integral
+Token main.Token.(
+Token main.Token.d_ident: parabola_from
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: integral_to
+Token main.Token.=
+Token main.Token.d_ident: approx_parabola_integral
+Token main.Token.(
+Token main.Token.d_ident: parabola_to
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: integral_diff
+Token main.Token.=
+Token main.Token.d_ident: integral_to
+Token main.Token.-
+Token main.Token.d_ident: integral_from
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: inv_integral_from
+Token main.Token.=
+Token main.Token.d_ident: approx_parabola_inv_integral
+Token main.Token.(
+Token main.Token.d_ident: integral_from
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: inv_integral_to
+Token main.Token.=
+Token main.Token.d_ident: approx_parabola_inv_integral
+Token main.Token.(
+Token main.Token.d_ident: integral_to
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: div_inv_integral_diff
+Token main.Token.=
+Token main.Token.d_number: 1.0
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_ident: inv_integral_to
+Token main.Token.-
+Token main.Token.d_ident: inv_integral_from
+Token main.Token.)
+Token main.Token.;
+    BEFORE: // the original author thinks it can be stored as integer if it's not generic.
+    BEFORE: // but if so, we have to handle the edge case of the integral being infinite.
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: count
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_number: 0.5
+Token main.Token.*
+Token main.Token.d_ident: integral_diff
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: scale
+Token main.Token./
+Token main.Token.d_ident: tolerance
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: sqrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: ceil
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: is_point
+Token main.Token.=
+Token main.Token.d_ident: false
+Token main.Token.;
+    BEFORE: // If count is NaN the curve can be approximated by a single straight line or a point.
+Token main.Token.kw_if
+Token main.Token.!
+Token main.Token.d_ident: count
+Token main.Token..
+Token main.Token.d_ident: is_finite
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: count
+Token main.Token.=
+Token main.Token.d_number: 0.0
+Token main.Token.;
+Token main.Token.d_ident: is_point
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: to
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: from
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: hypot
+Token main.Token.(
+Token main.Token.d_ident: to
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: from
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_ident: tolerance
+Token main.Token.*
+Token main.Token.d_ident: tolerance
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: integral_step
+Token main.Token.=
+Token main.Token.d_ident: integral_diff
+Token main.Token./
+Token main.Token.d_ident: count
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: count
+Token main.Token.,
+Token main.Token.d_ident: integral_from
+Token main.Token.,
+Token main.Token.d_ident: integral_step
+Token main.Token.,
+Token main.Token.d_ident: inv_integral_from
+Token main.Token.,
+Token main.Token.d_ident: div_inv_integral_diff
+Token main.Token.,
+Token main.Token.d_ident: is_point
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: t_at_iteration
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: iteration
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: f32
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: u
+Token main.Token.=
+Token main.Token.d_ident: approx_parabola_inv_integral
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: integral_from
+Token main.Token.+
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: integral_step
+Token main.Token.*
+Token main.Token.d_ident: iteration
+Token main.Token.)
+Token main.Token.;
+Token main.Token.(
+Token main.Token.d_ident: u
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: inv_integral_from
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: div_inv_integral_diff
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Compute an approximation to integral (1 + 4x^2) ^ -0.25 dx used in the flattening code.
+Token main.Token.kw_fn
+Token main.Token.d_ident: approx_parabola_integral
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: f32
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: d
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.=
+Token main.Token.d_number: 0.67
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: quarter
+Token main.Token.=
+Token main.Token.d_number: 0.25
+Token main.Token.;
+Token main.Token.d_ident: x
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_number: 1.0
+Token main.Token.-
+Token main.Token.d_ident: d
+Token main.Token.+
+Token main.Token.(
+Token main.Token.d_ident: d
+Token main.Token..
+Token main.Token.d_ident: powi
+Token main.Token.(
+Token main.Token.d_number: 4
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: quarter
+Token main.Token.*
+Token main.Token.d_ident: x
+Token main.Token.*
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: sqrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: sqrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// Approximate the inverse of the function above.
+Token main.Token.kw_fn
+Token main.Token.d_ident: approx_parabola_inv_integral
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: f32
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: b
+Token main.Token.=
+Token main.Token.d_number: 0.39
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: quarter
+Token main.Token.=
+Token main.Token.d_number: 0.25
+Token main.Token.;
+Token main.Token.d_ident: x
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_number: 1.0
+Token main.Token.-
+Token main.Token.d_ident: b
+Token main.Token.+
+Token main.Token.(
+Token main.Token.d_ident: b
+Token main.Token.*
+Token main.Token.d_ident: b
+Token main.Token.+
+Token main.Token.d_ident: quarter
+Token main.Token.*
+Token main.Token.d_ident: x
+Token main.Token.*
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: sqrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: single_curve_approximation
+Token main.Token.(
+Token main.Token.d_ident: curve
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: c1_x
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.*
+Token main.Token.d_number: 3.0
+Token main.Token.-
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 0.5
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: c1_y
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.*
+Token main.Token.d_number: 3.0
+Token main.Token.-
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 0.5
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: c2_x
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.*
+Token main.Token.d_number: 3.0
+Token main.Token.-
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 0.5
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: c2_y
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.*
+Token main.Token.d_number: 3.0
+Token main.Token.-
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 0.5
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: c
+Token main.Token.=
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.(
+Token main.Token.d_ident: c1_x
+Token main.Token.+
+Token main.Token.d_ident: c2_x
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 0.5
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.(
+Token main.Token.d_ident: c1_y
+Token main.Token.+
+Token main.Token.d_ident: c2_y
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 0.5
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: c
+Token main.Token.,
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 3
+Token main.Token.]
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: closed
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: quadratic_for_each_local_extremum
+Token main.Token.<
+Token main.Token.d_ident: F
+Token main.Token.:
+Token main.Token.d_ident: FnMut
+Token main.Token.(
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.>
+Token main.Token.(
+Token main.Token.d_ident: p0
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: p1
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: p2
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: cb
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: F
+Token main.Token.)
+Token main.Token.{
+    BEFORE: // A quadratic Bézier curve can be derived by a linear function:
+    BEFORE: // p(t) = p0 + t(p1 - p0) + t^2(p2 - 2p1 + p0)
+    BEFORE: // The derivative is:
+    BEFORE: // p'(t) = (p1 - p0) + 2(p2 - 2p1 + p0)t or:
+    BEFORE: // f(x) = a* x + b
+Token main.Token.kw_let
+Token main.Token.d_ident: a
+Token main.Token.=
+Token main.Token.d_ident: p2
+Token main.Token.-
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: p1
+Token main.Token.+
+Token main.Token.d_ident: p0
+Token main.Token.;
+    BEFORE: // let b = p1 - p0;
+    BEFORE: // no need to check for zero, since we're only interested in local extrema
+Token main.Token.kw_if
+Token main.Token.d_ident: a
+Token main.Token.==
+Token main.Token.d_number: 0.0
+Token main.Token.{
+Token main.Token.d_ident: return
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: t
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: p0
+Token main.Token.-
+Token main.Token.d_ident: p1
+Token main.Token.)
+Token main.Token./
+Token main.Token.d_ident: a
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: t
+Token main.Token.>
+Token main.Token.d_number: 0.0
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: t
+Token main.Token.<
+Token main.Token.d_number: 1.0
+Token main.Token.{
+Token main.Token.d_ident: cb
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: cubic_for_each_local_extremum
+Token main.Token.<
+Token main.Token.d_ident: F
+Token main.Token.:
+Token main.Token.d_ident: FnMut
+Token main.Token.(
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.>
+Token main.Token.(
+Token main.Token.d_ident: p0
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: p1
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: p2
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: p3
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: cb
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: F
+Token main.Token.)
+Token main.Token.{
+    BEFORE: // See www.faculty.idc.ac.il/arik/quality/appendixa.html for an explanation
+    BEFORE: // A cubic Bézier curve can be derivated by the following equation:
+    BEFORE: // B'(t) = 3(1-t)^2(p1-p0) + 6(1-t)t(p2-p1) + 3t^2(p3-p2) or
+    BEFORE: // f(x) = a * x² + b * x + c
+Token main.Token.kw_let
+Token main.Token.d_ident: a
+Token main.Token.=
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p3
+Token main.Token.+
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p1
+Token main.Token.-
+Token main.Token.d_ident: p2
+Token main.Token.)
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: b
+Token main.Token.=
+Token main.Token.d_number: 6.0
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p2
+Token main.Token.-
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: p1
+Token main.Token.+
+Token main.Token.d_ident: p0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: c
+Token main.Token.=
+Token main.Token.d_number: 3.0
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: p1
+Token main.Token.-
+Token main.Token.d_ident: p0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: in_range
+Token main.Token.=
+Token main.Token.|
+Token main.Token.d_ident: t
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.|
+Token main.Token.d_ident: t
+Token main.Token.<=
+Token main.Token.d_number: 1.0
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: t
+Token main.Token.>=
+Token main.Token.d_number: 0.0
+Token main.Token.;
+    BEFORE: // linear situation
+Token main.Token.kw_if
+Token main.Token.d_ident: a
+Token main.Token.==
+Token main.Token.d_number: 0.0
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: b
+Token main.Token.!
+Token main.Token.=
+Token main.Token.d_number: 0.0
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: t
+Token main.Token.=
+Token main.Token.-
+Token main.Token.d_ident: c
+Token main.Token./
+Token main.Token.d_ident: b
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: in_range
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: cb
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.d_ident: return
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: discr
+Token main.Token.=
+Token main.Token.d_ident: b
+Token main.Token.*
+Token main.Token.d_ident: b
+Token main.Token.-
+Token main.Token.d_number: 4.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.*
+Token main.Token.d_ident: c
+Token main.Token.;
+    BEFORE: // no Real solution
+Token main.Token.kw_if
+Token main.Token.d_ident: discr
+Token main.Token.<
+Token main.Token.d_number: 0.0
+Token main.Token.{
+Token main.Token.d_ident: return
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // one Real solution
+Token main.Token.kw_if
+Token main.Token.d_ident: discr
+Token main.Token.==
+Token main.Token.d_number: 0.0
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: t
+Token main.Token.=
+Token main.Token.-
+Token main.Token.d_ident: b
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: in_range
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: cb
+Token main.Token.(
+Token main.Token.d_ident: t
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: return
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // two Real solutions
+Token main.Token.kw_let
+Token main.Token.d_ident: discr
+Token main.Token.=
+Token main.Token.d_ident: discr
+Token main.Token..
+Token main.Token.d_ident: sqrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: t1
+Token main.Token.=
+Token main.Token.(
+Token main.Token.-
+Token main.Token.d_ident: b
+Token main.Token.-
+Token main.Token.d_ident: discr
+Token main.Token.)
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: t2
+Token main.Token.=
+Token main.Token.(
+Token main.Token.-
+Token main.Token.d_ident: b
+Token main.Token.+
+Token main.Token.d_ident: discr
+Token main.Token.)
+Token main.Token./
+Token main.Token.(
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: a
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: in_range
+Token main.Token.(
+Token main.Token.d_ident: t1
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: cb
+Token main.Token.(
+Token main.Token.d_ident: t1
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: in_range
+Token main.Token.(
+Token main.Token.d_ident: t2
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: cb
+Token main.Token.(
+Token main.Token.d_ident: t2
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: cfg
+Token main.Token.(
+Token main.Token.d_ident: test
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_mod
+Token main.Token.d_ident: tests
+Token main.Token.{
+Token main.Token.kw_use
+Token main.Token.d_ident: super
+Token main.Token.::
+Token main.Token.*
+Token main.Token.;
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: test
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: test_quadratic_bounding_box
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_number: 170.0
+Token main.Token.}
+Token main.Token.,
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_number: 10.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_number: 10.0
+Token main.Token.}
+Token main.Token.,
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_number: 180.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_number: 30.0
+Token main.Token.}
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: bbox
+Token main.Token.=
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: logical_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 72.96
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 27.78
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 180.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.1
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 26
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_number: 170.0
+Token main.Token.}
+Token main.Token.,
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_number: 180.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_number: 30.0
+Token main.Token.}
+Token main.Token.,
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_number: 10.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_number: 10.0
+Token main.Token.}
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: bbox
+Token main.Token.=
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: logical_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 10.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 10.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 130.42
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.1
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 25
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: test
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: test_quadratic_different_tolerance
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_number: 170.0
+Token main.Token.}
+Token main.Token.,
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_number: 180.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_number: 30.0
+Token main.Token.}
+Token main.Token.,
+Token main.Token.d_ident: Pos2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_number: 10.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_number: 10.0
+Token main.Token.}
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 1.0
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 9
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.1
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 25
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.01
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 77
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.001
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 240
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: test
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: test_cubic_bounding_box
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 10.0
+Token main.Token.,
+Token main.Token.d_number: 10.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 180.0
+Token main.Token.,
+Token main.Token.d_number: 30.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 270.0
+Token main.Token.,
+Token main.Token.d_number: 210.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: bbox
+Token main.Token.=
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: logical_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_number: 10.0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_number: 10.0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_number: 270.0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_number: 210.0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 10.0
+Token main.Token.,
+Token main.Token.d_number: 10.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 270.0
+Token main.Token.,
+Token main.Token.d_number: 210.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 180.0
+Token main.Token.,
+Token main.Token.d_number: 30.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: bbox
+Token main.Token.=
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: logical_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_number: 10.0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_number: 10.0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 206.50
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 148.48
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 10.0
+Token main.Token.,
+Token main.Token.d_number: 10.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 270.0
+Token main.Token.,
+Token main.Token.d_number: 210.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 180.0
+Token main.Token.,
+Token main.Token.d_number: 30.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: bbox
+Token main.Token.=
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: logical_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 86.71
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 30.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_number: 199.27
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: bbox
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: abs
+Token main.Token.(
+Token main.Token.)
+Token main.Token.<
+Token main.Token.d_number: 0.01
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: test
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: test_cubic_different_tolerance_flattening
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_number: 0.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 100.0
+Token main.Token.,
+Token main.Token.d_number: 0.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 100.0
+Token main.Token.,
+Token main.Token.d_number: 100.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 100.0
+Token main.Token.,
+Token main.Token.d_number: 200.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 1.0
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 10
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.5
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 13
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.1
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 28
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.01
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 83
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.001
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 248
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: test
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: test_cubic_different_shape_flattening
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 90.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 30.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 210.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 170.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.01
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 117
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 90.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 90.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 170.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 170.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.01
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 91
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 90.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 150.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 170.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.01
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 75
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 90.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 230.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 170.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.01
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 100
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 90.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 210.0
+Token main.Token.,
+Token main.Token.d_number: 70.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 170.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.01
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 71
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 90.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 110.0
+Token main.Token.,
+Token main.Token.d_number: 170.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 150.0
+Token main.Token.,
+Token main.Token.d_number: 50.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 170.0
+Token main.Token.,
+Token main.Token.d_number: 110.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.01
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 88
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: test
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: test_quadratic_flattening
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: curve
+Token main.Token.=
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_number: 0.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 80.0
+Token main.Token.,
+Token main.Token.d_number: 200.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 100.0
+Token main.Token.,
+Token main.Token.d_number: 30.0
+Token main.Token.)
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 1.0
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 9
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.5
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 11
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.1
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 24
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.01
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 72
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: result
+Token main.Token.=
+Token main.Token.d_ident: vec
+Token main.Token.!
+Token main.Token.[
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.]
+Token main.Token.;
+    AFTER: //add the start point
+Token main.Token.d_ident: curve
+Token main.Token..
+Token main.Token.d_ident: for_each_flattened_with_t
+Token main.Token.(
+Token main.Token.d_number: 0.001
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.|
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: _t
+Token main.Token.|
+Token main.Token.{
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: result
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_number: 223
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}

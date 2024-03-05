@@ -1547,6 +1547,64 @@ fn translateRustToZig(writer: anytype, structs: Structs, toks: Toks, i: *usize) 
     }
 }
 
+fn compareFiles(allocator: Allocator, sub_path: []const u8, sub_path2: []const u8) !bool {
+    const f = try std.fs.cwd().openFile(sub_path, .{});
+    defer f.close();
+
+    const data = try f.readToEndAlloc(allocator, 2 * 1024 * 1024);
+    defer allocator.free(data);
+
+    const f2 = try std.fs.cwd().openFile(sub_path2, .{});
+    defer f2.close();
+
+    const data2 = try f2.readToEndAlloc(allocator, 2 * 1024 * 1024);
+    defer allocator.free(data2);
+
+    return std.mem.eql(u8, data, data2);
+}
+
+test "expected tokenization" {
+    const allocator = std.testing.allocator;
+
+    const input_file = try std.fs.cwd().openFile("test-data/epaint-bezier.rs", .{});
+    defer input_file.close();
+
+    const data = try input_file.readToEndAlloc(allocator, 2 * 1024 * 1024);
+    defer allocator.free(data);
+
+    var toks = try tokenize(data, allocator);
+    defer toks.deinit(allocator);
+
+    try std.fs.cwd().makePath("tmp");
+    const expected_tokenized = "test-data/epaint-bezier.tokenized";
+    const actual_tokenized = "tmp/epaint-bezier.tokenized";
+
+    // Write tokens with associated comments to file.
+    {
+        const output_file = try std.fs.cwd().createFile(actual_tokenized, .{});
+        defer output_file.close();
+        const writer = output_file.writer();
+        for (toks.tokens, toks.token_data, 0..) |t, token_data, i| {
+            if (toks.comments_before_token[i]) |comments| {
+                for (comments.from..comments.to_excl) |j| {
+                    try writer.print("    BEFORE: {s}", .{toks.comments[j]});
+                }
+            }
+
+            if (token_data) |d| {
+                try writer.print("Token {}: {s}\n", .{ t, d });
+            } else {
+                try writer.print("Token {}\n", .{t});
+            }
+
+            if (toks.comment_after_token[i]) |j| {
+                try writer.print("    AFTER: {s}", .{toks.comments[j]});
+            }
+        }
+    }
+    try std.testing.expect(try compareFiles(allocator, expected_tokenized, actual_tokenized));
+}
+
 pub fn main() !void {
     const file = try std.fs.cwd().openFile("sample.rs", .{});
     defer file.close();
