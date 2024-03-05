@@ -1603,6 +1603,32 @@ test "expected tokenization" {
         }
     }
     try std.testing.expect(try compareFiles(allocator, expected_tokenized, actual_tokenized));
+
+    const structs = try readStructsAndTheirFields(toks, allocator);
+    defer structs.deinit(allocator);
+
+    const expected_translated = "test-data/epaint-bezier.translated";
+    const actual_translated = "tmp/epaint-bezier.translated";
+
+    // Write tokens with associated comments to file.
+    {
+        const output_file = try std.fs.cwd().createFile(actual_translated, .{});
+        defer output_file.close();
+        const writer = output_file.writer();
+        var i: usize = 0;
+        translateRustToZig(
+            writer,
+            structs,
+            toks,
+            &i,
+        ) catch |e| {
+            std.debug.print("Chyba: {}\n", .{e});
+            std.debug.print("Unknown construct while translating {any}\n", .{
+                if (toks.tokens[i..].len < 20) toks.tokens[i..] else toks.tokens[i..][0..20],
+            });
+        };
+    }
+    try std.testing.expect(try compareFiles(allocator, expected_translated, actual_translated));
 }
 
 pub fn main() !void {
