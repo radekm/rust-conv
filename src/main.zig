@@ -1047,7 +1047,7 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             // Expected semicolon and length a closing bracket weren't found.
             return ParserError.Other;
         }
-    }
+    } else return ParserError.Other;
 }
 
 fn translateStruct(
