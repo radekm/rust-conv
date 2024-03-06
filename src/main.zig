@@ -1356,6 +1356,13 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
                 try translateBody(writer, toks, i, self_type);
                 try translate(writer, toks, i, .@"]");
             }
+        } else if (toks.match(i.*, "fn name")) |_| {
+            // Nested function are not very common.
+            // For now we don't translate them.
+            const function_body_start = i.* + try toks.bracketedCountUntil(i.*, .@"{");
+            const function_body_end = function_body_start + try toks.bracketedCountUntil(function_body_start, .@"}");
+            try writeCommentWithTokens(writer, toks, i.*, function_body_end, "Ziffigy: ");
+            i.* = function_body_end;
         } else if (toks.match(i.*, "name {")) |m_struct| {
             // Struct construction `identifier {` may clash with the end of control
             // expression in if, for, while or match (eg. `if a + b {`).
