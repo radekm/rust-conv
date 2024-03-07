@@ -517,6 +517,7 @@ const Toks = struct {
         }
     }
 
+    // TODO: Returned count should not include stop token.
     fn genericBracketedCountUntilAny(
         self: Toks,
         i: usize,
@@ -577,6 +578,59 @@ const Toks = struct {
 
     fn bracketedCountWithAngleBracketsUntil(self: Toks, i: usize, stop: Token) ParserError!usize {
         return bracketedCountWithAngleBracketsUntilAny(self, i, &.{stop});
+    }
+
+    /// Parses string with stop tokens into a slice of stop tokens.
+    /// String may contain operators and keywords. Additionally it may contain
+    /// `ident` identifier which is translated to `.d_ident` token.
+    fn parseStop(comptime stop: []const u8) []const Token {
+        comptime var n = 0;
+        comptime var tokens = [1]Token{undefined} ** stop.len;
+        comptime var data = stop;
+        while (data.len > 0) {
+            if (data[0] == ' ') {
+                data = data[1..];
+            } else if (data[0] == '\n') {
+                @compileError("Stop must not contain new lines");
+            } else if (getOperator(data)) |operator| {
+                data = data[operator.str.len..];
+                tokens[n] = operator.token;
+                n += 1;
+            } else if (getIdentifier(data)) |identifier| {
+                data = data[identifier.len..];
+                if (isIdentifierKeyword(identifier)) |keyword| {
+                    tokens[n] = keyword;
+                    n += 1;
+                } else if (std.mem.eql(u8, identifier, "ident")) {
+                    tokens[n] = .d_ident;
+                } else {
+                    @compileError("Unrecognized identifier: " ++ identifier);
+                }
+            } else {
+                @compileError("Unrecognized pattern part: " ++ data);
+            }
+        }
+        return tokens[0..n];
+    }
+
+    /// Determines a length of a type starting at `i`-th token and ending before the first stop token
+    /// which is not enclosed in brackets. Following brackets are recognized:
+    /// `<` and `>`, `[` and `]`, `(` and `)`, `{` and `}`.
+    ///
+    /// `stop` is a string with stop tokens. We parse this string during comptime by `parseStop`.
+    /// Writing stop tokens in a single string is more ergonomic than writing a slice of tokens.
+    fn typeLen(self: Toks, i: usize, comptime stop: []const u8) ParserError!usize {
+        const stop_tokens = comptime parseStop(stop);
+        return try self.bracketedCountWithAngleBracketsUntilAny(i, stop_tokens) - 1;
+    }
+
+    /// This is similar to `typeLen`. The only difference is that `typeLen` recognizes angle
+    /// brackets `<` and `>` whereas `expressionLen` does not.
+    /// The reason is that `<` in expression may mean lower than operator
+    /// and `>` in expression may mean greater than operator. So not every `<` is followed by `>`.
+    fn expressionLen(self: Toks, i: usize, comptime stop: []const u8) ParserError!usize {
+        const stop_tokens = comptime parseStop(stop);
+        return try self.bracketedCountUntilAny(i, stop_tokens) - 1;
     }
 
     /// Restricts `self` to the first `token_count` tokens.
@@ -1685,13 +1739,26 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
 fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
     const impl_from = i.*;
 
+    // FIXME: This won't work for generic types which consist of multiple tokens.
     var self_type_name: []const u8 = undefined;
     if (toks.startsWithAndGetData(i.*, &.{ .kw_impl, .d_ident, .@"{" })) |ld| {
         self_type_name = ld.data;
         i.* += ld.len;
-    } else if (toks.match(i.*, "impl trait_name < p > for type_name {")) |m| {
-        self_type_name = m.type_name;
+    } else if (toks.match(i.*, "impl")) |m| {
         i.* += m.len;
+        const len = try toks.typeLen(i.*, "for {");
+        switch (toks.tokens[i.* + len]) {
+            .kw_for => {
+                // It's a trait implementation. Let's extract self type name.
+                i.* += len + 1;
+                if (toks.match(i.*, "name {")) |m_type| {
+                    self_type_name = m_type.name;
+                    i.* += m_type.len;
+                } else return ParserError.Other;
+            },
+            .@"{" => @panic("Inherent implementatins like this are not supported"),
+            else => @panic("Absurd"),
+        }
     } else return false;
 
     const impl_to_excl = i.* - 1;
