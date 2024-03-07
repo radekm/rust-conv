@@ -1088,18 +1088,33 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
     } else if (toks.startsWith(i.*, &.{.@"["})) |len| {
         i.* += len;
 
-        // In Rust array type is `[T; n]` but in Zig it's `[n]T`.
-        // So we use buffer `buf` to delay writing `T` after `n`.
-        var buf: [500]u8 = undefined;
-        var fbs = std.io.fixedBufferStream(&buf);
-        try translateType(fbs.writer(), toks, i, self_type);
+        // This could be slice or array.
+        switch (toks.tokens[i.* + try toks.typeLen(i.*, "; ]")]) {
+            .@";" => {
+                // In Rust array type is `[T; n]` but in Zig it's `[n]T`.
+                // So we use buffer `buf` to delay writing `T` after `n`.
+                var buf: [500]u8 = undefined;
+                var fbs = std.io.fixedBufferStream(&buf);
+                try translateType(fbs.writer(), toks, i, self_type);
 
-        if (toks.match(i.*, "; size:num ]")) |m| {
-            try writer.print("[{s}]{s}", .{ m.size, fbs.getWritten() });
-            i.* += m.len;
-        } else {
-            // Expected semicolon and length a closing bracket weren't found.
-            return ParserError.Other;
+                if (toks.match(i.*, "; size:num ]")) |m| {
+                    try writer.print("[{s}]{s}", .{ m.size, fbs.getWritten() });
+                    i.* += m.len;
+                } else {
+                    // Expected semicolon and length a closing bracket weren't found.
+                    return ParserError.Other;
+                }
+            },
+            .@"]" => {
+                // Slice.
+                _ = try writer.write("[]");
+                try translateType(writer, toks, i, self_type);
+                if (toks.match(i.*, "]")) |m|
+                    i.* += m.len
+                else
+                    return ParserError.Other;
+            },
+            else => @panic("Absurd"),
         }
     } else return ParserError.Other;
 }
