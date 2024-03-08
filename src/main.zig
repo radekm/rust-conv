@@ -1062,7 +1062,11 @@ fn translateOptional(writer: anytype, toks: Toks, i: *usize, token: Token) !void
 // TODO: Translate `self_type` everywhere (eg. in generics) and not only when type is simple identifier.
 // TODO: Consider generalizing `translateType`.
 fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8) !void {
-    if (toks.matchEql(i.*, "impl trait_name < type_name >", .{ .trait_name = "Into" })) |m| {
+    if (toks.match(i.*, "name ::")) |m| {
+        try writer.print("{s}.", .{m.name});
+        i.* += m.len;
+        try translateType(writer, toks, i, self_type);
+    } else if (toks.matchEql(i.*, "impl trait_name < type_name >", .{ .trait_name = "Into" })) |m| {
         try writer.print("{s}", .{m.type_name});
         i.* += m.len;
     } else if (toks.matchEql(i.*, "impl trait_name", .{ .trait_name = "ToString" })) |m| {
