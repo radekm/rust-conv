@@ -10,6 +10,7 @@ const Token = enum {
     kw_use,
     kw_struct,
     kw_enum,
+    kw_const,
     kw_fn,
     kw_where,
     kw_trait,
@@ -1810,6 +1811,18 @@ fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
         } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
             i.* += len;
             i.* += try toks.bracketedCountUntil(i.*, .@";");
+        } else if (toks.match(i.*, "const name :")) |m| {
+            try writer.print("const {s} : ", .{m.name});
+            i.* += m.len;
+            try translateType(writer, toks, i, self_type_name);
+
+            try translate(writer, toks, i, .@"=");
+
+            const right_side_len = try toks.expressionLen(i.*, ";");
+            try translateBody(writer, toks.restrict(i.* + right_side_len), i, self_type_name);
+
+            try translate(writer, toks, i, .@";");
+            _ = try writer.write("\n");
         } else if (try translateFn(writer, toks, i, public, self_type_name)) {} else {
             break;
         }
