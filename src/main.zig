@@ -1647,7 +1647,12 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
 }
 
 fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: ?[]const u8) !bool {
-    if (toks.startsWithAndGetData(i.*, &.{ .kw_fn, .d_ident })) |ld| {
+    if (toks.startsWithAnyAndGetData(i.*, &.{
+        &.{ .kw_fn, .d_ident },
+        // Functions which can be evaluated at compile time.
+        // These in Zig don't need `const` or any other special flag.
+        &.{ .kw_const, .kw_fn, .d_ident },
+    })) |ld| {
         const fn_name = ld.data;
         if (public)
             try writer.print("pub fn ", .{})
