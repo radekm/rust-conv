@@ -520,7 +520,7 @@ const Toks = struct {
         }
     }
 
-    // TODO: Returned count should not include stop token.
+    // Returned token count does not include stop token.
     fn genericBracketedCountUntilAny(
         self: Toks,
         i: usize,
@@ -537,7 +537,7 @@ const Toks = struct {
             // Because `stop` can contain brackets following if statement must be before switch.
             if (open == 0) {
                 if (std.mem.indexOfScalar(Token, stop, t)) |_| {
-                    return count + 1;
+                    return count;
                 }
             }
 
@@ -594,12 +594,12 @@ const Toks = struct {
     /// Writing stop tokens in a single string is more ergonomic than writing a slice of tokens.
     fn typeLen(self: Toks, i: usize, comptime stop: []const u8) ParserError!usize {
         const stop_tokens = comptime parseStop(stop);
-        return try self.genericBracketedCountUntilAny(
+        return self.genericBracketedCountUntilAny(
             i,
             &.{ .@"(", .@"[", .@"{", .@"<" },
             &.{ .@")", .@"]", .@"}", .@">" },
             stop_tokens,
-        ) - 1;
+        );
     }
 
     /// This is similar to `typeLen`. The only difference is that `typeLen` recognizes angle
@@ -608,12 +608,12 @@ const Toks = struct {
     /// and `>` in expression may mean greater than operator. So not every `<` is followed by `>`.
     fn expressionLen(self: Toks, i: usize, comptime stop: []const u8) ParserError!usize {
         const stop_tokens = comptime parseStop(stop);
-        return try self.genericBracketedCountUntilAny(
+        return self.genericBracketedCountUntilAny(
             i,
             &.{ .@"(", .@"[", .@"{" },
             &.{ .@")", .@"]", .@"}" },
             stop_tokens,
-        ) - 1;
+        );
     }
 
     /// Restricts `self` to the first `token_count` tokens.
