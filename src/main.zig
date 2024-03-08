@@ -1065,6 +1065,12 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
     if (toks.matchEql(i.*, "impl trait_name < type_name >", .{ .trait_name = "Into" })) |m| {
         try writer.print("{s}", .{m.type_name});
         i.* += m.len;
+    } else if (toks.matchEql(i.*, "impl trait_name", .{ .trait_name = "ToString" })) |m| {
+        try writer.print("[]const u8", .{});
+        i.* += m.len;
+    } else if (toks.matchEql(i.*, "arc < type_name >", .{ .arc = "Arc" })) |m| {
+        try writer.print("{s}", .{m.type_name});
+        i.* += m.len;
     } else if (toks.matchEql(i.*, "option < type_name >", .{ .option = "Option" })) |m| {
         try writer.print("?{s}", .{m.type_name});
         i.* += m.len;
