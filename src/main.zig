@@ -15,6 +15,7 @@ const Token = enum {
     kw_where,
     kw_trait,
     kw_impl,
+    kw_while,
     kw_for,
     kw_if,
     kw_else,
@@ -1516,6 +1517,24 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             i.* += len_before;
 
             try translate(writer, toks, i, .@"=");
+        } else if (toks.match(i.*, "while")) |m| {
+            _ = try writer.write("while (");
+            i.* += m.len;
+
+            // Translate expression after `while` to the first `{`.
+            // Note it may happen that `{` belongs to struct construction and not to `while` body.
+            const len_before_brace = try toks.expressionLen(i.*, "{");
+            try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
+            try writer.print(") ", .{});
+
+            try translate(writer, toks, i, .@"{");
+            _ = try writer.write("\n");
+
+            try translateBody(writer, toks, i, self_type);
+
+            _ = try writer.write("\n");
+            try translate(writer, toks, i, .@"}");
+            _ = try writer.write("\n");
         } else if (toks.match(i.*, "for elem in")) |m| {
             _ = try writer.write("for (");
             i.* += m.len;
