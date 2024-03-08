@@ -553,17 +553,6 @@ const Toks = struct {
         return ParserError.StopTokenNotFound;
     }
 
-    /// Counts number of tokens to the first `stop` token (including the stop token).
-    /// Stop tokens inside brackets are ignored.
-    fn bracketedCountWithAngleBracketsUntilAny(self: Toks, i: usize, stop: []const Token) ParserError!usize {
-        return self.genericBracketedCountUntilAny(
-            i,
-            &.{ .@"(", .@"[", .@"{", .@"<" },
-            &.{ .@")", .@"]", .@"}", .@">" },
-            stop,
-        );
-    }
-
     /// Parses string with stop tokens into a slice of stop tokens.
     /// String may contain operators and keywords. Additionally it may contain
     /// `ident` identifier which is translated to `.d_ident` token.
@@ -605,7 +594,12 @@ const Toks = struct {
     /// Writing stop tokens in a single string is more ergonomic than writing a slice of tokens.
     fn typeLen(self: Toks, i: usize, comptime stop: []const u8) ParserError!usize {
         const stop_tokens = comptime parseStop(stop);
-        return try self.bracketedCountWithAngleBracketsUntilAny(i, stop_tokens) - 1;
+        return try self.genericBracketedCountUntilAny(
+            i,
+            &.{ .@"(", .@"[", .@"{", .@"<" },
+            &.{ .@")", .@"]", .@"}", .@">" },
+            stop_tokens,
+        ) - 1;
     }
 
     /// This is similar to `typeLen`. The only difference is that `typeLen` recognizes angle
@@ -1203,7 +1197,7 @@ fn translateEnum(
             const tuple_body_start = i.*;
 
             // We need to know whether tuple contains 0, 1 or more fields.
-            const first_field_len = try toks.bracketedCountWithAngleBracketsUntilAny(i.*, &.{ .@",", .@")" }) - 1;
+            const first_field_len = try toks.typeLen(i.*, ", )");
             if (first_field_len == 0) {
                 // First tuple field is empty.
                 // So we assume opening `(` is immediately followed by closing `)`.
@@ -1222,7 +1216,7 @@ fn translateEnum(
                 if (toks.tokens[i.* + first_field_len] == .@",") {
                     // Tuple may contain second field because there's comma after first field.
                     i.* += first_field_len + 1; // Skip first field and comma.
-                    const second_field_len = try toks.bracketedCountWithAngleBracketsUntilAny(i.*, &.{ .@",", .@")" }) - 1;
+                    const second_field_len = try toks.typeLen(i.*, ", )");
 
                     if (second_field_len > 0) {
                         i.* = tuple_body_start;
