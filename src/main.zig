@@ -555,17 +555,6 @@ const Toks = struct {
 
     /// Counts number of tokens to the first `stop` token (including the stop token).
     /// Stop tokens inside brackets are ignored.
-    fn bracketedCountUntilAny(self: Toks, i: usize, stop: []const Token) ParserError!usize {
-        return self.genericBracketedCountUntilAny(
-            i,
-            &.{ .@"(", .@"[", .@"{" },
-            &.{ .@")", .@"]", .@"}" },
-            stop,
-        );
-    }
-
-    /// Counts number of tokens to the first `stop` token (including the stop token).
-    /// Stop tokens inside brackets are ignored.
     fn bracketedCountWithAngleBracketsUntilAny(self: Toks, i: usize, stop: []const Token) ParserError!usize {
         return self.genericBracketedCountUntilAny(
             i,
@@ -625,7 +614,12 @@ const Toks = struct {
     /// and `>` in expression may mean greater than operator. So not every `<` is followed by `>`.
     fn expressionLen(self: Toks, i: usize, comptime stop: []const u8) ParserError!usize {
         const stop_tokens = comptime parseStop(stop);
-        return try self.bracketedCountUntilAny(i, stop_tokens) - 1;
+        return try self.genericBracketedCountUntilAny(
+            i,
+            &.{ .@"(", .@"[", .@"{" },
+            &.{ .@")", .@"]", .@"}" },
+            stop_tokens,
+        ) - 1;
     }
 
     /// Restricts `self` to the first `token_count` tokens.
@@ -942,7 +936,7 @@ fn readStructsAndTheirFieldsInModule(
                     s.structs.items[s.structs.items.len - 1].fields_to_excl += 1;
 
                     // Skip type.
-                    i.* += try toks.bracketedCountUntilAny(i.*, &.{ .@",", .@"}" }) - 1;
+                    i.* += try toks.expressionLen(i.*, ", }");
 
                     if (i.* < toks.tokens.len and toks.tokens[i.*] == .@",") {
                         i.* += 1;
@@ -1436,7 +1430,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             // If there's `;` before closing brace `]` then
             // we need to translate array construction `[expression with value; array size]`.
             // Otherwise we're indexing.
-            const len_before = try toks.bracketedCountUntilAny(i.*, &.{ .@";", .@"]" }) - 1;
+            const len_before = try toks.expressionLen(i.*, "; ]");
             if (toks.tokens[i.* + len_before] == .@";") {
                 // Array construction.
                 try translateBody(writer, toks.restrict(i.* + len_before), i, self_type);
@@ -1483,7 +1477,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
                     try writer.print(".{s} = ", .{m_field.name});
                     i.* += m_field.len;
 
-                    const len_before = try toks.bracketedCountUntilAny(i.*, &.{ .@",", .@"}" }) - 1;
+                    const len_before = try toks.expressionLen(i.*, ", }");
                     try translateBody(writer, toks.restrict(i.* + len_before), i, self_type);
 
                     // Translate comma (if any).
@@ -1667,7 +1661,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             // Translate each case.
             while (i.* < toks.tokens.len) {
                 // Translate pattern.
-                const pattern_len = try toks.bracketedCountUntilAny(i.*, &.{ .@"=>", .@"}" }) - 1;
+                const pattern_len = try toks.expressionLen(i.*, "=> }");
                 if (pattern_len == 0) break; // No more patterns.
                 _ = try writer.write("/* Ziggify: ");
                 try writeTokens(writer, toks, i.*, i.* + pattern_len);
@@ -1686,7 +1680,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
                     try translate(writer, toks, i, .@"}");
                 } else {
                     // Code for current case is terminated by `,` or `}` ending the body of `match`.
-                    const case_len = try toks.bracketedCountUntilAny(i.*, &.{ .@",", .@"}" }) - 1;
+                    const case_len = try toks.expressionLen(i.*, ", }");
                     try translateBody(writer, toks.restrict(i.* + case_len), i, self_type);
 
                     try translateOptional(writer, toks, i, .@",");
