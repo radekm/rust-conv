@@ -1735,6 +1735,25 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                 } else {
                     i.* -= 1; // Don't skip `)` token.
                 }
+            } else if (toks.startsWithAnyAndGetData(
+                i.*,
+                &.{
+                    // There may be comma or closing paren after the first param.
+                    &.{ .kw_mut, .d_ident, .@"," },
+                    &.{ .kw_mut, .d_ident, .@")" },
+                    &.{ .@"&", .kw_mut, .d_ident, .@"," },
+                    &.{ .@"&", .kw_mut, .d_ident, .@")" },
+                },
+            )) |ld_param| {
+                const param_name = ld_param.data;
+                try writer.print("{s}: *{s}", .{ param_name, tpe });
+                i.* += ld_param.len;
+
+                if (toks.tokens[i.* - 1] == .@",") {
+                    _ = try writer.write(",");
+                } else {
+                    i.* -= 1; // Don't skip `)` token.
+                }
             }
         }
 
