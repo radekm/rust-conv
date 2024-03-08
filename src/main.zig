@@ -2003,71 +2003,100 @@ fn compareFiles(allocator: Allocator, sub_path: []const u8, sub_path2: []const u
 }
 
 test "expected tokenization" {
-    const allocator = std.testing.allocator;
-
-    const input_file = try std.fs.cwd().openFile("test-data/epaint-bezier.rs", .{});
-    defer input_file.close();
-
-    const data = try input_file.readToEndAlloc(allocator, 2 * 1024 * 1024);
-    defer allocator.free(data);
-
-    var toks = try tokenize(data, allocator);
-    defer toks.deinit(allocator);
+    const paths_input = [_][]const u8{
+        "test-data/epaint-bezier.rs",
+        "test-data/epaint-shape.rs",
+    };
+    const paths_tokenized_expected = [_][]const u8{
+        "test-data/epaint-bezier.tokenized",
+        "test-data/epaint-shape.tokenized",
+    };
+    const paths_tokenized_actual = [_][]const u8{
+        "tmp/epaint-bezier.tokenized",
+        "tmp/epaint-shape.tokenized",
+    };
+    const paths_translated_expected = [_][]const u8{
+        "test-data/epaint-bezier.translated",
+        "test-data/epaint-shape.translated",
+    };
+    const paths_translated_actual = [_][]const u8{
+        "tmp/epaint-bezier.translated",
+        "tmp/epaint-shape.translated",
+    };
 
     try std.fs.cwd().makePath("tmp");
-    const expected_tokenized = "test-data/epaint-bezier.tokenized";
-    const actual_tokenized = "tmp/epaint-bezier.tokenized";
+    const allocator = std.testing.allocator;
 
-    // Write tokens with associated comments to file.
-    {
-        const output_file = try std.fs.cwd().createFile(actual_tokenized, .{});
-        defer output_file.close();
-        const writer = output_file.writer();
-        for (toks.tokens, toks.token_data, 0..) |t, token_data, i| {
-            if (toks.comments_before_token[i]) |comments| {
-                for (comments.from..comments.to_excl) |j| {
-                    try writer.print("    BEFORE: {s}", .{toks.comments[j]});
+    for (
+        paths_input,
+        paths_tokenized_expected,
+        paths_tokenized_actual,
+        paths_translated_expected,
+        paths_translated_actual,
+    ) |
+        input,
+        tokenized_expected,
+        tokenized_actual,
+        translated_expected,
+        translated_actual,
+    | {
+        const input_file = try std.fs.cwd().openFile(input, .{});
+        defer input_file.close();
+
+        const data = try input_file.readToEndAlloc(allocator, 2 * 1024 * 1024);
+        defer allocator.free(data);
+
+        var toks = try tokenize(data, allocator);
+        defer toks.deinit(allocator);
+
+        // Write tokens with associated comments to file.
+        {
+            const output_file = try std.fs.cwd().createFile(tokenized_actual, .{});
+            defer output_file.close();
+            const writer = output_file.writer();
+            for (toks.tokens, toks.token_data, 0..) |t, token_data, i| {
+                if (toks.comments_before_token[i]) |comments| {
+                    for (comments.from..comments.to_excl) |j| {
+                        try writer.print("    BEFORE: {s}", .{toks.comments[j]});
+                    }
+                }
+
+                if (token_data) |d| {
+                    try writer.print("Token {}: {s}\n", .{ t, d });
+                } else {
+                    try writer.print("Token {}\n", .{t});
+                }
+
+                if (toks.comment_after_token[i]) |j| {
+                    try writer.print("    AFTER: {s}", .{toks.comments[j]});
                 }
             }
-
-            if (token_data) |d| {
-                try writer.print("Token {}: {s}\n", .{ t, d });
-            } else {
-                try writer.print("Token {}\n", .{t});
-            }
-
-            if (toks.comment_after_token[i]) |j| {
-                try writer.print("    AFTER: {s}", .{toks.comments[j]});
-            }
         }
+        try std.testing.expect(try compareFiles(allocator, tokenized_expected, tokenized_actual));
+
+        const structs = try readStructsAndTheirFields(toks, allocator);
+        defer structs.deinit(allocator);
+
+        // Write tokens with associated comments to file.
+        {
+            const output_file = try std.fs.cwd().createFile(translated_actual, .{});
+            defer output_file.close();
+            const writer = output_file.writer();
+            var i: usize = 0;
+            translateRustToZig(
+                writer,
+                structs,
+                toks,
+                &i,
+            ) catch |e| {
+                std.debug.print("Error: {}\n", .{e});
+                std.debug.print("Unknown construct while translating {any}\n", .{
+                    if (toks.tokens[i..].len < 20) toks.tokens[i..] else toks.tokens[i..][0..20],
+                });
+            };
+        }
+        try std.testing.expect(try compareFiles(allocator, translated_expected, translated_actual));
     }
-    try std.testing.expect(try compareFiles(allocator, expected_tokenized, actual_tokenized));
-
-    const structs = try readStructsAndTheirFields(toks, allocator);
-    defer structs.deinit(allocator);
-
-    const expected_translated = "test-data/epaint-bezier.translated";
-    const actual_translated = "tmp/epaint-bezier.translated";
-
-    // Write tokens with associated comments to file.
-    {
-        const output_file = try std.fs.cwd().createFile(actual_translated, .{});
-        defer output_file.close();
-        const writer = output_file.writer();
-        var i: usize = 0;
-        translateRustToZig(
-            writer,
-            structs,
-            toks,
-            &i,
-        ) catch |e| {
-            std.debug.print("Chyba: {}\n", .{e});
-            std.debug.print("Unknown construct while translating {any}\n", .{
-                if (toks.tokens[i..].len < 20) toks.tokens[i..] else toks.tokens[i..][0..20],
-            });
-        };
-    }
-    try std.testing.expect(try compareFiles(allocator, expected_translated, actual_translated));
 }
 
 pub fn main() !void {
@@ -2124,7 +2153,7 @@ pub fn main() !void {
         toks,
         &i,
     ) catch |e| {
-        std.debug.print("Chyba: {}\n", .{e});
+        std.debug.print("Error: {}\n", .{e});
         std.debug.print("Unknown construct while translating {any}\n", .{
             if (toks.tokens[i..].len < 20) toks.tokens[i..] else toks.tokens[i..][0..20],
         });

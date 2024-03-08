@@ -1,0 +1,756 @@
+//! The different shapes that can be painted.
+/// A paint primitive such as a circle or a piece of text.
+/// Coordinates are all screen space points (not physical pixels).
+///
+/// You should generally recreate your [`Shape`]s each frame,
+/// but storing them should also be fine with one exception:
+/// [`Shape::Text`] depends on the current `pixels_per_point` (dpi scale)
+/// and so must be recreated every time `pixels_per_point` changes.
+const Shape = union(enum) {
+/// Paint nothing. This can be useful as a placeholder.
+Noop,
+/// Recursively nest more shapes - sometimes a convenience to be able to do.
+/// For performance reasons it is better to avoid it.
+Vec: ArrayList(Shape),
+/// Circle with optional outline and fill.
+Circle: CircleShape,
+/// A line between two points.
+LineSegment: LineSegmentPayload,
+/// A series of lines between points.
+/// The path can have a stroke and/or fill (if closed).
+Path: PathShape,
+/// Rectangle with optional outline and fill.
+Rect: RectShape,
+/// Text.
+///
+/// This needs to be recreated if `pixels_per_point` (dpi scale) changes.
+Text: TextShape,
+/// A general triangle mesh.
+///
+/// Can be used to display images.
+Mesh: Mesh,
+/// A quadratic [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
+QuadraticBezier: QuadraticBezierShape,
+/// A cubic [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
+CubicBezier: CubicBezierShape,
+/// Backend-specific painting.
+Callback: PaintCallback,
+const LineSegmentPayload = struct {
+points: [2]Pos2,stroke: Stroke,
+};
+
+};
+fn shapeImplSendSync()void{
+// Ziffigy: fn assert_send_sync < T : Send + Sync > ( ) { }
+assert_send_sync .  < Shape >  (  ) ;
+
+}
+// BEGIN: impl From < Vec < Self > > for Shape
+fn from(shapes: ArrayList(Self))Shape{
+Self . Vec ( shapes ) 
+}
+
+}
+// END: impl From < Vec < Self > > for Shape
+// BEGIN: impl From < Mesh > for Shape
+fn from(mesh: Mesh)Shape{
+Self . Mesh ( mesh ) 
+}
+
+}
+// END: impl From < Mesh > for Shape
+/// ## Constructors
+// BEGIN: impl Shape
+/// A line between two points.
+/// More efficient than calling [`Self::line`].
+pub fn lineSegment(points: [2]Pos2,stroke: Stroke)Shape{
+Self . LineSegment {.points = points,.stroke = stroke . into (  ) ,}
+}
+/// A horizontal line.
+pub fn hline(x: Rangef,y: f32,stroke: Stroke)Shape{
+const x = x . into (  ) ;
+Self . LineSegment {.points = [pos2 ( x . min , y )  , pos2 ( x . max , y ) ],.stroke = stroke . into (  ) ,}
+}
+/// A vertical line.
+pub fn vline(x: f32,y: Rangef,stroke: Stroke)Shape{
+const y = y . into (  ) ;
+Self . LineSegment {.points = [pos2 ( x , y . min )  , pos2 ( x , y . max ) ],.stroke = stroke . into (  ) ,}
+}
+/// A line through many points.
+///
+/// Use [`Self::line_segment`] instead if your line only connects two points.
+pub fn line(points: ArrayList(Pos2),stroke: Stroke)Shape{
+Self . Path ( PathShape . line ( points , stroke )  ) 
+}
+/// A line that closes back to the start point again.
+pub fn closedLine(points: ArrayList(Pos2),stroke: Stroke)Shape{
+Self . Path ( PathShape . closedLine ( points , stroke )  ) 
+}
+/// Turn a line into equally spaced dots.
+pub fn dottedLine(path: []Pos2,color: Color32,spacing: f32,radius: f32,)ArrayList(Self){
+var shapes = Vec . new (  ) ;
+pointsFromLine ( path , spacing , radius , color . into (  )  , &shapes ) ;
+shapes
+}
+/// Turn a line into dashes.
+pub fn dashedLine(path: []Pos2,stroke: Stroke,dash_length: f32,gap_length: f32,)ArrayList(Self){
+var shapes = Vec . new (  ) ;
+dashesFromLine ( path , stroke . into (  )  ,  & [dash_length] ,  & [gap_length] , &shapes , 0 .  ,  ) ;
+shapes
+}
+/// Turn a line into dashes with different dash/gap lengths and a start offset.
+pub fn dashedLineWithOffset(path: []Pos2,stroke: Stroke,dash_lengths: []f32,gap_lengths: []f32,dash_offset: f32,)ArrayList(Self){
+var shapes = Vec . new (  ) ;
+dashesFromLine ( path , stroke . into (  )  , dash_lengths , gap_lengths , &shapes , dash_offset ,  ) ;
+shapes
+}
+/// Turn a line into dashes. If you need to create many dashed lines use this instead of
+/// [`Self::dashed_line`].
+pub fn dashedLineMany(points: []Pos2,stroke: Stroke,dash_length: f32,gap_length: f32,shapes: *ArrayList(Self),)void{
+dashesFromLine ( points , stroke . into (  )  ,  & [dash_length] ,  & [gap_length] , shapes , 0 .  ,  ) ;
+
+}
+/// Turn a line into dashes with different dash/gap lengths and a start offset. If you need to
+/// create many dashed lines use this instead of [`Self::dashed_line_with_offset`].
+pub fn dashedLineManyWithOffset(points: []Pos2,stroke: Stroke,dash_lengths: []f32,gap_lengths: []f32,dash_offset: f32,shapes: *ArrayList(Self),)void{
+dashesFromLine ( points , stroke . into (  )  , dash_lengths , gap_lengths , shapes , dash_offset ,  ) ;
+
+}
+/// A convex polygon with a fill and optional stroke.
+///
+/// The most performant winding order is clockwise.
+pub fn convexPolygon(points: ArrayList(Pos2),fill: Color32,stroke: Stroke,)Shape{
+Self . Path ( PathShape . convexPolygon ( points , fill , stroke )  ) 
+}
+pub fn circleFilled(center: Pos2,radius: f32,fill_color: Color32)Shape{
+Self . Circle ( CircleShape . filled ( center , radius , fill_color )  ) 
+}
+pub fn circleStroke(center: Pos2,radius: f32,stroke: Stroke)Shape{
+Self . Circle ( CircleShape . stroke ( center , radius , stroke )  ) 
+}
+pub fn rectFilled(rect: Rect,rounding: Rounding,fill_color: Color32,)Shape{
+Self . Rect ( RectShape . filled ( rect , rounding , fill_color )  ) 
+}
+pub fn rectStroke(rect: Rect,rounding: Rounding,stroke: Stroke,)Shape{
+Self . Rect ( RectShape . stroke ( rect , rounding , stroke )  ) 
+}
+pub fn text(fonts: Fonts,pos: Pos2,anchor: Align2,text: []const u8,font_id: FontId,color: Color32,)Shape{
+const galley = fonts . layoutNoWrap ( text . toString (  )  , font_id , color ) ;
+const rect = anchor . anchorSize ( pos , galley . size (  )  ) ;
+Self . galley ( rect . min , galley , color ) 
+}
+/// Any uncolored parts of the [`Galley`] (using [`Color32::PLACEHOLDER`]) will be replaced with the given color.
+///
+/// Any non-placeholder color in the galley takes precedence over this fallback color.
+pub fn galley(pos: Pos2,galley: Galley,fallback_color: Color32)Shape{
+TextShape . new ( pos , galley , fallback_color )  . into (  ) 
+}
+/// All text color in the [`Galley`] will be replaced with the given color.
+pub fn galleyWithOverrideTextColor(pos: Pos2,galley: Galley,text_color: Color32,)Shape{
+TextShape . new ( pos , galley , text_color )  . withOverrideTextColor ( text_color )  . into (  ) 
+}
+pub fn galleyWithColor(pos: Pos2,galley: Galley,text_color: Color32)Shape{
+Self . galleyWithOverrideTextColor ( pos , galley , text_color ) 
+}
+pub fn mesh(mesh: Mesh)Shape{
+crate . epaint_assert !  ( mesh . isValid (  )  ) ;
+Self . Mesh ( mesh ) 
+}
+/// An image at the given position.
+///
+/// `uv` should normally be `Rect::from_min_max(pos2(0.0, 0.0), pos2(1.0, 1.0))`
+/// unless you want to crop or flip the image.
+///
+/// `tint` is a color multiplier. Use [`Color32::WHITE`] if you don't want to tint the image.
+pub fn image(texture_id: TextureId,rect: Rect,uv: Rect,tint: Color32)Shape{
+var mesh = Mesh . withTexture ( texture_id ) ;
+mesh . addRectWithUv ( rect , uv , tint ) ;
+Self . mesh ( mesh ) 
+}
+/// The visual bounding rectangle (includes stroke widths)
+pub fn visualBoundingRect(self: Shape)Rect{
+switch (self){
+/* Ziggify: Self :: Noop */=>Rect . NOTHING,
+/* Ziggify: Self :: Vec ( shapes ) */=>{
+var rect = Rect . NOTHING;
+for (shapes) |shape|{
+rect = rect . union ( shape . visualBoundingRect (  )  ) ;
+
+}
+rect
+}
+/* Ziggify: Self :: Circle ( circle_shape ) */=>circle_shape . visualBoundingRect (  ) ,
+/* Ziggify: Self :: LineSegment { points , stroke } */=>{
+if(stroke . isEmpty (  ) ){
+Rect . NOTHING
+}
+else{
+Rect . fromTwoPos ( points[0] , points[1] )  . expand ( stroke . width / 2.0 ) 
+}
+
+}
+/* Ziggify: Self :: Path ( path_shape ) */=>path_shape . visualBoundingRect (  ) ,
+/* Ziggify: Self :: Rect ( rect_shape ) */=>rect_shape . visualBoundingRect (  ) ,
+/* Ziggify: Self :: Text ( text_shape ) */=>text_shape . visualBoundingRect (  ) ,
+/* Ziggify: Self :: Mesh ( mesh ) */=>mesh . calcBounds (  ) ,
+/* Ziggify: Self :: QuadraticBezier ( bezier ) */=>bezier . visualBoundingRect (  ) ,
+/* Ziggify: Self :: CubicBezier ( bezier ) */=>bezier . visualBoundingRect (  ) ,
+/* Ziggify: Self :: Callback ( custom ) */=>custom . rect,
+
+}
+
+}
+
+}
+// END: impl Shape
+/// ## Inspection and transforms
+// BEGIN: impl Shape
+pub fn textureId(self: Shape)super.TextureId{
+if (/* Ziggify: Self :: Mesh ( mesh ) */ self) {
+mesh . texture_id
+}
+else if (/* Ziggify: Self :: Rect ( rect_shape ) */ self) {
+rect_shape . fill_texture_id
+}
+else{
+super . TextureId . default (  ) 
+}
+
+}
+/// Move the shape by this many points, in-place.
+///
+/// If using a [`PaintCallback`], note that only the rect is scaled as opposed
+/// to other shapes where the stroke is also scaled.
+pub fn transform(self: *Shape,transform: TSTransform)void{
+switch (self){
+/* Ziggify: Self :: Noop */=>{
+
+}
+/* Ziggify: Self :: Vec ( shapes ) */=>{
+for (shapes) |shape|{
+shape . transform ( transform ) ;
+
+}
+
+}
+/* Ziggify: Self :: Circle ( circle_shape ) */=>{
+circle_shape . center = transform * circle_shape . center;
+circle_shape . radius *  = transform . scaling;
+circle_shape . stroke . width *  = transform . scaling;
+
+}
+/* Ziggify: Self :: LineSegment { points , stroke } */=>{
+for (points) |p|{
+ * p = transform *  * p;
+
+}
+stroke . width *  = transform . scaling;
+
+}
+/* Ziggify: Self :: Path ( path_shape ) */=>{
+for (&path_shape . points) |p|{
+ * p = transform *  * p;
+
+}
+path_shape . stroke . width *  = transform . scaling;
+
+}
+/* Ziggify: Self :: Rect ( rect_shape ) */=>{
+rect_shape . rect = transform * rect_shape . rect;
+rect_shape . stroke . width *  = transform . scaling;
+
+}
+/* Ziggify: Self :: Text ( text_shape ) */=>{
+text_shape . pos = transform * text_shape . pos;
+// Scale text:
+const galley = Arc . makeMut ( &text_shape . galley ) ;
+for (&galley . rows) |row|{
+row . visuals . mesh_bounds = transform . scaling * row . visuals . mesh_bounds;
+for (&row . visuals . mesh . vertices) |v|{
+v . pos = Pos2 . new ( transform . scaling * v . pos . x , transform . scaling * v . pos . y ) ;
+
+}
+
+}
+galley . mesh_bounds = transform . scaling * galley . mesh_bounds;
+galley . rect = transform . scaling * galley . rect;
+
+}
+/* Ziggify: Self :: Mesh ( mesh ) */=>{
+mesh . transform ( transform ) ;
+
+}
+/* Ziggify: Self :: QuadraticBezier ( bezier_shape ) */=>{
+bezier_shape . points[0] = transform * bezier_shape . points[0];
+bezier_shape . points[1] = transform * bezier_shape . points[1];
+bezier_shape . points[2] = transform * bezier_shape . points[2];
+bezier_shape . stroke . width *  = transform . scaling;
+
+}
+/* Ziggify: Self :: CubicBezier ( cubic_curve ) */=>{
+for (&cubic_curve . points) |p|{
+ * p = transform *  * p;
+
+}
+cubic_curve . stroke . width *  = transform . scaling;
+
+}
+/* Ziggify: Self :: Callback ( shape ) */=>{
+shape . rect = transform * shape . rect;
+
+}
+
+}
+
+}
+
+}
+// END: impl Shape
+// ----------------------------------------------------------------------------
+/// How to paint a circle.
+const CircleShape = struct {
+center: Pos2,
+radius: f32,
+fill: Color32,
+stroke: Stroke,
+}// BEGIN: impl CircleShape
+pub fn filled(center: Pos2,radius: f32,fill_color: Color32)CircleShape{
+CircleShape {.center = center,.radius = radius,.fill = fill_color . into (  ) ,.stroke = Default . default (  ) ,}
+}
+pub fn stroke(center: Pos2,radius: f32,stroke: Stroke)CircleShape{
+CircleShape {.center = center,.radius = radius,.fill = Default . default (  ) ,.stroke = stroke . into (  ) ,}
+}
+/// The visual bounding rectangle (includes stroke width)
+pub fn visualBoundingRect(self: CircleShape)Rect{
+if(self . fill == Color32 . TRANSPARENT and self . stroke . isEmpty (  ) ){
+Rect . NOTHING
+}
+else{
+Rect . fromCenterSize ( self . center , Vec2 . splat ( self . radius * 2.0 + self . stroke . width )  ,  ) 
+}
+
+}
+
+}
+// END: impl CircleShape
+// BEGIN: impl From < CircleShape > for Shape
+fn from(shape: CircleShape)Shape{
+Self . Circle ( shape ) 
+}
+
+}
+// END: impl From < CircleShape > for Shape
+// ----------------------------------------------------------------------------
+/// A path which can be stroked and/or filled (if closed).
+const PathShape = struct {
+/// Filled paths should prefer clockwise order.
+points: ArrayList(Pos2),
+/// If true, connect the first and last of the points together.
+/// This is required if `fill != TRANSPARENT`.
+closed: bool,
+/// Fill is only supported for convex polygons.
+fill: Color32,
+/// Color and thickness of the line.
+stroke: Stroke,
+// TODO(emilk): Add texture support either by supplying uv for each point,
+// or by some transform from points to uv (e.g. a callback or a linear transform matrix).
+}// BEGIN: impl PathShape
+/// A line through many points.
+///
+/// Use [`Shape::line_segment`] instead if your line only connects two points.
+pub fn line(points: ArrayList(Pos2),stroke: Stroke)PathShape{
+PathShape {.points = points,.closed = false,.fill = Default . default (  ) ,.stroke = stroke . into (  ) ,}
+}
+/// A line that closes back to the start point again.
+pub fn closedLine(points: ArrayList(Pos2),stroke: Stroke)PathShape{
+PathShape {.points = points,.closed = true,.fill = Default . default (  ) ,.stroke = stroke . into (  ) ,}
+}
+/// A convex polygon with a fill and optional stroke.
+///
+/// The most performant winding order is clockwise.
+pub fn convexPolygon(points: ArrayList(Pos2),fill: Color32,stroke: Stroke,)PathShape{
+PathShape {.points = points,.closed = true,.fill = fill . into (  ) ,.stroke = stroke . into (  ) ,}
+}
+/// The visual bounding rectangle (includes stroke width)
+pub fn visualBoundingRect(self: PathShape)Rect{
+if(self . fill == Color32 . TRANSPARENT and self . stroke . isEmpty (  ) ){
+Rect . NOTHING
+}
+else{
+Rect . fromPoints (  & self . points )  . expand ( self . stroke . width / 2.0 ) 
+}
+
+}
+
+}
+// END: impl PathShape
+// BEGIN: impl From < PathShape > for Shape
+fn from(shape: PathShape)Shape{
+Self . Path ( shape ) 
+}
+
+}
+// END: impl From < PathShape > for Shape
+// ----------------------------------------------------------------------------
+/// How to paint a rectangle.
+const RectShape = struct {
+rect: Rect,
+/// How rounded the corners are. Use `Rounding::ZERO` for no rounding.
+rounding: Rounding,
+/// How to fill the rectangle.
+fill: Color32,
+/// The thickness and color of the outline.
+stroke: Stroke,
+/// If the rect should be filled with a texture, which one?
+///
+/// The texture is multiplied with [`Self::fill`].
+fill_texture_id: TextureId,
+/// What UV coordinates to use for the texture?
+///
+/// To display a texture, set [`Self::fill_texture_id`],
+/// and set this to `Rect::from_min_max(pos2(0.0, 0.0), pos2(1.0, 1.0))`.
+///
+/// Use [`Rect::ZERO`] to turn off texturing.
+uv: Rect,
+}// BEGIN: impl RectShape
+pub fn new(rect: Rect,rounding: Rounding,fill_color: Color32,stroke: Stroke,)RectShape{
+RectShape {.rect = rect,.rounding = rounding . into (  ) ,.fill = fill_color . into (  ) ,.stroke = stroke . into (  ) ,.fill_texture_id = Default . default (  ) ,.uv = Rect . ZERO,}
+}
+pub fn filled(rect: Rect,rounding: Rounding,fill_color: Color32,)RectShape{
+RectShape {.rect = rect,.rounding = rounding . into (  ) ,.fill = fill_color . into (  ) ,.stroke = Default . default (  ) ,.fill_texture_id = Default . default (  ) ,.uv = Rect . ZERO,}
+}
+pub fn stroke(rect: Rect,rounding: Rounding,stroke: Stroke)RectShape{
+RectShape {.rect = rect,.rounding = rounding . into (  ) ,.fill = Default . default (  ) ,.stroke = stroke . into (  ) ,.fill_texture_id = Default . default (  ) ,.uv = Rect . ZERO,}
+}
+/// The visual bounding rectangle (includes stroke width)
+pub fn visualBoundingRect(self: RectShape)Rect{
+if(self . fill == Color32 . TRANSPARENT and self . stroke . isEmpty (  ) ){
+Rect . NOTHING
+}
+else{
+self . rect . expand ( self . stroke . width / 2.0 ) 
+}
+
+}
+
+}
+// END: impl RectShape
+// BEGIN: impl From < RectShape > for Shape
+fn from(shape: RectShape)Shape{
+Self . Rect ( shape ) 
+}
+
+}
+// END: impl From < RectShape > for Shape
+/// How rounded the corners of things should be
+const Rounding = struct {
+/// Radius of the rounding of the North-West (left top) corner.
+nw: f32,
+/// Radius of the rounding of the North-East (right top) corner.
+ne: f32,
+/// Radius of the rounding of the South-West (left bottom) corner.
+sw: f32,
+/// Radius of the rounding of the South-East (right bottom) corner.
+se: f32,
+}// BEGIN: impl Default for Rounding
+fn default()Rounding{
+Self . ZERO
+}
+
+}
+// END: impl Default for Rounding
+// BEGIN: impl From < f32 > for Rounding
+fn from(radius: f32)Rounding{
+Rounding {.nw = radius,.ne = radius,.sw = radius,.se = radius,}
+}
+
+}
+// END: impl From < f32 > for Rounding
+// BEGIN: impl Rounding
+/// No rounding on any corner.
+const ZERO : Rounding=Rounding {.nw = 0.0,.ne = 0.0,.sw = 0.0,.se = 0.0,};
+pub fn same(radius: f32)Rounding{
+Rounding {.nw = radius,.ne = radius,.sw = radius,.se = radius,}
+}
+/// Do all corners have the same rounding?
+pub fn isSame(self: Rounding)bool{
+self . nw == self . ne and self . nw == self . sw and self . nw == self . se
+}
+/// Make sure each corner has a rounding of at least this.
+pub fn atLeast(self: Rounding,min: f32)Rounding{
+Rounding {.nw = self . nw . max ( min ) ,.ne = self . ne . max ( min ) ,.sw = self . sw . max ( min ) ,.se = self . se . max ( min ) ,}
+}
+/// Make sure each corner has a rounding of at most this.
+pub fn atMost(self: Rounding,max: f32)Rounding{
+Rounding {.nw = self . nw . min ( max ) ,.ne = self . ne . min ( max ) ,.sw = self . sw . min ( max ) ,.se = self . se . min ( max ) ,}
+}
+
+}
+// END: impl Rounding
+// ----------------------------------------------------------------------------
+/// How to paint some text on screen.
+///
+/// This needs to be recreated if `pixels_per_point` (dpi scale) changes.
+const TextShape = struct {
+/// Top left corner of the first character.
+pos: Pos2,
+/// The laid out text, from [`Fonts::layout_job`].
+galley: Galley,
+/// Add this underline to the whole text.
+/// You can also set an underline when creating the galley.
+underline: Stroke,
+/// Any [`Color32::PLACEHOLDER`] in the galley will be replaced by the given color.
+/// Affects everything: backgrounds, glyphs, strikethough, underline, etc.
+fallback_color: Color32,
+/// If set, the text color in the galley will be ignored and replaced
+/// with the given color.
+///
+/// This only affects the glyphs and will NOT replace background color nor strikethrough/underline color.
+override_text_color: ?Color32,
+/// If set, the text will be rendered with the given opacity in gamma space
+/// Affects everything: backgrounds, glyphs, strikethough, underline, etc.
+opacity_factor: f32,
+/// Rotate text by this many radians clockwise.
+/// The pivot is `pos` (the upper left corner of the text).
+angle: f32,
+}// BEGIN: impl TextShape
+/// The given fallback color will be used for any uncolored part of the galley (using [`Color32::PLACEHOLDER`]).
+///
+/// Any non-placeholder color in the galley takes precedence over this fallback color.
+pub fn new(pos: Pos2,galley: Galley,fallback_color: Color32)TextShape{
+TextShape {.pos = pos,.galley = galley,.underline = Stroke . NONE,.fallback_color = fallback_color,.override_text_color = None,.opacity_factor = 1.0,.angle = 0.0,}
+}
+/// The visual bounding rectangle
+pub fn visualBoundingRect(self: TextShape)Rect{
+self . galley . mesh_bounds . translate ( self . pos . toVec2 (  )  ) 
+}
+pub fn withUnderline(self: *TextShape,underline: Stroke)TextShape{
+self . underline = underline;
+self
+}
+/// Use the given color for the text, regardless of what color is already in the galley.
+pub fn withOverrideTextColor(self: *TextShape,override_text_color: Color32)TextShape{
+self . override_text_color = Some ( override_text_color ) ;
+self
+}
+/// Rotate text by this many radians clockwise.
+/// The pivot is `pos` (the upper left corner of the text).
+pub fn withAngle(self: *TextShape,angle: f32)TextShape{
+self . angle = angle;
+self
+}
+/// Render text with this opacity in gamma space
+pub fn withOpacityFactor(self: *TextShape,opacity_factor: f32)TextShape{
+self . opacity_factor = opacity_factor;
+self
+}
+
+}
+// END: impl TextShape
+// BEGIN: impl From < TextShape > for Shape
+fn from(shape: TextShape)Shape{
+Self . Text ( shape ) 
+}
+
+}
+// END: impl From < TextShape > for Shape
+// ----------------------------------------------------------------------------
+/// Creates equally spaced filled circles from a line.
+fn pointsFromLine(path: []Pos2,spacing: f32,radius: f32,color: Color32,shapes: *ArrayList(Shape),)void{
+var position_on_segment = 0.0;
+path . windows ( 2 )  . forEach (  | window | {
+const /* Ziggify: ( start , end ) */ = ( window[0] , window[1] ) ;
+const vector = end - start;
+const segment_length = vector . length (  ) ;
+while (position_on_segment < segment_length) {
+const new_point = start + vector *  ( position_on_segment / segment_length ) ;
+shapes . push ( Shape . circleFilled ( new_point , radius , color )  ) ;
+position_on_segment +  = spacing;
+
+}
+position_on_segment -  = segment_length;
+
+}
+ ) ;
+
+}
+/// Creates dashes from a line.
+fn dashesFromLine(path: []Pos2,stroke: Stroke,dash_lengths: []f32,gap_lengths: []f32,shapes: *ArrayList(Shape),dash_offset: f32,)void{
+assert_eq !  ( dash_lengths . len (  )  , gap_lengths . len (  )  ) ;
+var position_on_segment = dash_offset;
+var drawing_dash = false;
+var step = 0;
+const steps = dash_lengths . len (  ) ;
+path . windows ( 2 )  . forEach (  | window | {
+const /* Ziggify: ( start , end ) */ = ( window[0] , window[1] ) ;
+const vector = end - start;
+const segment_length = vector . length (  ) ;
+var start_point = start;
+while (position_on_segment < segment_length) {
+const new_point = start + vector *  ( position_on_segment / segment_length ) ;
+if(drawing_dash){
+// This is the end point.
+shapes . push ( Shape . lineSegment ( [start_point , new_point] , stroke )  ) ;
+position_on_segment +  = gap_lengths[step];
+// Increment step counter
+step +  = 1;
+if(step >= steps){
+step = 0;
+
+}
+
+}
+else{
+// Start a new dash.
+start_point = new_point;
+position_on_segment +  = dash_lengths[step];
+
+}
+drawing_dash =  ! drawing_dash;
+
+}
+// If the segment ends and the dash is not finished, add the segment's end point.
+if(drawing_dash){
+shapes . push ( Shape . lineSegment ( [start_point , end] , stroke )  ) ;
+
+}
+position_on_segment -  = segment_length;
+
+}
+ ) ;
+
+}
+// ----------------------------------------------------------------------------
+/// Information passed along with [`PaintCallback`] ([`Shape::Callback`]).
+const PaintCallbackInfo = struct {
+/// Viewport in points.
+///
+/// This specifies where on the screen to paint, and the borders of this
+/// Rect is the [-1, +1] of the Normalized Device Coordinates.
+///
+/// Note than only a portion of this may be visible due to [`Self::clip_rect`].
+///
+/// This comes from [`PaintCallback::rect`].
+viewport: Rect,
+/// Clip rectangle in points.
+clip_rect: Rect,
+/// Pixels per point.
+pixels_per_point: f32,
+/// Full size of the screen, in pixels.
+screen_size_px: [2]u32,
+}/// Size of the viewport in whole, physical pixels.
+const ViewportInPixels = struct {
+/// Physical pixel offset for left side of the viewport.
+left_px: i32,
+/// Physical pixel offset for top side of the viewport.
+top_px: i32,
+/// Physical pixel offset for bottom side of the viewport.
+///
+/// This is what `glViewport`, `glScissor` etc expects for the y axis.
+from_bottom_px: i32,
+/// Viewport width in physical pixels.
+width_px: i32,
+/// Viewport height in physical pixels.
+height_px: i32,
+}// BEGIN: impl ViewportInPixels
+fn fromPoints(rect: Rect,pixels_per_point: f32,screen_size_px: [2]u32)ViewportInPixels{
+// Fractional pixel values for viewports are generally valid, but may cause sampling issues
+// and rounding errors might cause us to get out of bounds.
+// Round:
+const left_px =  ( pixels_per_point * rect . min . x )  . round (  ) asi32;// inclusive
+const top_px =  ( pixels_per_point * rect . min . y )  . round (  ) asi32;// inclusive
+const right_px =  ( pixels_per_point * rect . max . x )  . round (  ) asi32;// exclusive
+const bottom_px =  ( pixels_per_point * rect . max . y )  . round (  ) asi32;// exclusive
+// Clamp to screen:
+const screen_width = screen_size_px[0]asi32;
+const screen_height = screen_size_px[1]asi32;
+const left_px = left_px . clamp ( 0 , screen_width ) ;
+const right_px = right_px . clamp ( left_px , screen_width ) ;
+const top_px = top_px . clamp ( 0 , screen_height ) ;
+const bottom_px = bottom_px . clamp ( top_px , screen_height ) ;
+const width_px = right_px - left_px;
+const height_px = bottom_px - top_px;
+ViewportInPixels {.left_px = left_px,.top_px = top_px,.from_bottom_px = screen_height - height_px - top_px,.width_px = width_px,.height_px = height_px,}
+}
+
+}
+// END: impl ViewportInPixels
+fn testViewportRounding()void{
+for (0 ..= 10_000) |i|{
+// Two adjacent viewports should never overlap:
+const x = iasf32 / 97.0;
+const left = Rect . fromMinMax ( pos2 ( 0.0 , 0.0 )  , pos2 ( 100.0 , 100.0 )  )  . withMaxX ( x ) ;
+const right = Rect . fromMinMax ( pos2 ( 0.0 , 0.0 )  , pos2 ( 100.0 , 100.0 )  )  . withMinX ( x ) ;
+for ([0.618 , 1.0 , std . f32 . consts . PI]) |pixels_per_point|{
+const left = ViewportInPixels . fromPoints (  & left , pixels_per_point , [100 , 100] ) ;
+const right = ViewportInPixels . fromPoints (  & right , pixels_per_point , [100 , 100] ) ;
+assert_eq !  ( left . left_px + left . width_px , right . left_px ) ;
+
+}
+
+}
+
+}
+// BEGIN: impl PaintCallbackInfo
+/// The viewport rectangle. This is what you would use in e.g. `glViewport`.
+pub fn viewportInPixels(self: PaintCallbackInfo)ViewportInPixels{
+ViewportInPixels . fromPoints (  & self . viewport , self . pixels_per_point , self . screen_size_px ) 
+}
+/// The "scissor" or "clip" rectangle. This is what you would use in e.g. `glScissor`.
+pub fn clipRectInPixels(self: PaintCallbackInfo)ViewportInPixels{
+ViewportInPixels . fromPoints (  & self . clip_rect , self . pixels_per_point , self . screen_size_px ) 
+}
+
+}
+// END: impl PaintCallbackInfo
+/// If you want to paint some 3D shapes inside an egui region, you can use this.
+///
+/// This is advanced usage, and is backend specific.
+const PaintCallback = struct {
+/// Where to paint.
+///
+/// This will become [`PaintCallbackInfo::viewport`].
+rect: Rect,
+/// Paint something custom (e.g. 3D stuff).
+///
+/// The concrete value of `callback` depends on the rendering backend used. For instance, the
+/// `glow` backend requires that callback be an `egui_glow::CallbackFn` while the `wgpu`
+/// backend requires a `egui_wgpu::Callback`.
+///
+/// If the type cannot be downcast to the type expected by the current backend the callback
+/// will not be drawn.
+///
+/// The rendering backend is responsible for first setting the active viewport to
+/// [`Self::rect`].
+///
+/// The rendering backend is also responsible for restoring any state, such as the bound shader
+/// program, vertex array, etc.
+///
+/// Shape has to be clone, therefore this has to be an `Arc` instead of a `Box`.
+callback: /* Ziggify: Pointer to anything clonable */,
+}// BEGIN: impl std :: fmt :: Debug for PaintCallback
+fn fmt(self: PaintCallback,f: *std.fmt./* Ziggify: Formatter<'_> */)std.fmt.Result{
+f . debugStruct ( "CustomShape" )  . field ( "rect" ,  & self . rect )  . finishNonExhaustive (  ) 
+}
+
+}
+// END: impl std :: fmt :: Debug for PaintCallback
+// BEGIN: impl std :: cmp :: PartialEq for PaintCallback
+fn eq(self: PaintCallback,other: PaintCallback)bool{
+// As I understand it, the problem this clippy is trying to protect against
+// can only happen if we do dynamic casts back and forth on the pointers, and we don't do that.
+{
+self . rect . eq (  & other . rect )  and Arc . ptrEq (  & self . callback ,  & other . callback ) 
+}
+
+}
+
+}
+// END: impl std :: cmp :: PartialEq for PaintCallback
+// BEGIN: impl From < PaintCallback > for Shape
+fn from(shape: PaintCallback)Shape{
+Self . Callback ( shape ) 
+}
+
+}
+// END: impl From < PaintCallback > for Shape

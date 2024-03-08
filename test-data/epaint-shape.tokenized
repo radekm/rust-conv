@@ -1,0 +1,5022 @@
+    BEFORE: //! The different shapes that can be painted.
+Token main.Token.kw_use
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.{
+Token main.Token.d_ident: any
+Token main.Token.::
+Token main.Token.d_ident: Any
+Token main.Token.,
+Token main.Token.d_ident: sync
+Token main.Token.::
+Token main.Token.d_ident: Arc
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_use
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.{
+Token main.Token.d_ident: text
+Token main.Token.::
+Token main.Token.{
+Token main.Token.d_ident: FontId
+Token main.Token.,
+Token main.Token.d_ident: Fonts
+Token main.Token.,
+Token main.Token.d_ident: Galley
+Token main.Token.}
+Token main.Token.,
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.d_ident: Mesh
+Token main.Token.,
+Token main.Token.d_ident: Stroke
+Token main.Token.,
+Token main.Token.d_ident: TextureId
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_use
+Token main.Token.d_ident: emath
+Token main.Token.::
+Token main.Token.*
+Token main.Token.;
+Token main.Token.kw_pub
+Token main.Token.kw_use
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.{
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.,
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.}
+Token main.Token.;
+    BEFORE: /// A paint primitive such as a circle or a piece of text.
+    BEFORE: /// Coordinates are all screen space points (not physical pixels).
+    BEFORE: ///
+    BEFORE: /// You should generally recreate your [`Shape`]s each frame,
+    BEFORE: /// but storing them should also be fine with one exception:
+    BEFORE: /// [`Shape::Text`] depends on the current `pixels_per_point` (dpi scale)
+    BEFORE: /// and so must be recreated every time `pixels_per_point` changes.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: must_use
+Token main.Token.=
+Token main.Token.d_string: "Add a Shape to a Painter"
+Token main.Token.]
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.,
+Token main.Token.d_ident: PartialEq
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_enum
+Token main.Token.d_ident: Shape
+Token main.Token.{
+    BEFORE: /// Paint nothing. This can be useful as a placeholder.
+Token main.Token.d_ident: Noop
+Token main.Token.,
+    BEFORE: /// Recursively nest more shapes - sometimes a convenience to be able to do.
+    BEFORE: /// For performance reasons it is better to avoid it.
+Token main.Token.d_ident: Vec
+Token main.Token.(
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Shape
+Token main.Token.>
+Token main.Token.)
+Token main.Token.,
+    BEFORE: /// Circle with optional outline and fill.
+Token main.Token.d_ident: Circle
+Token main.Token.(
+Token main.Token.d_ident: CircleShape
+Token main.Token.)
+Token main.Token.,
+    BEFORE: /// A line between two points.
+Token main.Token.d_ident: LineSegment
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.;
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.}
+Token main.Token.,
+    BEFORE: /// A series of lines between points.
+    BEFORE: /// The path can have a stroke and/or fill (if closed).
+Token main.Token.d_ident: Path
+Token main.Token.(
+Token main.Token.d_ident: PathShape
+Token main.Token.)
+Token main.Token.,
+    BEFORE: /// Rectangle with optional outline and fill.
+Token main.Token.d_ident: Rect
+Token main.Token.(
+Token main.Token.d_ident: RectShape
+Token main.Token.)
+Token main.Token.,
+    BEFORE: /// Text.
+    BEFORE: ///
+    BEFORE: /// This needs to be recreated if `pixels_per_point` (dpi scale) changes.
+Token main.Token.d_ident: Text
+Token main.Token.(
+Token main.Token.d_ident: TextShape
+Token main.Token.)
+Token main.Token.,
+    BEFORE: /// A general triangle mesh.
+    BEFORE: ///
+    BEFORE: /// Can be used to display images.
+Token main.Token.d_ident: Mesh
+Token main.Token.(
+Token main.Token.d_ident: Mesh
+Token main.Token.)
+Token main.Token.,
+    BEFORE: /// A quadratic [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
+Token main.Token.d_ident: QuadraticBezier
+Token main.Token.(
+Token main.Token.d_ident: QuadraticBezierShape
+Token main.Token.)
+Token main.Token.,
+    BEFORE: /// A cubic [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
+Token main.Token.d_ident: CubicBezier
+Token main.Token.(
+Token main.Token.d_ident: CubicBezierShape
+Token main.Token.)
+Token main.Token.,
+    BEFORE: /// Backend-specific painting.
+Token main.Token.d_ident: Callback
+Token main.Token.(
+Token main.Token.d_ident: PaintCallback
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: test
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: shape_impl_send_sync
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_fn
+Token main.Token.d_ident: assert_send_sync
+Token main.Token.<
+Token main.Token.d_ident: T
+Token main.Token.:
+Token main.Token.d_ident: Send
+Token main.Token.+
+Token main.Token.d_ident: Sync
+Token main.Token.>
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.}
+Token main.Token.d_ident: assert_send_sync
+Token main.Token.::
+Token main.Token.<
+Token main.Token.d_ident: Shape
+Token main.Token.>
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Self
+Token main.Token.>
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: shapes
+Token main.Token.:
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Self
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Vec
+Token main.Token.(
+Token main.Token.d_ident: shapes
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: Mesh
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: mesh
+Token main.Token.:
+Token main.Token.d_ident: Mesh
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Mesh
+Token main.Token.(
+Token main.Token.d_ident: mesh
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// ## Constructors
+Token main.Token.kw_impl
+Token main.Token.d_ident: Shape
+Token main.Token.{
+    BEFORE: /// A line between two points.
+    BEFORE: /// More efficient than calling [`Self::line`].
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: line_segment
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.;
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: LineSegment
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// A horizontal line.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: hline
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Rangef
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: x
+Token main.Token.=
+Token main.Token.d_ident: x
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: LineSegment
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// A vertical line.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: vline
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Rangef
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: y
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: LineSegment
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token.)
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// A line through many points.
+    BEFORE: ///
+    BEFORE: /// Use [`Self::line_segment`] instead if your line only connects two points.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: line
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Path
+Token main.Token.(
+Token main.Token.d_ident: PathShape
+Token main.Token.::
+Token main.Token.d_ident: line
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// A line that closes back to the start point again.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: closed_line
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Path
+Token main.Token.(
+Token main.Token.d_ident: PathShape
+Token main.Token.::
+Token main.Token.d_ident: closed_line
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// Turn a line into equally spaced dots.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: dotted_line
+Token main.Token.(
+Token main.Token.d_ident: path
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: color
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Color32
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: spacing
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Self
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: shapes
+Token main.Token.=
+Token main.Token.d_ident: Vec
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: points_from_line
+Token main.Token.(
+Token main.Token.d_ident: path
+Token main.Token.,
+Token main.Token.d_ident: spacing
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: color
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: shapes
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: shapes
+Token main.Token.}
+    BEFORE: /// Turn a line into dashes.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: dashed_line
+Token main.Token.(
+Token main.Token.d_ident: path
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: dash_length
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: gap_length
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Self
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: shapes
+Token main.Token.=
+Token main.Token.d_ident: Vec
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: dashes_from_line
+Token main.Token.(
+Token main.Token.d_ident: path
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: dash_length
+Token main.Token.]
+Token main.Token.,
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: gap_length
+Token main.Token.]
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: shapes
+Token main.Token.,
+Token main.Token.d_number: 0
+Token main.Token..
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: shapes
+Token main.Token.}
+    BEFORE: /// Turn a line into dashes with different dash/gap lengths and a start offset.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: dashed_line_with_offset
+Token main.Token.(
+Token main.Token.d_ident: path
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: dash_lengths
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: f32
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: gap_lengths
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: f32
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: dash_offset
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Self
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: shapes
+Token main.Token.=
+Token main.Token.d_ident: Vec
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: dashes_from_line
+Token main.Token.(
+Token main.Token.d_ident: path
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: dash_lengths
+Token main.Token.,
+Token main.Token.d_ident: gap_lengths
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: shapes
+Token main.Token.,
+Token main.Token.d_ident: dash_offset
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: shapes
+Token main.Token.}
+    BEFORE: /// Turn a line into dashes. If you need to create many dashed lines use this instead of
+    BEFORE: /// [`Self::dashed_line`].
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: dashed_line_many
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: dash_length
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: gap_length
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: shapes
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Self
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: dashes_from_line
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: dash_length
+Token main.Token.]
+Token main.Token.,
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: gap_length
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: shapes
+Token main.Token.,
+Token main.Token.d_number: 0
+Token main.Token..
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+    BEFORE: /// Turn a line into dashes with different dash/gap lengths and a start offset. If you need to
+    BEFORE: /// create many dashed lines use this instead of [`Self::dashed_line_with_offset`].
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: dashed_line_many_with_offset
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: dash_lengths
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: f32
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: gap_lengths
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: f32
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: dash_offset
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: shapes
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Self
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: dashes_from_line
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: dash_lengths
+Token main.Token.,
+Token main.Token.d_ident: gap_lengths
+Token main.Token.,
+Token main.Token.d_ident: shapes
+Token main.Token.,
+Token main.Token.d_ident: dash_offset
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+    BEFORE: /// A convex polygon with a fill and optional stroke.
+    BEFORE: ///
+    BEFORE: /// The most performant winding order is clockwise.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: convex_polygon
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Color32
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Path
+Token main.Token.(
+Token main.Token.d_ident: PathShape
+Token main.Token.::
+Token main.Token.d_ident: convex_polygon
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: circle_filled
+Token main.Token.(
+Token main.Token.d_ident: center
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: fill_color
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Color32
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Circle
+Token main.Token.(
+Token main.Token.d_ident: CircleShape
+Token main.Token.::
+Token main.Token.d_ident: filled
+Token main.Token.(
+Token main.Token.d_ident: center
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: fill_color
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: circle_stroke
+Token main.Token.(
+Token main.Token.d_ident: center
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Circle
+Token main.Token.(
+Token main.Token.d_ident: CircleShape
+Token main.Token.::
+Token main.Token.d_ident: stroke
+Token main.Token.(
+Token main.Token.d_ident: center
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: rect_filled
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Rounding
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: fill_color
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Color32
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Rect
+Token main.Token.(
+Token main.Token.d_ident: RectShape
+Token main.Token.::
+Token main.Token.d_ident: filled
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.,
+Token main.Token.d_ident: fill_color
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: rect_stroke
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Rounding
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Rect
+Token main.Token.(
+Token main.Token.d_ident: RectShape
+Token main.Token.::
+Token main.Token.d_ident: stroke
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: allow
+Token main.Token.(
+Token main.Token.d_ident: clippy
+Token main.Token.::
+Token main.Token.d_ident: needless_pass_by_value
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: text
+Token main.Token.(
+Token main.Token.d_ident: fonts
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Fonts
+Token main.Token.,
+Token main.Token.d_ident: pos
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: anchor
+Token main.Token.:
+Token main.Token.d_ident: Align2
+Token main.Token.,
+Token main.Token.d_ident: text
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: ToString
+Token main.Token.,
+Token main.Token.d_ident: font_id
+Token main.Token.:
+Token main.Token.d_ident: FontId
+Token main.Token.,
+Token main.Token.d_ident: color
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: galley
+Token main.Token.=
+Token main.Token.d_ident: fonts
+Token main.Token..
+Token main.Token.d_ident: layout_no_wrap
+Token main.Token.(
+Token main.Token.d_ident: text
+Token main.Token..
+Token main.Token.d_ident: to_string
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: font_id
+Token main.Token.,
+Token main.Token.d_ident: color
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: rect
+Token main.Token.=
+Token main.Token.d_ident: anchor
+Token main.Token..
+Token main.Token.d_ident: anchor_size
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token..
+Token main.Token.d_ident: size
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: galley
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token.,
+Token main.Token.d_ident: color
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// Any uncolored parts of the [`Galley`] (using [`Color32::PLACEHOLDER`]) will be replaced with the given color.
+    BEFORE: ///
+    BEFORE: /// Any non-placeholder color in the galley takes precedence over this fallback color.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: galley
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token.:
+Token main.Token.d_ident: Arc
+Token main.Token.<
+Token main.Token.d_ident: Galley
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: fallback_color
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: TextShape
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token.,
+Token main.Token.d_ident: fallback_color
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// All text color in the [`Galley`] will be replaced with the given color.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: galley_with_override_text_color
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token.:
+Token main.Token.d_ident: Arc
+Token main.Token.<
+Token main.Token.d_ident: Galley
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: text_color
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: TextShape
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token.,
+Token main.Token.d_ident: text_color
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: with_override_text_color
+Token main.Token.(
+Token main.Token.d_ident: text_color
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: deprecated
+Token main.Token.=
+Token main.Token.d_string: "Use `Shape::galley` or `Shape::galley_with_override_text_color` instead"
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: galley_with_color
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token.:
+Token main.Token.d_ident: Arc
+Token main.Token.<
+Token main.Token.d_ident: Galley
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: text_color
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: galley_with_override_text_color
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token.,
+Token main.Token.d_ident: text_color
+Token main.Token.)
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: mesh
+Token main.Token.(
+Token main.Token.d_ident: mesh
+Token main.Token.:
+Token main.Token.d_ident: Mesh
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.d_ident: epaint_assert
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: mesh
+Token main.Token..
+Token main.Token.d_ident: is_valid
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Mesh
+Token main.Token.(
+Token main.Token.d_ident: mesh
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// An image at the given position.
+    BEFORE: ///
+    BEFORE: /// `uv` should normally be `Rect::from_min_max(pos2(0.0, 0.0), pos2(1.0, 1.0))`
+    BEFORE: /// unless you want to crop or flip the image.
+    BEFORE: ///
+    BEFORE: /// `tint` is a color multiplier. Use [`Color32::WHITE`] if you don't want to tint the image.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: image
+Token main.Token.(
+Token main.Token.d_ident: texture_id
+Token main.Token.:
+Token main.Token.d_ident: TextureId
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: uv
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: tint
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: mesh
+Token main.Token.=
+Token main.Token.d_ident: Mesh
+Token main.Token.::
+Token main.Token.d_ident: with_texture
+Token main.Token.(
+Token main.Token.d_ident: texture_id
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: mesh
+Token main.Token..
+Token main.Token.d_ident: add_rect_with_uv
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: uv
+Token main.Token.,
+Token main.Token.d_ident: tint
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: mesh
+Token main.Token.(
+Token main.Token.d_ident: mesh
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// The visual bounding rectangle (includes stroke widths)
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.kw_match
+Token main.Token.d_ident: self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Noop
+Token main.Token.=>
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: NOTHING
+Token main.Token.,
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Vec
+Token main.Token.(
+Token main.Token.d_ident: shapes
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: rect
+Token main.Token.=
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: NOTHING
+Token main.Token.;
+Token main.Token.kw_for
+Token main.Token.d_ident: shape
+Token main.Token.d_ident: in
+Token main.Token.d_ident: shapes
+Token main.Token.{
+Token main.Token.d_ident: rect
+Token main.Token.=
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: union
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token..
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: rect
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Circle
+Token main.Token.(
+Token main.Token.d_ident: circle_shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.d_ident: circle_shape
+Token main.Token..
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: LineSegment
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.}
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: is_empty
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: NOTHING
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_two_pos
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Path
+Token main.Token.(
+Token main.Token.d_ident: path_shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.d_ident: path_shape
+Token main.Token..
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Rect
+Token main.Token.(
+Token main.Token.d_ident: rect_shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.d_ident: rect_shape
+Token main.Token..
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Text
+Token main.Token.(
+Token main.Token.d_ident: text_shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.d_ident: text_shape
+Token main.Token..
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Mesh
+Token main.Token.(
+Token main.Token.d_ident: mesh
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.d_ident: mesh
+Token main.Token..
+Token main.Token.d_ident: calc_bounds
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: QuadraticBezier
+Token main.Token.(
+Token main.Token.d_ident: bezier
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.d_ident: bezier
+Token main.Token..
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: CubicBezier
+Token main.Token.(
+Token main.Token.d_ident: bezier
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.d_ident: bezier
+Token main.Token..
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Callback
+Token main.Token.(
+Token main.Token.d_ident: custom
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.d_ident: custom
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// ## Inspection and transforms
+Token main.Token.kw_impl
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: texture_id
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: super
+Token main.Token.::
+Token main.Token.d_ident: TextureId
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.kw_let
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Mesh
+Token main.Token.(
+Token main.Token.d_ident: mesh
+Token main.Token.)
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token.{
+Token main.Token.d_ident: mesh
+Token main.Token..
+Token main.Token.d_ident: texture_id
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.kw_let
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Rect
+Token main.Token.(
+Token main.Token.d_ident: rect_shape
+Token main.Token.)
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token.{
+Token main.Token.d_ident: rect_shape
+Token main.Token..
+Token main.Token.d_ident: fill_texture_id
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: super
+Token main.Token.::
+Token main.Token.d_ident: TextureId
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Move the shape by this many points, in-place.
+    BEFORE: ///
+    BEFORE: /// If using a [`PaintCallback`], note that only the rect is scaled as opposed
+    BEFORE: /// to other shapes where the stroke is also scaled.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: transform
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: transform
+Token main.Token.:
+Token main.Token.d_ident: TSTransform
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_match
+Token main.Token.d_ident: self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Noop
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Vec
+Token main.Token.(
+Token main.Token.d_ident: shapes
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.kw_for
+Token main.Token.d_ident: shape
+Token main.Token.d_ident: in
+Token main.Token.d_ident: shapes
+Token main.Token.{
+Token main.Token.d_ident: shape
+Token main.Token..
+Token main.Token.d_ident: transform
+Token main.Token.(
+Token main.Token.d_ident: transform
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Circle
+Token main.Token.(
+Token main.Token.d_ident: circle_shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.d_ident: circle_shape
+Token main.Token..
+Token main.Token.d_ident: center
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.d_ident: circle_shape
+Token main.Token..
+Token main.Token.d_ident: center
+Token main.Token.;
+Token main.Token.d_ident: circle_shape
+Token main.Token..
+Token main.Token.d_ident: radius
+Token main.Token.*
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.;
+Token main.Token.d_ident: circle_shape
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token.*
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: LineSegment
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.}
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.kw_for
+Token main.Token.d_ident: p
+Token main.Token.d_ident: in
+Token main.Token.d_ident: points
+Token main.Token.{
+Token main.Token.*
+Token main.Token.d_ident: p
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.*
+Token main.Token.d_ident: p
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token.*
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Path
+Token main.Token.(
+Token main.Token.d_ident: path_shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.kw_for
+Token main.Token.d_ident: p
+Token main.Token.d_ident: in
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: path_shape
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.{
+Token main.Token.*
+Token main.Token.d_ident: p
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.*
+Token main.Token.d_ident: p
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: path_shape
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token.*
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Rect
+Token main.Token.(
+Token main.Token.d_ident: rect_shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.d_ident: rect_shape
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.d_ident: rect_shape
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.;
+Token main.Token.d_ident: rect_shape
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token.*
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Text
+Token main.Token.(
+Token main.Token.d_ident: text_shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.d_ident: text_shape
+Token main.Token..
+Token main.Token.d_ident: pos
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.d_ident: text_shape
+Token main.Token..
+Token main.Token.d_ident: pos
+Token main.Token.;
+    BEFORE: // Scale text:
+Token main.Token.kw_let
+Token main.Token.d_ident: galley
+Token main.Token.=
+Token main.Token.d_ident: Arc
+Token main.Token.::
+Token main.Token.d_ident: make_mut
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: text_shape
+Token main.Token..
+Token main.Token.d_ident: galley
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_for
+Token main.Token.d_ident: row
+Token main.Token.d_ident: in
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: galley
+Token main.Token..
+Token main.Token.d_ident: rows
+Token main.Token.{
+Token main.Token.d_ident: row
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token..
+Token main.Token.d_ident: mesh_bounds
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.*
+Token main.Token.d_ident: row
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token..
+Token main.Token.d_ident: mesh_bounds
+Token main.Token.;
+Token main.Token.kw_for
+Token main.Token.d_ident: v
+Token main.Token.d_ident: in
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: row
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token..
+Token main.Token.d_ident: mesh
+Token main.Token..
+Token main.Token.d_ident: vertices
+Token main.Token.{
+Token main.Token.d_ident: v
+Token main.Token..
+Token main.Token.d_ident: pos
+Token main.Token.=
+Token main.Token.d_ident: Pos2
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.*
+Token main.Token.d_ident: v
+Token main.Token..
+Token main.Token.d_ident: pos
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.*
+Token main.Token.d_ident: v
+Token main.Token..
+Token main.Token.d_ident: pos
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.d_ident: galley
+Token main.Token..
+Token main.Token.d_ident: mesh_bounds
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.*
+Token main.Token.d_ident: galley
+Token main.Token..
+Token main.Token.d_ident: mesh_bounds
+Token main.Token.;
+Token main.Token.d_ident: galley
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.*
+Token main.Token.d_ident: galley
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Mesh
+Token main.Token.(
+Token main.Token.d_ident: mesh
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.d_ident: mesh
+Token main.Token..
+Token main.Token.d_ident: transform
+Token main.Token.(
+Token main.Token.d_ident: transform
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: QuadraticBezier
+Token main.Token.(
+Token main.Token.d_ident: bezier_shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.d_ident: bezier_shape
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.d_ident: bezier_shape
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.;
+Token main.Token.d_ident: bezier_shape
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.d_ident: bezier_shape
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token.;
+Token main.Token.d_ident: bezier_shape
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.d_ident: bezier_shape
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.[
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token.;
+Token main.Token.d_ident: bezier_shape
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token.*
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: CubicBezier
+Token main.Token.(
+Token main.Token.d_ident: cubic_curve
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.kw_for
+Token main.Token.d_ident: p
+Token main.Token.d_ident: in
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: cubic_curve
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.{
+Token main.Token.*
+Token main.Token.d_ident: p
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.*
+Token main.Token.d_ident: p
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: cubic_curve
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token.*
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token..
+Token main.Token.d_ident: scaling
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Callback
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.)
+Token main.Token.=>
+Token main.Token.{
+Token main.Token.d_ident: shape
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.=
+Token main.Token.d_ident: transform
+Token main.Token.*
+Token main.Token.d_ident: shape
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: /// How to paint a circle.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Copy
+Token main.Token.,
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.,
+Token main.Token.d_ident: PartialEq
+Token main.Token.)
+Token main.Token.]
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: cfg_attr
+Token main.Token.(
+Token main.Token.d_ident: feature
+Token main.Token.=
+Token main.Token.d_string: "serde"
+Token main.Token.,
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Deserialize
+Token main.Token.,
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Serialize
+Token main.Token.)
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: CircleShape
+Token main.Token.{
+Token main.Token.kw_pub
+Token main.Token.d_ident: center
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.kw_pub
+Token main.Token.d_ident: radius
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.kw_pub
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.kw_pub
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: CircleShape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: filled
+Token main.Token.(
+Token main.Token.d_ident: center
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: fill_color
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Color32
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: center
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: fill_color
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: stroke
+Token main.Token.(
+Token main.Token.d_ident: center
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: center
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// The visual bounding rectangle (includes stroke width)
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.==
+Token main.Token.d_ident: Color32
+Token main.Token.::
+Token main.Token.d_ident: TRANSPARENT
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: is_empty
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: NOTHING
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_center_size
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: center
+Token main.Token.,
+Token main.Token.d_ident: Vec2
+Token main.Token.::
+Token main.Token.d_ident: splat
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: radius
+Token main.Token.*
+Token main.Token.d_number: 2.0
+Token main.Token.+
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token.)
+Token main.Token.,
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: CircleShape
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.:
+Token main.Token.d_ident: CircleShape
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Circle
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: /// A path which can be stroked and/or filled (if closed).
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.,
+Token main.Token.d_ident: PartialEq
+Token main.Token.)
+Token main.Token.]
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: cfg_attr
+Token main.Token.(
+Token main.Token.d_ident: feature
+Token main.Token.=
+Token main.Token.d_string: "serde"
+Token main.Token.,
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Deserialize
+Token main.Token.,
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Serialize
+Token main.Token.)
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: PathShape
+Token main.Token.{
+    BEFORE: /// Filled paths should prefer clockwise order.
+Token main.Token.kw_pub
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.,
+    BEFORE: /// If true, connect the first and last of the points together.
+    BEFORE: /// This is required if `fill != TRANSPARENT`.
+Token main.Token.kw_pub
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+    BEFORE: /// Fill is only supported for convex polygons.
+Token main.Token.kw_pub
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+    BEFORE: /// Color and thickness of the line.
+Token main.Token.kw_pub
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.,
+    BEFORE: // TODO(emilk): Add texture support either by supplying uv for each point,
+    BEFORE: // or by some transform from points to uv (e.g. a callback or a linear transform matrix).
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: PathShape
+Token main.Token.{
+    BEFORE: /// A line through many points.
+    BEFORE: ///
+    BEFORE: /// Use [`Shape::line_segment`] instead if your line only connects two points.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: line
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: false
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// A line that closes back to the start point again.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: closed_line
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: true
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// A convex polygon with a fill and optional stroke.
+    BEFORE: ///
+    BEFORE: /// The most performant winding order is clockwise.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: convex_polygon
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.:
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Color32
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: closed
+Token main.Token.:
+Token main.Token.d_ident: true
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: fill
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// The visual bounding rectangle (includes stroke width)
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.==
+Token main.Token.d_ident: Color32
+Token main.Token.::
+Token main.Token.d_ident: TRANSPARENT
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: is_empty
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: NOTHING
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_points
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: points
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: PathShape
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.:
+Token main.Token.d_ident: PathShape
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Path
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: /// How to paint a rectangle.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Copy
+Token main.Token.,
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.,
+Token main.Token.d_ident: PartialEq
+Token main.Token.)
+Token main.Token.]
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: cfg_attr
+Token main.Token.(
+Token main.Token.d_ident: feature
+Token main.Token.=
+Token main.Token.d_string: "serde"
+Token main.Token.,
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Deserialize
+Token main.Token.,
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Serialize
+Token main.Token.)
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: RectShape
+Token main.Token.{
+Token main.Token.kw_pub
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+    BEFORE: /// How rounded the corners are. Use `Rounding::ZERO` for no rounding.
+Token main.Token.kw_pub
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.d_ident: Rounding
+Token main.Token.,
+    BEFORE: /// How to fill the rectangle.
+Token main.Token.kw_pub
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+    BEFORE: /// The thickness and color of the outline.
+Token main.Token.kw_pub
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.,
+    BEFORE: /// If the rect should be filled with a texture, which one?
+    BEFORE: ///
+    BEFORE: /// The texture is multiplied with [`Self::fill`].
+Token main.Token.kw_pub
+Token main.Token.d_ident: fill_texture_id
+Token main.Token.:
+Token main.Token.d_ident: TextureId
+Token main.Token.,
+    BEFORE: /// What UV coordinates to use for the texture?
+    BEFORE: ///
+    BEFORE: /// To display a texture, set [`Self::fill_texture_id`],
+    BEFORE: /// and set this to `Rect::from_min_max(pos2(0.0, 0.0), pos2(1.0, 1.0))`.
+    BEFORE: ///
+    BEFORE: /// Use [`Rect::ZERO`] to turn off texturing.
+Token main.Token.kw_pub
+Token main.Token.d_ident: uv
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: RectShape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Rounding
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: fill_color
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Color32
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: fill_color
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: fill_texture_id
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: uv
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: ZERO
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: filled
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Rounding
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: fill_color
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Color32
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: fill_color
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: fill_texture_id
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: uv
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: ZERO
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: stroke
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Rounding
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: fill
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: fill_texture_id
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: uv
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: ZERO
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// The visual bounding rectangle (includes stroke width)
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.==
+Token main.Token.d_ident: Color32
+Token main.Token.::
+Token main.Token.d_ident: TRANSPARENT
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: is_empty
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: NOTHING
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: RectShape
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.:
+Token main.Token.d_ident: RectShape
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Rect
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Copy
+Token main.Token.,
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.,
+Token main.Token.d_ident: PartialEq
+Token main.Token.)
+Token main.Token.]
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: cfg_attr
+Token main.Token.(
+Token main.Token.d_ident: feature
+Token main.Token.=
+Token main.Token.d_string: "serde"
+Token main.Token.,
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Deserialize
+Token main.Token.,
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Serialize
+Token main.Token.)
+Token main.Token.)
+Token main.Token.]
+    BEFORE: /// How rounded the corners of things should be
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: Rounding
+Token main.Token.{
+    BEFORE: /// Radius of the rounding of the North-West (left top) corner.
+Token main.Token.kw_pub
+Token main.Token.d_ident: nw
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+    BEFORE: /// Radius of the rounding of the North-East (right top) corner.
+Token main.Token.kw_pub
+Token main.Token.d_ident: ne
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+    BEFORE: /// Radius of the rounding of the South-West (left bottom) corner.
+Token main.Token.kw_pub
+Token main.Token.d_ident: sw
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+    BEFORE: /// Radius of the rounding of the South-East (right bottom) corner.
+Token main.Token.kw_pub
+Token main.Token.d_ident: se
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: Default
+Token main.Token.kw_for
+Token main.Token.d_ident: Rounding
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: ZERO
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: f32
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Rounding
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: radius
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: nw
+Token main.Token.:
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: ne
+Token main.Token.:
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: sw
+Token main.Token.:
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: se
+Token main.Token.:
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: Rounding
+Token main.Token.{
+    BEFORE: /// No rounding on any corner.
+Token main.Token.kw_pub
+Token main.Token.kw_const
+Token main.Token.d_ident: ZERO
+Token main.Token.:
+Token main.Token.d_ident: Self
+Token main.Token.=
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: nw
+Token main.Token.:
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_ident: ne
+Token main.Token.:
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_ident: sw
+Token main.Token.:
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_ident: se
+Token main.Token.:
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_const
+Token main.Token.kw_fn
+Token main.Token.d_ident: same
+Token main.Token.(
+Token main.Token.d_ident: radius
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: nw
+Token main.Token.:
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: ne
+Token main.Token.:
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: sw
+Token main.Token.:
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: se
+Token main.Token.:
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Do all corners have the same rounding?
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: is_same
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: bool
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.==
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.==
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.==
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.}
+    BEFORE: /// Make sure each corner has a rounding of at least this.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: at_least
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: min
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: nw
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: ne
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: sw
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: se
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Make sure each corner has a rounding of at most this.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: at_most
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: nw
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: ne
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: sw
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: se
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: /// How to paint some text on screen.
+    BEFORE: ///
+    BEFORE: /// This needs to be recreated if `pixels_per_point` (dpi scale) changes.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.,
+Token main.Token.d_ident: PartialEq
+Token main.Token.)
+Token main.Token.]
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: cfg_attr
+Token main.Token.(
+Token main.Token.d_ident: feature
+Token main.Token.=
+Token main.Token.d_string: "serde"
+Token main.Token.,
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Deserialize
+Token main.Token.,
+Token main.Token.d_ident: serde
+Token main.Token.::
+Token main.Token.d_ident: Serialize
+Token main.Token.)
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: TextShape
+Token main.Token.{
+    BEFORE: /// Top left corner of the first character.
+Token main.Token.kw_pub
+Token main.Token.d_ident: pos
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+    BEFORE: /// The laid out text, from [`Fonts::layout_job`].
+Token main.Token.kw_pub
+Token main.Token.d_ident: galley
+Token main.Token.:
+Token main.Token.d_ident: Arc
+Token main.Token.<
+Token main.Token.d_ident: Galley
+Token main.Token.>
+Token main.Token.,
+    BEFORE: /// Add this underline to the whole text.
+    BEFORE: /// You can also set an underline when creating the galley.
+Token main.Token.kw_pub
+Token main.Token.d_ident: underline
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.,
+    BEFORE: /// Any [`Color32::PLACEHOLDER`] in the galley will be replaced by the given color.
+    BEFORE: /// Affects everything: backgrounds, glyphs, strikethough, underline, etc.
+Token main.Token.kw_pub
+Token main.Token.d_ident: fallback_color
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+    BEFORE: /// If set, the text color in the galley will be ignored and replaced
+    BEFORE: /// with the given color.
+    BEFORE: ///
+    BEFORE: /// This only affects the glyphs and will NOT replace background color nor strikethrough/underline color.
+Token main.Token.kw_pub
+Token main.Token.d_ident: override_text_color
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: Color32
+Token main.Token.>
+Token main.Token.,
+    BEFORE: /// If set, the text will be rendered with the given opacity in gamma space
+    BEFORE: /// Affects everything: backgrounds, glyphs, strikethough, underline, etc.
+Token main.Token.kw_pub
+Token main.Token.d_ident: opacity_factor
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+    BEFORE: /// Rotate text by this many radians clockwise.
+    BEFORE: /// The pivot is `pos` (the upper left corner of the text).
+Token main.Token.kw_pub
+Token main.Token.d_ident: angle
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: TextShape
+Token main.Token.{
+    BEFORE: /// The given fallback color will be used for any uncolored part of the galley (using [`Color32::PLACEHOLDER`]).
+    BEFORE: ///
+    BEFORE: /// Any non-placeholder color in the galley takes precedence over this fallback color.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token.:
+Token main.Token.d_ident: Arc
+Token main.Token.<
+Token main.Token.d_ident: Galley
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: fallback_color
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: pos
+Token main.Token.,
+Token main.Token.d_ident: galley
+Token main.Token.,
+Token main.Token.d_ident: underline
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.::
+Token main.Token.d_ident: NONE
+Token main.Token.,
+Token main.Token.d_ident: fallback_color
+Token main.Token.,
+Token main.Token.d_ident: override_text_color
+Token main.Token.:
+Token main.Token.d_ident: None
+Token main.Token.,
+Token main.Token.d_ident: opacity_factor
+Token main.Token.:
+Token main.Token.d_number: 1.0
+Token main.Token.,
+Token main.Token.d_ident: angle
+Token main.Token.:
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// The visual bounding rectangle
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: visual_bounding_rect
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: galley
+Token main.Token..
+Token main.Token.d_ident: mesh_bounds
+Token main.Token..
+Token main.Token.d_ident: translate
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: pos
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: with_underline
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: underline
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: underline
+Token main.Token.=
+Token main.Token.d_ident: underline
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Use the given color for the text, regardless of what color is already in the galley.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: with_override_text_color
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: override_text_color
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: override_text_color
+Token main.Token.=
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: override_text_color
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Rotate text by this many radians clockwise.
+    BEFORE: /// The pivot is `pos` (the upper left corner of the text).
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: with_angle
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: angle
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: angle
+Token main.Token.=
+Token main.Token.d_ident: angle
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Render text with this opacity in gamma space
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: with_opacity_factor
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: opacity_factor
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: opacity_factor
+Token main.Token.=
+Token main.Token.d_ident: opacity_factor
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: TextShape
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.:
+Token main.Token.d_ident: TextShape
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Text
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: /// Creates equally spaced filled circles from a line.
+Token main.Token.kw_fn
+Token main.Token.d_ident: points_from_line
+Token main.Token.(
+Token main.Token.d_ident: path
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: spacing
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: color
+Token main.Token.:
+Token main.Token.d_ident: Color32
+Token main.Token.,
+Token main.Token.d_ident: shapes
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Shape
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: position_on_segment
+Token main.Token.=
+Token main.Token.d_number: 0.0
+Token main.Token.;
+Token main.Token.d_ident: path
+Token main.Token..
+Token main.Token.d_ident: windows
+Token main.Token.(
+Token main.Token.d_number: 2
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: for_each
+Token main.Token.(
+Token main.Token.|
+Token main.Token.d_ident: window
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.(
+Token main.Token.d_ident: start
+Token main.Token.,
+Token main.Token.d_ident: end
+Token main.Token.)
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: window
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: window
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: vector
+Token main.Token.=
+Token main.Token.d_ident: end
+Token main.Token.-
+Token main.Token.d_ident: start
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: segment_length
+Token main.Token.=
+Token main.Token.d_ident: vector
+Token main.Token..
+Token main.Token.d_ident: length
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_while
+Token main.Token.d_ident: position_on_segment
+Token main.Token.<
+Token main.Token.d_ident: segment_length
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: new_point
+Token main.Token.=
+Token main.Token.d_ident: start
+Token main.Token.+
+Token main.Token.d_ident: vector
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: position_on_segment
+Token main.Token./
+Token main.Token.d_ident: segment_length
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: shapes
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: Shape
+Token main.Token.::
+Token main.Token.d_ident: circle_filled
+Token main.Token.(
+Token main.Token.d_ident: new_point
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.,
+Token main.Token.d_ident: color
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: position_on_segment
+Token main.Token.+
+Token main.Token.=
+Token main.Token.d_ident: spacing
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: position_on_segment
+Token main.Token.-
+Token main.Token.=
+Token main.Token.d_ident: segment_length
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+    BEFORE: /// Creates dashes from a line.
+Token main.Token.kw_fn
+Token main.Token.d_ident: dashes_from_line
+Token main.Token.(
+Token main.Token.d_ident: path
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: Pos2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.d_ident: Stroke
+Token main.Token.,
+Token main.Token.d_ident: dash_lengths
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: f32
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: gap_lengths
+Token main.Token.:
+Token main.Token.&
+Token main.Token.[
+Token main.Token.d_ident: f32
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: shapes
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Vec
+Token main.Token.<
+Token main.Token.d_ident: Shape
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: dash_offset
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: dash_lengths
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: gap_lengths
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: position_on_segment
+Token main.Token.=
+Token main.Token.d_ident: dash_offset
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: drawing_dash
+Token main.Token.=
+Token main.Token.d_ident: false
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: step
+Token main.Token.=
+Token main.Token.d_number: 0
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: steps
+Token main.Token.=
+Token main.Token.d_ident: dash_lengths
+Token main.Token..
+Token main.Token.d_ident: len
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: path
+Token main.Token..
+Token main.Token.d_ident: windows
+Token main.Token.(
+Token main.Token.d_number: 2
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: for_each
+Token main.Token.(
+Token main.Token.|
+Token main.Token.d_ident: window
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.(
+Token main.Token.d_ident: start
+Token main.Token.,
+Token main.Token.d_ident: end
+Token main.Token.)
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: window
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: window
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: vector
+Token main.Token.=
+Token main.Token.d_ident: end
+Token main.Token.-
+Token main.Token.d_ident: start
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: segment_length
+Token main.Token.=
+Token main.Token.d_ident: vector
+Token main.Token..
+Token main.Token.d_ident: length
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: start_point
+Token main.Token.=
+Token main.Token.d_ident: start
+Token main.Token.;
+Token main.Token.kw_while
+Token main.Token.d_ident: position_on_segment
+Token main.Token.<
+Token main.Token.d_ident: segment_length
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: new_point
+Token main.Token.=
+Token main.Token.d_ident: start
+Token main.Token.+
+Token main.Token.d_ident: vector
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: position_on_segment
+Token main.Token./
+Token main.Token.d_ident: segment_length
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: drawing_dash
+Token main.Token.{
+    BEFORE: // This is the end point.
+Token main.Token.d_ident: shapes
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: Shape
+Token main.Token.::
+Token main.Token.d_ident: line_segment
+Token main.Token.(
+Token main.Token.[
+Token main.Token.d_ident: start_point
+Token main.Token.,
+Token main.Token.d_ident: new_point
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: position_on_segment
+Token main.Token.+
+Token main.Token.=
+Token main.Token.d_ident: gap_lengths
+Token main.Token.[
+Token main.Token.d_ident: step
+Token main.Token.]
+Token main.Token.;
+    BEFORE: // Increment step counter
+Token main.Token.d_ident: step
+Token main.Token.+
+Token main.Token.=
+Token main.Token.d_number: 1
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: step
+Token main.Token.>=
+Token main.Token.d_ident: steps
+Token main.Token.{
+Token main.Token.d_ident: step
+Token main.Token.=
+Token main.Token.d_number: 0
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+    BEFORE: // Start a new dash.
+Token main.Token.d_ident: start_point
+Token main.Token.=
+Token main.Token.d_ident: new_point
+Token main.Token.;
+Token main.Token.d_ident: position_on_segment
+Token main.Token.+
+Token main.Token.=
+Token main.Token.d_ident: dash_lengths
+Token main.Token.[
+Token main.Token.d_ident: step
+Token main.Token.]
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: drawing_dash
+Token main.Token.=
+Token main.Token.!
+Token main.Token.d_ident: drawing_dash
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // If the segment ends and the dash is not finished, add the segment's end point.
+Token main.Token.kw_if
+Token main.Token.d_ident: drawing_dash
+Token main.Token.{
+Token main.Token.d_ident: shapes
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: Shape
+Token main.Token.::
+Token main.Token.d_ident: line_segment
+Token main.Token.(
+Token main.Token.[
+Token main.Token.d_ident: start_point
+Token main.Token.,
+Token main.Token.d_ident: end
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: position_on_segment
+Token main.Token.-
+Token main.Token.=
+Token main.Token.d_ident: segment_length
+Token main.Token.;
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: /// Information passed along with [`PaintCallback`] ([`Shape::Callback`]).
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: PaintCallbackInfo
+Token main.Token.{
+    BEFORE: /// Viewport in points.
+    BEFORE: ///
+    BEFORE: /// This specifies where on the screen to paint, and the borders of this
+    BEFORE: /// Rect is the [-1, +1] of the Normalized Device Coordinates.
+    BEFORE: ///
+    BEFORE: /// Note than only a portion of this may be visible due to [`Self::clip_rect`].
+    BEFORE: ///
+    BEFORE: /// This comes from [`PaintCallback::rect`].
+Token main.Token.kw_pub
+Token main.Token.d_ident: viewport
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+    BEFORE: /// Clip rectangle in points.
+Token main.Token.kw_pub
+Token main.Token.d_ident: clip_rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+    BEFORE: /// Pixels per point.
+Token main.Token.kw_pub
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+    BEFORE: /// Full size of the screen, in pixels.
+Token main.Token.kw_pub
+Token main.Token.d_ident: screen_size_px
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: u32
+Token main.Token.;
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token.,
+Token main.Token.}
+    BEFORE: /// Size of the viewport in whole, physical pixels.
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: ViewportInPixels
+Token main.Token.{
+    BEFORE: /// Physical pixel offset for left side of the viewport.
+Token main.Token.kw_pub
+Token main.Token.d_ident: left_px
+Token main.Token.:
+Token main.Token.d_ident: i32
+Token main.Token.,
+    BEFORE: /// Physical pixel offset for top side of the viewport.
+Token main.Token.kw_pub
+Token main.Token.d_ident: top_px
+Token main.Token.:
+Token main.Token.d_ident: i32
+Token main.Token.,
+    BEFORE: /// Physical pixel offset for bottom side of the viewport.
+    BEFORE: ///
+    BEFORE: /// This is what `glViewport`, `glScissor` etc expects for the y axis.
+Token main.Token.kw_pub
+Token main.Token.d_ident: from_bottom_px
+Token main.Token.:
+Token main.Token.d_ident: i32
+Token main.Token.,
+    BEFORE: /// Viewport width in physical pixels.
+Token main.Token.kw_pub
+Token main.Token.d_ident: width_px
+Token main.Token.:
+Token main.Token.d_ident: i32
+Token main.Token.,
+    BEFORE: /// Viewport height in physical pixels.
+Token main.Token.kw_pub
+Token main.Token.d_ident: height_px
+Token main.Token.:
+Token main.Token.d_ident: i32
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: ViewportInPixels
+Token main.Token.{
+Token main.Token.kw_fn
+Token main.Token.d_ident: from_points
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.,
+Token main.Token.d_ident: screen_size_px
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: u32
+Token main.Token.;
+Token main.Token.d_number: 2
+Token main.Token.]
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+    BEFORE: // Fractional pixel values for viewports are generally valid, but may cause sampling issues
+    BEFORE: // and rounding errors might cause us to get out of bounds.
+    BEFORE: // Round:
+Token main.Token.kw_let
+Token main.Token.d_ident: left_px
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.*
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: round
+Token main.Token.(
+Token main.Token.)
+Token main.Token.d_ident: as
+Token main.Token.d_ident: i32
+Token main.Token.;
+    AFTER: // inclusive
+Token main.Token.kw_let
+Token main.Token.d_ident: top_px
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.*
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: round
+Token main.Token.(
+Token main.Token.)
+Token main.Token.d_ident: as
+Token main.Token.d_ident: i32
+Token main.Token.;
+    AFTER: // inclusive
+Token main.Token.kw_let
+Token main.Token.d_ident: right_px
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.*
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: round
+Token main.Token.(
+Token main.Token.)
+Token main.Token.d_ident: as
+Token main.Token.d_ident: i32
+Token main.Token.;
+    AFTER: // exclusive
+Token main.Token.kw_let
+Token main.Token.d_ident: bottom_px
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.*
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: round
+Token main.Token.(
+Token main.Token.)
+Token main.Token.d_ident: as
+Token main.Token.d_ident: i32
+Token main.Token.;
+    AFTER: // exclusive
+    BEFORE: // Clamp to screen:
+Token main.Token.kw_let
+Token main.Token.d_ident: screen_width
+Token main.Token.=
+Token main.Token.d_ident: screen_size_px
+Token main.Token.[
+Token main.Token.d_number: 0
+Token main.Token.]
+Token main.Token.d_ident: as
+Token main.Token.d_ident: i32
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: screen_height
+Token main.Token.=
+Token main.Token.d_ident: screen_size_px
+Token main.Token.[
+Token main.Token.d_number: 1
+Token main.Token.]
+Token main.Token.d_ident: as
+Token main.Token.d_ident: i32
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: left_px
+Token main.Token.=
+Token main.Token.d_ident: left_px
+Token main.Token..
+Token main.Token.d_ident: clamp
+Token main.Token.(
+Token main.Token.d_number: 0
+Token main.Token.,
+Token main.Token.d_ident: screen_width
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: right_px
+Token main.Token.=
+Token main.Token.d_ident: right_px
+Token main.Token..
+Token main.Token.d_ident: clamp
+Token main.Token.(
+Token main.Token.d_ident: left_px
+Token main.Token.,
+Token main.Token.d_ident: screen_width
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: top_px
+Token main.Token.=
+Token main.Token.d_ident: top_px
+Token main.Token..
+Token main.Token.d_ident: clamp
+Token main.Token.(
+Token main.Token.d_number: 0
+Token main.Token.,
+Token main.Token.d_ident: screen_height
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: bottom_px
+Token main.Token.=
+Token main.Token.d_ident: bottom_px
+Token main.Token..
+Token main.Token.d_ident: clamp
+Token main.Token.(
+Token main.Token.d_ident: top_px
+Token main.Token.,
+Token main.Token.d_ident: screen_height
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: width_px
+Token main.Token.=
+Token main.Token.d_ident: right_px
+Token main.Token.-
+Token main.Token.d_ident: left_px
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: height_px
+Token main.Token.=
+Token main.Token.d_ident: bottom_px
+Token main.Token.-
+Token main.Token.d_ident: top_px
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: left_px
+Token main.Token.,
+Token main.Token.d_ident: top_px
+Token main.Token.,
+Token main.Token.d_ident: from_bottom_px
+Token main.Token.:
+Token main.Token.d_ident: screen_height
+Token main.Token.-
+Token main.Token.d_ident: height_px
+Token main.Token.-
+Token main.Token.d_ident: top_px
+Token main.Token.,
+Token main.Token.d_ident: width_px
+Token main.Token.,
+Token main.Token.d_ident: height_px
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: test
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: test_viewport_rounding
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_for
+Token main.Token.d_ident: i
+Token main.Token.d_ident: in
+Token main.Token.d_number: 0
+Token main.Token...=
+Token main.Token.d_number: 10
+Token main.Token.d_ident: _000
+Token main.Token.{
+    BEFORE: // Two adjacent viewports should never overlap:
+Token main.Token.kw_let
+Token main.Token.d_ident: x
+Token main.Token.=
+Token main.Token.d_ident: i
+Token main.Token.d_ident: as
+Token main.Token.d_ident: f32
+Token main.Token./
+Token main.Token.d_number: 97.0
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: left
+Token main.Token.=
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_min_max
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_number: 0.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 100.0
+Token main.Token.,
+Token main.Token.d_number: 100.0
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: with_max_x
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: right
+Token main.Token.=
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_min_max
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_number: 0.0
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_number: 100.0
+Token main.Token.,
+Token main.Token.d_number: 100.0
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: with_min_x
+Token main.Token.(
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_for
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.d_ident: in
+Token main.Token.[
+Token main.Token.d_number: 0.618
+Token main.Token.,
+Token main.Token.d_number: 1.0
+Token main.Token.,
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: f32
+Token main.Token.::
+Token main.Token.d_ident: consts
+Token main.Token.::
+Token main.Token.d_ident: PI
+Token main.Token.]
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: left
+Token main.Token.=
+Token main.Token.d_ident: ViewportInPixels
+Token main.Token.::
+Token main.Token.d_ident: from_points
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: left
+Token main.Token.,
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.,
+Token main.Token.[
+Token main.Token.d_number: 100
+Token main.Token.,
+Token main.Token.d_number: 100
+Token main.Token.]
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: right
+Token main.Token.=
+Token main.Token.d_ident: ViewportInPixels
+Token main.Token.::
+Token main.Token.d_ident: from_points
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: right
+Token main.Token.,
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.,
+Token main.Token.[
+Token main.Token.d_number: 100
+Token main.Token.,
+Token main.Token.d_number: 100
+Token main.Token.]
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: assert_eq
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: left
+Token main.Token..
+Token main.Token.d_ident: left_px
+Token main.Token.+
+Token main.Token.d_ident: left
+Token main.Token..
+Token main.Token.d_ident: width_px
+Token main.Token.,
+Token main.Token.d_ident: right
+Token main.Token..
+Token main.Token.d_ident: left_px
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: PaintCallbackInfo
+Token main.Token.{
+    BEFORE: /// The viewport rectangle. This is what you would use in e.g. `glViewport`.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: viewport_in_pixels
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: ViewportInPixels
+Token main.Token.{
+Token main.Token.d_ident: ViewportInPixels
+Token main.Token.::
+Token main.Token.d_ident: from_points
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: viewport
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: screen_size_px
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// The "scissor" or "clip" rectangle. This is what you would use in e.g. `glScissor`.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: clip_rect_in_pixels
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: ViewportInPixels
+Token main.Token.{
+Token main.Token.d_ident: ViewportInPixels
+Token main.Token.::
+Token main.Token.d_ident: from_points
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: clip_rect
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: pixels_per_point
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: screen_size_px
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// If you want to paint some 3D shapes inside an egui region, you can use this.
+    BEFORE: ///
+    BEFORE: /// This is advanced usage, and is backend specific.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Clone
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: PaintCallback
+Token main.Token.{
+    BEFORE: /// Where to paint.
+    BEFORE: ///
+    BEFORE: /// This will become [`PaintCallbackInfo::viewport`].
+Token main.Token.kw_pub
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+    BEFORE: /// Paint something custom (e.g. 3D stuff).
+    BEFORE: ///
+    BEFORE: /// The concrete value of `callback` depends on the rendering backend used. For instance, the
+    BEFORE: /// `glow` backend requires that callback be an `egui_glow::CallbackFn` while the `wgpu`
+    BEFORE: /// backend requires a `egui_wgpu::Callback`.
+    BEFORE: ///
+    BEFORE: /// If the type cannot be downcast to the type expected by the current backend the callback
+    BEFORE: /// will not be drawn.
+    BEFORE: ///
+    BEFORE: /// The rendering backend is responsible for first setting the active viewport to
+    BEFORE: /// [`Self::rect`].
+    BEFORE: ///
+    BEFORE: /// The rendering backend is also responsible for restoring any state, such as the bound shader
+    BEFORE: /// program, vertex array, etc.
+    BEFORE: ///
+    BEFORE: /// Shape has to be clone, therefore this has to be an `Arc` instead of a `Box`.
+Token main.Token.kw_pub
+Token main.Token.d_ident: callback
+Token main.Token.:
+Token main.Token.d_ident: Arc
+Token main.Token.<
+Token main.Token.kw_dyn
+Token main.Token.d_ident: Any
+Token main.Token.+
+Token main.Token.d_ident: Send
+Token main.Token.+
+Token main.Token.d_ident: Sync
+Token main.Token.>
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: fmt
+Token main.Token.::
+Token main.Token.d_ident: Debug
+Token main.Token.kw_for
+Token main.Token.d_ident: PaintCallback
+Token main.Token.{
+Token main.Token.kw_fn
+Token main.Token.d_ident: fmt
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: f
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: fmt
+Token main.Token.::
+Token main.Token.d_ident: Formatter
+Token main.Token.<
+Token main.Token.'
+Token main.Token.d_ident: _
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: fmt
+Token main.Token.::
+Token main.Token.d_ident: Result
+Token main.Token.{
+Token main.Token.d_ident: f
+Token main.Token..
+Token main.Token.d_ident: debug_struct
+Token main.Token.(
+Token main.Token.d_string: "CustomShape"
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: field
+Token main.Token.(
+Token main.Token.d_string: "rect"
+Token main.Token.,
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: finish_non_exhaustive
+Token main.Token.(
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: cmp
+Token main.Token.::
+Token main.Token.d_ident: PartialEq
+Token main.Token.kw_for
+Token main.Token.d_ident: PaintCallback
+Token main.Token.{
+Token main.Token.kw_fn
+Token main.Token.d_ident: eq
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: other
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: bool
+Token main.Token.{
+    BEFORE: // As I understand it, the problem this clippy is trying to protect against
+    BEFORE: // can only happen if we do dynamic casts back and forth on the pointers, and we don't do that.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: allow
+Token main.Token.(
+Token main.Token.d_ident: clippy
+Token main.Token.::
+Token main.Token.d_ident: vtable_address_comparisons
+Token main.Token.)
+Token main.Token.]
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: eq
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: other
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.)
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: Arc
+Token main.Token.::
+Token main.Token.d_ident: ptr_eq
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: callback
+Token main.Token.,
+Token main.Token.&
+Token main.Token.d_ident: other
+Token main.Token..
+Token main.Token.d_ident: callback
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: From
+Token main.Token.<
+Token main.Token.d_ident: PaintCallback
+Token main.Token.>
+Token main.Token.kw_for
+Token main.Token.d_ident: Shape
+Token main.Token.{
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.(
+Token main.Token.d_ident: always
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_fn
+Token main.Token.d_ident: from
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.:
+Token main.Token.d_ident: PaintCallback
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: Self
+Token main.Token.::
+Token main.Token.d_ident: Callback
+Token main.Token.(
+Token main.Token.d_ident: shape
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
