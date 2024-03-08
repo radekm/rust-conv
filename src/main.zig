@@ -15,6 +15,7 @@ const Token = enum {
     kw_where,
     kw_trait,
     kw_impl,
+    kw_dyn,
     kw_while,
     kw_for,
     kw_if,
@@ -325,6 +326,7 @@ const Match = struct {
     /// Structs returned by `Toks.match` have fields with captured `token_data`.
     /// These fields are named after identifiers in the original pattern.
     fn parsePattern(comptime pattern: []const u8) Pattern {
+        @setEvalBranchQuota(2000);
         comptime var n = 0;
         comptime var tokens = [1]Token{undefined} ** pattern.len;
         comptime var capture_field_names = [1]?[]const u8{null} ** pattern.len;
@@ -1076,6 +1078,13 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
     } else if (toks.matchEql(i.*, "arc < type_name >", .{ .arc = "Arc" })) |m| {
         try writer.print("{s}", .{m.type_name});
         i.* += m.len;
+    } else if (toks.matchEql(
+        i.*,
+        "arc < dyn any + send + sync >",
+        .{ .arc = "Arc", .any = "Any", .send = "Send", .sync = "Sync" },
+    )) |m| {
+        _ = try writer.write("/* Ziggify: Pointer to anything clonable */");
+        i.* += m.len;
     } else if (toks.matchEql(i.*, "option < type_name >", .{ .option = "Option" })) |m| {
         try writer.print("?{s}", .{m.type_name});
         i.* += m.len;
@@ -1088,6 +1097,9 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
     } else if (toks.matchEql(i.*, "vec < vec2 < type_name > >", .{ .vec = "Vec", .vec2 = "Vec" })) |m| {
         // I doubt that nested `ArrayList` is good option in Zig.
         try writer.print("/* Ziggify: Vec<Vec<{s}>> */", .{m.type_name});
+        i.* += m.len;
+    } else if (toks.matchEql(i.*, "formatter < ' lifetime >", .{ .formatter = "Formatter" })) |m| {
+        try writer.print("/* Ziggify: Formatter<'{s}> */", .{m.lifetime});
         i.* += m.len;
     } else if (toks.startsWithAndGetData(i.*, &.{.d_ident})) |ld| {
         if (std.mem.eql(u8, ld.data, "Self")) {
