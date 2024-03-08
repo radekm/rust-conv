@@ -575,10 +575,6 @@ const Toks = struct {
         );
     }
 
-    fn bracketedCountWithAngleBracketsUntil(self: Toks, i: usize, stop: Token) ParserError!usize {
-        return bracketedCountWithAngleBracketsUntilAny(self, i, &.{stop});
-    }
-
     /// Parses string with stop tokens into a slice of stop tokens.
     /// String may contain operators and keywords. Additionally it may contain
     /// `ident` identifier which is translated to `.d_ident` token.
@@ -1737,7 +1733,7 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
         try writeInCamelCase(writer, fn_name);
         i.* += ld.len;
 
-        const len_before_paren = try toks.bracketedCountWithAngleBracketsUntil(i.*, .@"(") - 1;
+        const len_before_paren = try toks.typeLen(i.*, "(");
         if (len_before_paren > 0) {
             _ = try writer.write(" /* ");
             try writeTokens(writer, toks, i.*, i.* + len_before_paren);
