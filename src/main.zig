@@ -564,10 +564,6 @@ const Toks = struct {
         );
     }
 
-    fn bracketedCountUntil(self: Toks, i: usize, stop: Token) ParserError!usize {
-        return bracketedCountUntilAny(self, i, &.{stop});
-    }
-
     /// Counts number of tokens to the first `stop` token (including the stop token).
     /// Stop tokens inside brackets are ignored.
     fn bracketedCountWithAngleBracketsUntilAny(self: Toks, i: usize, stop: []const Token) ParserError!usize {
@@ -908,17 +904,17 @@ fn readStructsAndTheirFieldsInModule(
 
         if (toks.startsWith(i.*, &.{ .@"#", .@"!", .@"[" })) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+            i.* += try toks.expressionLen(i.*, "]") + 1;
         } else if (toks.startsWith(i.*, &.{ .@"#", .@"[" })) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+            i.* += try toks.expressionLen(i.*, "]") + 1;
         } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@";");
+            i.* += try toks.expressionLen(i.*, ";") + 1;
         } else if (toks.startsWithAny(i.*, &.{ &.{.kw_impl}, &.{.kw_fn}, &.{.kw_enum} })) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@"{");
-            i.* += try toks.bracketedCountUntil(i.*, .@"}");
+            i.* += try toks.expressionLen(i.*, "{") + 1;
+            i.* += try toks.expressionLen(i.*, "}") + 1;
         } else if (toks.startsWith(i.*, &.{ .kw_mod, .d_ident, .@"{" })) |len| {
             i.* += len;
             try readStructsAndTheirFieldsInModule(s, toks, i);
@@ -1285,7 +1281,7 @@ fn translateEnum(
             }
         } else if (toks.match(i.*, "name {")) |m| {
             i.* += m.len;
-            i.* += try toks.bracketedCountUntil(i.*, .@"}");
+            i.* += try toks.expressionLen(i.*, "}") + 1;
             // Ignore optional comma after enum struct item.
             if (toks.startsWith(i.*, &.{.@","})) |len| {
                 i.* += len;
@@ -1311,7 +1307,7 @@ fn translateEnum(
             break;
         } else if (toks.match(i.*, "name (")) |m| {
             i.* += m.len;
-            i.* += try toks.bracketedCountUntil(i.*, .@")");
+            i.* += try toks.expressionLen(i.*, ")") + 1;
             if (toks.match(i.*, ",")) |m_comma|
                 i.* += m_comma.len;
         } else if (toks.match(i.*, "name {")) |m| {
@@ -1385,7 +1381,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             try writeTokens(writer, toks, i.*, i.* + m.len);
             i.* += m.len;
 
-            const len = try toks.bracketedCountUntil(i.*, .@"|");
+            const len = try toks.expressionLen(i.*, "|") + 1;
             try writeTokens(writer, toks, i.*, i.* + len);
             _ = try writer.write(" */ ");
             i.* += len;
@@ -1460,8 +1456,8 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
         } else if (toks.match(i.*, "fn name")) |_| {
             // Nested function are not very common.
             // For now we don't translate them.
-            const function_body_start = i.* + try toks.bracketedCountUntil(i.*, .@"{");
-            const function_body_end = function_body_start + try toks.bracketedCountUntil(function_body_start, .@"}");
+            const function_body_start = i.* + try toks.expressionLen(i.*, "{") + 1;
+            const function_body_end = function_body_start + try toks.expressionLen(function_body_start, "}") + 1;
             try writeCommentWithTokens(writer, toks, i.*, function_body_end, "Ziffigy: ");
             i.* = function_body_end;
         } else if (toks.match(i.*, "name {")) |m_struct| {
@@ -1528,7 +1524,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             i.* += m.len;
 
             // Complex patterns are not translated.
-            const len_before = try toks.bracketedCountUntil(i.*, .@"=") - 1;
+            const len_before = try toks.expressionLen(i.*, "=");
             _ = try writer.write("/* Ziggify: ");
             try writeTokens(writer, toks, i.*, i.* + len_before);
             _ = try writer.write(" */ ");
@@ -1559,7 +1555,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
 
             // Translate expression after `in` to the first `{`.
             // Note it may happen that `{` belongs to struct construction and not to `for` body.
-            const len_before_brace = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            const len_before_brace = try toks.expressionLen(i.*, "{");
             try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
             try writer.print(") |{s}|", .{m.elem});
 
@@ -1573,7 +1569,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             _ = try writer.write("\n");
         } else if (toks.match(i.*, "for (index, elem) in")) |m| {
             // Note it may happen that `{` belongs to struct construction and not to `for` body.
-            const for_start_len = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            const for_start_len = try toks.expressionLen(i.*, "{");
             const enumerate_len = 8;
 
             // If expression after `in` ends with `.iter().enumerate()`.
@@ -1633,7 +1629,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             _ = try writer.write("(");
             // Translate control expression to the first `{`.
             // Note it may happen that `{` belongs to struct construction and not to `if` body.
-            const len_before_brace = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            const len_before_brace = try toks.expressionLen(i.*, "{");
             try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
             _ = try writer.write(")");
 
@@ -1665,7 +1661,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
 
             // Translate match control expression to the first `{`.
             // Note it may happen that `{` belongs to struct construction and not to `match` body.
-            const len_before_brace = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            const len_before_brace = try toks.expressionLen(i.*, "{");
             try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
             _ = try writer.write(")");
 
@@ -1842,7 +1838,7 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
 
         // Translate optional where clause - just wrap it in comment.
         if (toks.startsWith(i.*, &.{.kw_where})) |_| {
-            const where_len = try toks.bracketedCountUntil(i.*, .@"{") - 1;
+            const where_len = try toks.expressionLen(i.*, "{");
             _ = try writer.write(" /* ");
             try writeTokens(writer, toks, i.*, i.* + where_len);
             _ = try writer.write(" */ ");
@@ -1907,13 +1903,13 @@ fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
         //       module body and impl body.
         if (toks.startsWith(i.*, &.{ .@"#", .@"!", .@"[" })) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+            i.* += try toks.expressionLen(i.*, "]") + 1;
         } else if (toks.startsWith(i.*, &.{ .@"#", .@"[" })) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+            i.* += try toks.expressionLen(i.*, "]") + 1;
         } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@";");
+            i.* += try toks.expressionLen(i.*, ";") + 1;
         } else if (toks.match(i.*, "const name :")) |m| {
             try writer.print("const {s} : ", .{m.name});
             i.* += m.len;
@@ -1952,13 +1948,13 @@ fn translateRustToZig(writer: anytype, structs: Structs, toks: Toks, i: *usize) 
 
         if (toks.startsWith(i.*, &.{ .@"#", .@"!", .@"[" })) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+            i.* += try toks.expressionLen(i.*, "]") + 1;
         } else if (toks.startsWith(i.*, &.{ .@"#", .@"[" })) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@"]");
+            i.* += try toks.expressionLen(i.*, "]") + 1;
         } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
             i.* += len;
-            i.* += try toks.bracketedCountUntil(i.*, .@";");
+            i.* += try toks.expressionLen(i.*, ";") + 1;
         } else if (try translateStruct(writer, toks, i)) {
             //
         } else if (try translateEnum(writer, toks, i)) {
