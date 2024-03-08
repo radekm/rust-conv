@@ -1668,6 +1668,18 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             _ = try writer.write("\n");
             try translate(writer, toks, i, .@"}");
             _ = try writer.write("\n");
+        } else if (toks.match(i.*, "{")) |_| {
+            // TODO: Could this be used translate body of if, for, while
+            //       and cases of match if they're blocks?
+
+            try translate(writer, toks, i, .@"{");
+            _ = try writer.write("\n");
+
+            try translateBody(writer, toks, i, self_type);
+
+            _ = try writer.write("\n");
+            try translate(writer, toks, i, .@"}");
+            _ = try writer.write("\n");
         } else {
             // Nothing was parsed we have to stop.
             // Probably end of body. Or some unknown construct.
