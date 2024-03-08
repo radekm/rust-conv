@@ -1374,7 +1374,13 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
         // Process comment before construct or before end of module.
         try writeCommentBefore(writer, toks, i.*);
 
-        if (toks.match(i.*, "&mut |")) |m| {
+        if (toks.match(i.*, "#![")) |m| {
+            i.* += m.len;
+            i.* += try toks.expressionLen(i.*, "]") + 1;
+        } else if (toks.match(i.*, "#[")) |m| {
+            i.* += m.len;
+            i.* += try toks.expressionLen(i.*, "]") + 1;
+        } else if (toks.match(i.*, "&mut |")) |m| {
             _ = try writer.write("/* Ziggify: ");
             try writeTokens(writer, toks, i.*, i.* + m.len);
             i.* += m.len;
