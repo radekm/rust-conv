@@ -1375,6 +1375,9 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             _ = try writer.write("\n");
             try translate(writer, toks, i, .@"}");
             _ = try writer.write("\n");
+        } else if (toks.match(i.*, "&mut")) |m| {
+            _ = try writer.write("&");
+            i.* += m.len;
         } else if (toks.match(i.*, "&&")) |m| {
             _ = try writer.write(" and ");
             i.* += m.len;
