@@ -10,7 +10,6 @@ const Token = enum {
     kw_use,
     kw_struct,
     kw_enum,
-    kw_union,
     kw_fn,
     kw_where,
     kw_trait,
