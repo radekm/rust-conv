@@ -1567,6 +1567,28 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
                 try translate(writer, toks, i, .@"}");
                 _ = try writer.write("\n");
             } else @panic("Control expression of for doesn't end with .iter().enumerate()");
+        } else if (toks.match(i.*, "if let")) |m| {
+            _ = try writer.write("if (/* Ziggify: ");
+            i.* += m.len;
+
+            const pattern_start = i.*;
+            const pattern_len = try toks.expressionLen(i.*, "=");
+            _ = try writeTokens(writer, toks, pattern_start, pattern_start + pattern_len);
+            _ = try writer.write(" */ ");
+            i.* += pattern_len + 1;
+
+            const right_side_len = try toks.expressionLen(i.*, "{");
+            try translateBody(writer, toks.restrict(i.* + right_side_len), i, self_type);
+            _ = try writer.write(") ");
+
+            try translate(writer, toks, i, .@"{");
+            _ = try writer.write("\n");
+
+            try translateBody(writer, toks, i, self_type);
+
+            _ = try writer.write("\n");
+            try translate(writer, toks, i, .@"}");
+            _ = try writer.write("\n");
         } else if (toks.startsWithAny(i.*, &.{&.{.kw_if}})) |len| {
             try writeTokens(writer, toks, i.*, i.* + len);
             i.* += len;
@@ -1586,6 +1608,10 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             _ = try writer.write("\n");
             try translate(writer, toks, i, .@"}");
             _ = try writer.write("\n");
+        } else if (toks.match(i.*, "else if")) |_| {
+            // Translate just `else` so `if` can be translated by `if let` or normal `if`.
+            _ = try writer.write("else ");
+            i.* += 1;
         } else if (toks.match(i.*, "else {")) |_| {
             try translate(writer, toks, i, .kw_else);
             try translate(writer, toks, i, .@"{");
