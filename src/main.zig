@@ -23,6 +23,7 @@ const Token = enum {
     kw_match,
     kw_let,
     kw_mut,
+    kw_return,
 
     // Operators.
     @"=>",
@@ -1506,6 +1507,10 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
         } else if (toks.match(i.*, "else {")) |_| {
             // Translate just `else`.
             try translate(writer, toks, i, .kw_else);
+        } else if (toks.match(i.*, "return")) |_| {
+            // Translate just `return`.
+            try translate(writer, toks, i, .kw_return);
+            _ = try writer.write(" ");
         } else if (toks.startsWith(i.*, &.{.kw_match})) |len| {
             _ = try writer.write("switch (");
             i.* += len;
@@ -1892,6 +1897,7 @@ test "expected tokenization" {
                 }
             }
         }
+        std.debug.print("Checking tokenization {s}\n", .{tokenized_actual});
         try std.testing.expect(try compareFiles(allocator, tokenized_expected, tokenized_actual));
 
         // Write tokens with associated comments to file.
@@ -1912,6 +1918,7 @@ test "expected tokenization" {
                 });
             };
         }
+        std.debug.print("Checking translation {s}\n", .{translated_actual});
         try std.testing.expect(try compareFiles(allocator, translated_expected, translated_actual));
     }
 }

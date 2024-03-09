@@ -1589,7 +1589,7 @@ Token main.Token.d_ident: p
 Token main.Token.>
 Token main.Token.d_number: 0.0
 Token main.Token.{
-Token main.Token.d_ident: return
+Token main.Token.kw_return
 Token main.Token.d_ident: None
 Token main.Token.;
 Token main.Token.}
@@ -1735,7 +1735,7 @@ Token main.Token.d_number: 1.0
 Token main.Token.-
 Token main.Token.d_ident: epsilon
 Token main.Token.{
-Token main.Token.d_ident: return
+Token main.Token.kw_return
 Token main.Token.d_ident: Some
 Token main.Token.(
 Token main.Token.d_ident: t1
@@ -1754,7 +1754,7 @@ Token main.Token.d_number: 1.0
 Token main.Token.-
 Token main.Token.d_ident: epsilon
 Token main.Token.{
-Token main.Token.d_ident: return
+Token main.Token.kw_return
 Token main.Token.d_ident: Some
 Token main.Token.(
 Token main.Token.d_ident: t2
@@ -1773,7 +1773,7 @@ Token main.Token.d_number: 1.0
 Token main.Token.-
 Token main.Token.d_ident: epsilon
 Token main.Token.{
-Token main.Token.d_ident: return
+Token main.Token.kw_return
 Token main.Token.d_ident: Some
 Token main.Token.(
 Token main.Token.d_ident: t3
@@ -3316,7 +3316,7 @@ Token main.Token.d_ident: params
 Token main.Token..
 Token main.Token.d_ident: is_point
 Token main.Token.{
-Token main.Token.d_ident: return
+Token main.Token.kw_return
 Token main.Token.;
 Token main.Token.}
 Token main.Token.kw_let
@@ -4382,7 +4382,7 @@ Token main.Token.d_ident: a
 Token main.Token.==
 Token main.Token.d_number: 0.0
 Token main.Token.{
-Token main.Token.d_ident: return
+Token main.Token.kw_return
 Token main.Token.;
 Token main.Token.}
 Token main.Token.kw_let
@@ -4546,7 +4546,7 @@ Token main.Token.)
 Token main.Token.;
 Token main.Token.}
 Token main.Token.}
-Token main.Token.d_ident: return
+Token main.Token.kw_return
 Token main.Token.;
 Token main.Token.}
 Token main.Token.kw_let
@@ -4568,7 +4568,7 @@ Token main.Token.d_ident: discr
 Token main.Token.<
 Token main.Token.d_number: 0.0
 Token main.Token.{
-Token main.Token.d_ident: return
+Token main.Token.kw_return
 Token main.Token.;
 Token main.Token.}
     BEFORE: // one Real solution
@@ -4601,7 +4601,7 @@ Token main.Token.d_ident: t
 Token main.Token.)
 Token main.Token.;
 Token main.Token.}
-Token main.Token.d_ident: return
+Token main.Token.kw_return
 Token main.Token.;
 Token main.Token.}
     BEFORE: // two Real solutions
