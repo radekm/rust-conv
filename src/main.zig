@@ -1004,6 +1004,7 @@ fn writeCommentWithTokens(
 }
 
 /// Works only for ASCII.
+/// Used to translate function names.
 fn writeInCamelCase(writer: anytype, snake_case: []const u8) !void {
     var found_letter = false;
     var capitalize_next = false;
@@ -1020,6 +1021,23 @@ fn writeInCamelCase(writer: anytype, snake_case: []const u8) !void {
         } else {
             _ = try writer.write(&.{c});
             found_letter = std.ascii.isAlphabetic(c);
+        }
+    }
+}
+
+/// Works only for ASCII.
+/// Used to translate union tags.
+fn writeInSnakeCase(writer: anytype, pascal_case: []const u8) !void {
+    var last_letter_capital = true;
+    for (pascal_case) |c| {
+        if (std.ascii.isUpper(c)) {
+            if (!last_letter_capital)
+                _ = try writer.write("_");
+            _ = try writer.write(&.{std.ascii.toLower(c)});
+            last_letter_capital = true;
+        } else {
+            _ = try writer.write(&.{c});
+            last_letter_capital = false;
         }
     }
 }
@@ -1196,10 +1214,12 @@ fn translateEnum(
         try writeCommentBefore(writer, toks, i.*);
 
         if (toks.match(i.*, "name ,")) |m| {
-            try writer.print("{s},\n", .{m.name});
+            try writeInSnakeCase(writer, m.name);
+            _ = try writer.write(",\n");
             i.* += m.len;
         } else if (toks.match(i.*, "name }")) |m| {
-            try writer.print("{s},\n", .{m.name});
+            try writeInSnakeCase(writer, m.name);
+            _ = try writer.write(",\n");
             i.* += m.len - 1;
         } else if (toks.match(i.*, "name (")) |m| {
             i.* += m.len;
@@ -1217,10 +1237,12 @@ fn translateEnum(
                 if (toks.startsWith(i.*, &.{.@","})) |len| {
                     i.* += len;
                 }
-                try writer.print("{s},\n", .{m.name});
+                try writeInSnakeCase(writer, m.name);
+                _ = try writer.write(",\n");
             } else {
                 // Tuple has at least one field.
-                try writer.print("{s}: ", .{m.name});
+                try writeInSnakeCase(writer, m.name);
+                _ = try writer.write(": ");
 
                 if (toks.tokens[i.* + first_field_len] == .@",") {
                     // Tuple may contain second field because there's comma after first field.
@@ -1279,7 +1301,8 @@ fn translateEnum(
             if (toks.startsWith(i.*, &.{.@","})) |len| {
                 i.* += len;
             }
-            try writer.print("{s}: {s}Payload,\n", .{ m.name, m.name });
+            try writeInSnakeCase(writer, m.name);
+            try writer.print(": {s},\n", .{m.name});
         } else {
             break;
         }
@@ -1307,7 +1330,7 @@ fn translateEnum(
             // This code is similar but not same as in `translateStruct`.
             // It would be nice to share it.
 
-            try writer.print("const {s}Payload = struct {{\n", .{m.name});
+            try writer.print("const {s} = struct {{\n", .{m.name});
             i.* += m.len;
 
             while (i.* < toks.tokens.len) {

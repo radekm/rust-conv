@@ -8,34 +8,34 @@
 /// and so must be recreated every time `pixels_per_point` changes.
 const Shape = union(enum) {
 /// Paint nothing. This can be useful as a placeholder.
-Noop,
+noop,
 /// Recursively nest more shapes - sometimes a convenience to be able to do.
 /// For performance reasons it is better to avoid it.
-Vec: ArrayList(Shape),
+vec: ArrayList(Shape),
 /// Circle with optional outline and fill.
-Circle: CircleShape,
+circle: CircleShape,
 /// A line between two points.
-LineSegment: LineSegmentPayload,
+line_segment: LineSegment,
 /// A series of lines between points.
 /// The path can have a stroke and/or fill (if closed).
-Path: PathShape,
+path: PathShape,
 /// Rectangle with optional outline and fill.
-Rect: RectShape,
+rect: RectShape,
 /// Text.
 ///
 /// This needs to be recreated if `pixels_per_point` (dpi scale) changes.
-Text: TextShape,
+text: TextShape,
 /// A general triangle mesh.
 ///
 /// Can be used to display images.
-Mesh: Mesh,
+mesh: Mesh,
 /// A quadratic [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
-QuadraticBezier: QuadraticBezierShape,
+quadratic_bezier: QuadraticBezierShape,
 /// A cubic [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
-CubicBezier: CubicBezierShape,
+cubic_bezier: CubicBezierShape,
 /// Backend-specific painting.
-Callback: PaintCallback,
-const LineSegmentPayload = struct {
+callback: PaintCallback,
+const LineSegment = struct {
 points: [2]Pos2,stroke: Stroke,
 };
 
