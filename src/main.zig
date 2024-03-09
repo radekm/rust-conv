@@ -886,12 +886,8 @@ fn readStructsAndTheirFieldsInModule(
             i.* += 1;
         }
 
-        if (toks.startsWith(i.*, &.{ .@"#", .@"!", .@"[" })) |len| {
-            i.* += len;
-            i.* += try toks.expressionLen(i.*, "]") + 1;
-        } else if (toks.startsWith(i.*, &.{ .@"#", .@"[" })) |len| {
-            i.* += len;
-            i.* += try toks.expressionLen(i.*, "]") + 1;
+        if (try skipAttribute(toks, i)) {
+            //
         } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
             i.* += len;
             i.* += try toks.expressionLen(i.*, ";") + 1;
@@ -1026,6 +1022,19 @@ fn writeInCamelCase(writer: anytype, snake_case: []const u8) !void {
             found_letter = std.ascii.isAlphabetic(c);
         }
     }
+}
+
+fn skipAttribute(toks: Toks, i: *usize) !bool {
+    if (toks.match(i.*, "#![")) |m| {
+        i.* += m.len;
+        i.* += try toks.expressionLen(i.*, "]") + 1;
+        return true;
+    } else if (toks.match(i.*, "#[")) |m| {
+        i.* += m.len;
+        i.* += try toks.expressionLen(i.*, "]") + 1;
+        return true;
+    }
+    return false;
 }
 
 fn translate(writer: anytype, toks: Toks, i: *usize, token: Token) !void {
@@ -1354,12 +1363,8 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
         // Process comment before construct or before end of module.
         try writeCommentBefore(writer, toks, i.*);
 
-        if (toks.match(i.*, "#![")) |m| {
-            i.* += m.len;
-            i.* += try toks.expressionLen(i.*, "]") + 1;
-        } else if (toks.match(i.*, "#[")) |m| {
-            i.* += m.len;
-            i.* += try toks.expressionLen(i.*, "]") + 1;
+        if (try skipAttribute(toks, i)) {
+            //
         } else if (toks.match(i.*, "&mut |")) |m| {
             _ = try writer.write("/* Ziggify: ");
             try writeTokens(writer, toks, i.*, i.* + m.len);
@@ -1885,12 +1890,8 @@ fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
         // TODO: Remove code duplication. Same code is in `translateRustToZig`.
         //       Maybe we shall generalize `translateRustToZig` to translate both
         //       module body and impl body.
-        if (toks.startsWith(i.*, &.{ .@"#", .@"!", .@"[" })) |len| {
-            i.* += len;
-            i.* += try toks.expressionLen(i.*, "]") + 1;
-        } else if (toks.startsWith(i.*, &.{ .@"#", .@"[" })) |len| {
-            i.* += len;
-            i.* += try toks.expressionLen(i.*, "]") + 1;
+        if (try skipAttribute(toks, i)) {
+            //
         } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
             i.* += len;
             i.* += try toks.expressionLen(i.*, ";") + 1;
@@ -1930,12 +1931,8 @@ fn translateRustToZig(writer: anytype, structs: Structs, toks: Toks, i: *usize) 
             i.* += 1;
         }
 
-        if (toks.startsWith(i.*, &.{ .@"#", .@"!", .@"[" })) |len| {
-            i.* += len;
-            i.* += try toks.expressionLen(i.*, "]") + 1;
-        } else if (toks.startsWith(i.*, &.{ .@"#", .@"[" })) |len| {
-            i.* += len;
-            i.* += try toks.expressionLen(i.*, "]") + 1;
+        if (try skipAttribute(toks, i)) {
+            //
         } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
             i.* += len;
             i.* += try toks.expressionLen(i.*, ";") + 1;
