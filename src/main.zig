@@ -1819,40 +1819,7 @@ fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
 
     try writeCommentWithTokens(writer, toks, impl_from, impl_to_excl, "BEGIN: ");
 
-    while (i.* < toks.tokens.len) {
-        // Process comment before function.
-        try writeCommentBefore(writer, toks, i.*);
-
-        // Ignore visibility.
-        const public = toks.tokens[i.*] == .kw_pub;
-        if (public) {
-            i.* += 1;
-        }
-
-        // TODO: Remove code duplication. Same code is in `translateRustToZig`.
-        //       Maybe we shall generalize `translateRustToZig` to translate both
-        //       module body and impl body.
-        if (try skipAttribute(toks, i)) {
-            //
-        } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
-            i.* += len;
-            i.* += try toks.expressionLen(i.*, ";") + 1;
-        } else if (toks.match(i.*, "const name :")) |m| {
-            try writer.print("const {s} : ", .{m.name});
-            i.* += m.len;
-            try translateType(writer, toks, i, self_type_name);
-
-            try translate(writer, toks, i, .@"=");
-
-            const right_side_len = try toks.expressionLen(i.*, ";");
-            try translateBody(writer, toks.restrict(i.* + right_side_len), i, self_type_name);
-
-            try translate(writer, toks, i, .@";");
-            _ = try writer.write("\n");
-        } else if (try translateFn(writer, toks, i, public, self_type_name)) {} else {
-            break;
-        }
-    }
+    try translateRustToZig(writer, toks, i, self_type_name);
 
     _ = try writer.write("\n");
     try translate(writer, toks, i, .@"}");
@@ -1863,7 +1830,12 @@ fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
     return true;
 }
 
-fn translateRustToZig(writer: anytype, structs: Structs, toks: Toks, i: *usize) !void {
+fn translateRustToZig(
+    writer: anytype,
+    toks: Toks,
+    i: *usize,
+    self_type: ?[]const u8,
+) (@TypeOf(writer).Error || ParserError || Allocator.Error)!void {
     while (i.* < toks.tokens.len) {
         // Process comment before construct or before end of module.
         try writeCommentBefore(writer, toks, i.*);
@@ -1878,13 +1850,25 @@ fn translateRustToZig(writer: anytype, structs: Structs, toks: Toks, i: *usize) 
         } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
             i.* += len;
             i.* += try toks.expressionLen(i.*, ";") + 1;
+        } else if (toks.match(i.*, "const name :")) |m| {
+            try writer.print("const {s} : ", .{m.name});
+            i.* += m.len;
+            try translateType(writer, toks, i, self_type);
+
+            try translate(writer, toks, i, .@"=");
+
+            const right_side_len = try toks.expressionLen(i.*, ";");
+            try translateBody(writer, toks.restrict(i.* + right_side_len), i, self_type);
+
+            try translate(writer, toks, i, .@";");
+            _ = try writer.write("\n");
         } else if (try translateStruct(writer, toks, i)) {
             //
         } else if (try translateEnum(writer, toks, i)) {
             //
         } else if (try translateImpl(writer, toks, i)) {
             //
-        } else if (try translateFn(writer, toks, i, public, null)) {
+        } else if (try translateFn(writer, toks, i, public, self_type)) {
             //
         } else if (toks.match(i.*, "mod name {")) |m| {
             // TODO: Translate Rust modules into structs?
@@ -1893,7 +1877,7 @@ fn translateRustToZig(writer: anytype, structs: Structs, toks: Toks, i: *usize) 
             try writeCommentWithTokens(writer, toks, mod_from, mod_to_excl, "BEGIN: ");
             i.* += m.len;
 
-            try translateRustToZig(writer, structs, toks, i);
+            try translateRustToZig(writer, toks, i, self_type);
 
             _ = try writer.write("\n");
             try translate(writer, toks, i, .@"}");
@@ -1993,9 +1977,6 @@ test "expected tokenization" {
         }
         try std.testing.expect(try compareFiles(allocator, tokenized_expected, tokenized_actual));
 
-        const structs = try readStructsAndTheirFields(toks, allocator);
-        defer structs.deinit(allocator);
-
         // Write tokens with associated comments to file.
         {
             const output_file = try std.fs.cwd().createFile(translated_actual, .{});
@@ -2004,9 +1985,9 @@ test "expected tokenization" {
             var i: usize = 0;
             translateRustToZig(
                 writer,
-                structs,
                 toks,
                 &i,
+                null,
             ) catch |e| {
                 std.debug.print("Error: {}\n", .{e});
                 std.debug.print("Unknown construct while translating {any}\n", .{
@@ -2068,9 +2049,9 @@ pub fn main() !void {
     var i: usize = 0;
     translateRustToZig(
         bw.writer(),
-        structs,
         toks,
         &i,
+        null,
     ) catch |e| {
         std.debug.print("Error: {}\n", .{e});
         std.debug.print("Unknown construct while translating {any}\n", .{
