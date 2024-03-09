@@ -1126,7 +1126,7 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
                 else
                     return ParserError.Other;
             },
-            else => @panic("Absurd"),
+            else => unreachable,
         }
     } else return ParserError.Other;
 }
@@ -1869,7 +1869,7 @@ fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
                 } else return ParserError.Other;
             },
             .@"{" => @panic("Inherent implementatins like this are not supported"),
-            else => @panic("Absurd"),
+            else => unreachable,
         }
     } else return false;
 
