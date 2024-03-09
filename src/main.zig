@@ -1353,9 +1353,6 @@ fn translateEnum(
 /// Translates body of a function, if, else, for, while or loop.
 /// Also translates control expression of if, for, while and match.
 ///
-/// Does not translate opening `{` and closing `}` because control expressions are not wrapped
-/// in `{` and `}`.
-///
 /// `translateBody` doesn't parse closing `}` or `]` unless it parsed corresponding opening bracket.
 /// Currently this is not true with parens.
 fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8) !void {
@@ -1529,15 +1526,6 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             const len_before_brace = try toks.expressionLen(i.*, "{");
             try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
             try writer.print(") ", .{});
-
-            try translate(writer, toks, i, .@"{");
-            _ = try writer.write("\n");
-
-            try translateBody(writer, toks, i, self_type);
-
-            _ = try writer.write("\n");
-            try translate(writer, toks, i, .@"}");
-            _ = try writer.write("\n");
         } else if (toks.match(i.*, "for elem in")) |m| {
             _ = try writer.write("for (");
             i.* += m.len;
@@ -1547,15 +1535,6 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             const len_before_brace = try toks.expressionLen(i.*, "{");
             try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
             try writer.print(") |{s}|", .{m.elem});
-
-            try translate(writer, toks, i, .@"{");
-            _ = try writer.write("\n");
-
-            try translateBody(writer, toks, i, self_type);
-
-            _ = try writer.write("\n");
-            try translate(writer, toks, i, .@"}");
-            _ = try writer.write("\n");
         } else if (toks.match(i.*, "for (index, elem) in")) |m| {
             // Note it may happen that `{` belongs to struct construction and not to `for` body.
             const for_start_len = try toks.expressionLen(i.*, "{");
@@ -1579,15 +1558,6 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
                     @panic("Expression after in not processed whole");
                 try writer.print(", 0..) |{s}, {s}|", .{ m.elem, m.index });
                 i.* += for_start_len;
-
-                try translate(writer, toks, i, .@"{");
-                _ = try writer.write("\n");
-
-                try translateBody(writer, toks, i, self_type);
-
-                _ = try writer.write("\n");
-                try translate(writer, toks, i, .@"}");
-                _ = try writer.write("\n");
             } else @panic("Control expression of for doesn't end with .iter().enumerate()");
         } else if (toks.match(i.*, "if let")) |m| {
             _ = try writer.write("if (/* Ziggify: ");
@@ -1602,15 +1572,6 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             const right_side_len = try toks.expressionLen(i.*, "{");
             try translateBody(writer, toks.restrict(i.* + right_side_len), i, self_type);
             _ = try writer.write(") ");
-
-            try translate(writer, toks, i, .@"{");
-            _ = try writer.write("\n");
-
-            try translateBody(writer, toks, i, self_type);
-
-            _ = try writer.write("\n");
-            try translate(writer, toks, i, .@"}");
-            _ = try writer.write("\n");
         } else if (toks.startsWithAny(i.*, &.{&.{.kw_if}})) |len| {
             try writeTokens(writer, toks, i.*, i.* + len);
             i.* += len;
@@ -1621,29 +1582,13 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             const len_before_brace = try toks.expressionLen(i.*, "{");
             try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
             _ = try writer.write(")");
-
-            try translate(writer, toks, i, .@"{");
-            _ = try writer.write("\n");
-
-            try translateBody(writer, toks, i, self_type);
-
-            _ = try writer.write("\n");
-            try translate(writer, toks, i, .@"}");
-            _ = try writer.write("\n");
         } else if (toks.match(i.*, "else if")) |_| {
             // Translate just `else` so `if` can be translated by `if let` or normal `if`.
             _ = try writer.write("else ");
             i.* += 1;
         } else if (toks.match(i.*, "else {")) |_| {
+            // Translate just `else`.
             try translate(writer, toks, i, .kw_else);
-            try translate(writer, toks, i, .@"{");
-            _ = try writer.write("\n");
-
-            try translateBody(writer, toks, i, self_type);
-
-            _ = try writer.write("\n");
-            try translate(writer, toks, i, .@"}");
-            _ = try writer.write("\n");
         } else if (toks.startsWith(i.*, &.{.kw_match})) |len| {
             _ = try writer.write("switch (");
             i.* += len;
@@ -1691,9 +1636,6 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             try translate(writer, toks, i, .@"}");
             _ = try writer.write("\n");
         } else if (toks.match(i.*, "{")) |_| {
-            // TODO: Could this be used translate body of if, for, while
-            //       and cases of match if they're blocks?
-
             try translate(writer, toks, i, .@"{");
             _ = try writer.write("\n");
 
