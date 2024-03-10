@@ -1046,9 +1046,17 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
         try writer.print("{s}(", .{name});
         i.* += m.len;
 
-        while (i.* < toks.tokens.len and toks.tokens[i.*] != .@">") {
-            try translateType(writer, toks, i, self_type);
-            try translateOptional(writer, toks, i, .@",");
+        if (toks.match(i.*, "dyn")) |_| {
+            const len = try toks.typeLen(i.*, ">");
+            _ = try writer.write("/* Ziggify: ");
+            try writeTokens(writer, toks, i.*, i.* + len);
+            _ = try writer.write("*/");
+            i.* += len;
+        } else {
+            while (i.* < toks.tokens.len and toks.tokens[i.*] != .@">") {
+                try translateType(writer, toks, i, self_type);
+                try translateOptional(writer, toks, i, .@",");
+            }
         }
 
         if (toks.match(i.*, ">")) |m_closing| {
