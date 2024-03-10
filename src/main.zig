@@ -1015,6 +1015,27 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
     } else if (toks.matchEql(i.*, "formatter < ' lifetime >", .{ .formatter = "Formatter" })) |m| {
         try writer.print("/* Ziggify: Formatter<'{s}> */", .{m.lifetime});
         i.* += m.len;
+    } else if (toks.match(i.*, "impl fn_trait (")) |m| {
+        if (!std.mem.eql(u8, m.fn_trait, "Fn") and
+            !std.mem.eql(u8, m.fn_trait, "FnMut") and
+            !std.mem.eql(u8, m.fn_trait, "FnOnce"))
+        {
+            @panic("Unsupported fn trait");
+        }
+
+        const from = i.*;
+        i.* += m.len;
+        i.* += try toks.typeLen(i.*, ")") + 1;
+
+        // Skip return type.
+        if (toks.match(i.*, "->")) |_| {
+            i.* += 1;
+            i.* += try toks.typeLen(i.*, "> ] ) } { ,");
+        }
+
+        _ = try writer.write("/* Ziggify: ");
+        try writeTokens(writer, toks, from, i.*);
+        _ = try writer.write(" */");
     } else if (toks.match(i.*, "name <")) |m| {
         // zig fmt: off
         const name =
