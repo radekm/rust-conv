@@ -1491,6 +1491,15 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
 
                     // Translate comma (if any).
                     try translateOptional(writer, toks, i, .@",");
+                } else if (toks.match(i.*, ".. ident")) |m_rest| {
+                    // Functional update syntax for structs.
+
+                    _ = try writer.write("/* Ziggify: ");
+                    try writeTokens(writer, toks, i.*, i.* + m_rest.len);
+                    i.* += m_rest.len;
+
+                    try translateOptional(writer, toks, i, .@",");
+                    _ = try writer.write("*/");
                 } else break;
             }
 
