@@ -46,7 +46,7 @@ assert_send_sync .  < Shape >  (  ) ;
 
 }
 // BEGIN: impl From < Vec < Self > > for Shape
-fn from(shapes: ArrayList(Self))Shape{
+fn from(shapes: ArrayList(Shape))Shape{
 Self . Vec ( shapes ) 
 }
 
@@ -87,32 +87,32 @@ pub fn closedLine(points: ArrayList(Pos2),stroke: Stroke)Shape{
 Self . Path ( PathShape . closedLine ( points , stroke )  ) 
 }
 /// Turn a line into equally spaced dots.
-pub fn dottedLine(path: []Pos2,color: Color32,spacing: f32,radius: f32,)ArrayList(Self){
+pub fn dottedLine(path: []Pos2,color: Color32,spacing: f32,radius: f32,)ArrayList(Shape){
 var shapes = Vec . new (  ) ;
 pointsFromLine ( path , spacing , radius , color . into (  )  , &shapes ) ;
 shapes
 }
 /// Turn a line into dashes.
-pub fn dashedLine(path: []Pos2,stroke: Stroke,dash_length: f32,gap_length: f32,)ArrayList(Self){
+pub fn dashedLine(path: []Pos2,stroke: Stroke,dash_length: f32,gap_length: f32,)ArrayList(Shape){
 var shapes = Vec . new (  ) ;
 dashesFromLine ( path , stroke . into (  )  ,  & [dash_length] ,  & [gap_length] , &shapes , 0 .  ,  ) ;
 shapes
 }
 /// Turn a line into dashes with different dash/gap lengths and a start offset.
-pub fn dashedLineWithOffset(path: []Pos2,stroke: Stroke,dash_lengths: []f32,gap_lengths: []f32,dash_offset: f32,)ArrayList(Self){
+pub fn dashedLineWithOffset(path: []Pos2,stroke: Stroke,dash_lengths: []f32,gap_lengths: []f32,dash_offset: f32,)ArrayList(Shape){
 var shapes = Vec . new (  ) ;
 dashesFromLine ( path , stroke . into (  )  , dash_lengths , gap_lengths , &shapes , dash_offset ,  ) ;
 shapes
 }
 /// Turn a line into dashes. If you need to create many dashed lines use this instead of
 /// [`Self::dashed_line`].
-pub fn dashedLineMany(points: []Pos2,stroke: Stroke,dash_length: f32,gap_length: f32,shapes: *ArrayList(Self),)void{
+pub fn dashedLineMany(points: []Pos2,stroke: Stroke,dash_length: f32,gap_length: f32,shapes: *ArrayList(Shape),)void{
 dashesFromLine ( points , stroke . into (  )  ,  & [dash_length] ,  & [gap_length] , shapes , 0 .  ,  ) ;
 
 }
 /// Turn a line into dashes with different dash/gap lengths and a start offset. If you need to
 /// create many dashed lines use this instead of [`Self::dashed_line_with_offset`].
-pub fn dashedLineManyWithOffset(points: []Pos2,stroke: Stroke,dash_lengths: []f32,gap_lengths: []f32,dash_offset: f32,shapes: *ArrayList(Self),)void{
+pub fn dashedLineManyWithOffset(points: []Pos2,stroke: Stroke,dash_lengths: []f32,gap_lengths: []f32,dash_offset: f32,shapes: *ArrayList(Shape),)void{
 dashesFromLine ( points , stroke . into (  )  , dash_lengths , gap_lengths , shapes , dash_offset ,  ) ;
 
 }

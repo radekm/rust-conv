@@ -967,6 +967,21 @@ fn translateOptional(writer: anytype, toks: Toks, i: *usize, token: Token) !void
 // TODO: Translate `self_type` everywhere (eg. in generics) and not only when type is simple identifier.
 // TODO: Consider generalizing `translateType`.
 fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8) !void {
+    // All references are translated to pointer.
+    if (toks.match(i.*, "& ' ident mut")) |m| {
+        _ = try writer.write("*");
+        i.* += m.len;
+    } else if (toks.match(i.*, "& ' ident")) |m| {
+        _ = try writer.write("*");
+        i.* += m.len;
+    } else if (toks.match(i.*, "& mut")) |m| {
+        _ = try writer.write("*");
+        i.* += m.len;
+    } else if (toks.match(i.*, "&")) |m| {
+        _ = try writer.write("*");
+        i.* += m.len;
+    }
+
     if (toks.match(i.*, "name ::")) |m| {
         try writer.print("{s}.", .{m.name});
         i.* += m.len;
@@ -978,7 +993,7 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
         try writer.print("[]const u8", .{});
         i.* += m.len;
     } else if (toks.matchEql(i.*, "arc < type_name >", .{ .arc = "Arc" })) |m| {
-        try writer.print("{s}", .{m.type_name});
+        try writer.print("{s}", .{m.type_name}); // TODO: Shouldn't we translate it to pointer?
         i.* += m.len;
     } else if (toks.matchEql(
         i.*,
@@ -990,12 +1005,6 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
     } else if (toks.matchEql(i.*, "option < type_name >", .{ .option = "Option" })) |m| {
         try writer.print("?{s}", .{m.type_name});
         i.* += m.len;
-    } else if (toks.matchEql(i.*, "range < type_name >", .{ .range = "Range" })) |m| {
-        try writer.print("Range({s})", .{m.type_name});
-        i.* += m.len;
-    } else if (toks.matchEql(i.*, "vec < type_name >", .{ .vec = "Vec" })) |m| {
-        try writer.print("ArrayList({s})", .{m.type_name});
-        i.* += m.len;
     } else if (toks.matchEql(i.*, "vec < vec2 < type_name > >", .{ .vec = "Vec", .vec2 = "Vec" })) |m| {
         // I doubt that nested `ArrayList` is good option in Zig.
         try writer.print("/* Ziggify: Vec<Vec<{s}>> */", .{m.type_name});
@@ -1003,6 +1012,25 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
     } else if (toks.matchEql(i.*, "formatter < ' lifetime >", .{ .formatter = "Formatter" })) |m| {
         try writer.print("/* Ziggify: Formatter<'{s}> */", .{m.lifetime});
         i.* += m.len;
+    } else if (toks.match(i.*, "name <")) |m| {
+        // zig fmt: off
+        const name =
+            if (std.mem.eql(u8, "Vec", m.name)) "ArrayList"
+            else m.name;
+        // zig fmt: on
+
+        try writer.print("{s}(", .{name});
+        i.* += m.len;
+
+        while (i.* < toks.tokens.len and toks.tokens[i.*] != .@">") {
+            try translateType(writer, toks, i, self_type);
+            try translateOptional(writer, toks, i, .@",");
+        }
+
+        if (toks.match(i.*, ">")) |m_closing| {
+            _ = try writer.write(")");
+            i.* += m_closing.len;
+        }
     } else if (toks.startsWithAndGetData(i.*, &.{.d_ident})) |ld| {
         if (std.mem.eql(u8, ld.data, "Self")) {
             try writer.print("{s}", .{self_type orelse ld.data});
