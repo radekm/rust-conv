@@ -1958,22 +1958,27 @@ test "expected tokenization" {
     const paths_input = [_][]const u8{
         "test-data/epaint-bezier.rs",
         "test-data/epaint-shape.rs",
+        "test-data/egui-window.rs",
     };
     const paths_tokenized_expected = [_][]const u8{
         "test-data/epaint-bezier.tokenized",
         "test-data/epaint-shape.tokenized",
+        "test-data/egui-window.tokenized",
     };
     const paths_tokenized_actual = [_][]const u8{
         "tmp/epaint-bezier.tokenized",
         "tmp/epaint-shape.tokenized",
+        "tmp/egui-window.tokenized",
     };
     const paths_translated_expected = [_][]const u8{
         "test-data/epaint-bezier.translated",
         "test-data/epaint-shape.translated",
+        "test-data/egui-window.translated",
     };
     const paths_translated_actual = [_][]const u8{
         "tmp/epaint-bezier.translated",
         "tmp/epaint-shape.translated",
+        "tmp/egui-window.translated",
     };
 
     try std.fs.cwd().makePath("tmp");

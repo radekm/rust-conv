@@ -1,0 +1,6125 @@
+    BEFORE: // WARNING: the code in here is horrible. It is a behemoth that needs breaking up into simpler parts.
+Token main.Token.kw_use
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: sync
+Token main.Token.::
+Token main.Token.d_ident: Arc
+Token main.Token.;
+Token main.Token.kw_use
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.d_ident: collapsing_header
+Token main.Token.::
+Token main.Token.d_ident: CollapsingState
+Token main.Token.;
+Token main.Token.kw_use
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.*
+Token main.Token.;
+Token main.Token.kw_use
+Token main.Token.d_ident: epaint
+Token main.Token.::
+Token main.Token.*
+Token main.Token.;
+Token main.Token.kw_use
+Token main.Token.d_ident: super
+Token main.Token.::
+Token main.Token.*
+Token main.Token.;
+    BEFORE: /// Builder for a floating window which can be dragged, closed, collapsed, resized and scrolled (off by default).
+    BEFORE: ///
+    BEFORE: /// You can customize:
+    BEFORE: /// * title
+    BEFORE: /// * default, minimum, maximum and/or fixed size, collapsed/expanded
+    BEFORE: /// * if the window has a scroll area (off by default)
+    BEFORE: /// * if the window can be collapsed (minimized) to just the title bar (yes, by default)
+    BEFORE: /// * if there should be a close button (none by default)
+    BEFORE: ///
+    BEFORE: /// ```
+    BEFORE: /// # egui::__run_test_ctx(|ctx| {
+    BEFORE: /// egui::Window::new("My Window").show(ctx, |ui| {
+    BEFORE: ///    ui.label("Hello World!");
+    BEFORE: /// });
+    BEFORE: /// # });
+    BEFORE: /// ```
+    BEFORE: ///
+    BEFORE: /// The previous rectangle used by this window can be obtained through [`crate::Memory::area_rect()`].
+    BEFORE: ///
+    BEFORE: /// Note that this is NOT a native OS window.
+    BEFORE: /// To create a new native OS window, use [`crate::Context::show_viewport_deferred`].
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: must_use
+Token main.Token.=
+Token main.Token.d_string: "You should call .show()"
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_struct
+Token main.Token.d_ident: Window
+Token main.Token.<
+Token main.Token.'
+Token main.Token.d_ident: open
+Token main.Token.>
+Token main.Token.{
+Token main.Token.d_ident: title
+Token main.Token.:
+Token main.Token.d_ident: WidgetText
+Token main.Token.,
+Token main.Token.d_ident: open
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.&
+Token main.Token.'
+Token main.Token.d_ident: open
+Token main.Token.kw_mut
+Token main.Token.d_ident: bool
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: area
+Token main.Token.:
+Token main.Token.d_ident: Area
+Token main.Token.,
+Token main.Token.d_ident: frame
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: Frame
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: resize
+Token main.Token.:
+Token main.Token.d_ident: Resize
+Token main.Token.,
+Token main.Token.d_ident: scroll
+Token main.Token.:
+Token main.Token.d_ident: ScrollArea
+Token main.Token.,
+Token main.Token.d_ident: collapsible
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.d_ident: default_open
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.d_ident: with_title_bar
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.<
+Token main.Token.'
+Token main.Token.d_ident: open
+Token main.Token.>
+Token main.Token.d_ident: Window
+Token main.Token.<
+Token main.Token.'
+Token main.Token.d_ident: open
+Token main.Token.>
+Token main.Token.{
+    BEFORE: /// The window title is used as a unique [`Id`] and must be unique, and should not change.
+    BEFORE: /// This is true even if you disable the title bar with `.title_bar(false)`.
+    BEFORE: /// If you need a changing title, you must call `window.id(…)` with a fixed id.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: title
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: WidgetText
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: title
+Token main.Token.=
+Token main.Token.d_ident: title
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: fallback_text_style
+Token main.Token.(
+Token main.Token.d_ident: TextStyle
+Token main.Token.::
+Token main.Token.d_ident: Heading
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: Area
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: Id
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: title
+Token main.Token..
+Token main.Token.d_ident: text
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: constrain
+Token main.Token.(
+Token main.Token.d_ident: true
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: edges_padded_for_resize
+Token main.Token.(
+Token main.Token.d_ident: true
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: title
+Token main.Token.,
+Token main.Token.d_ident: open
+Token main.Token.:
+Token main.Token.d_ident: None
+Token main.Token.,
+Token main.Token.d_ident: area
+Token main.Token.,
+Token main.Token.d_ident: frame
+Token main.Token.:
+Token main.Token.d_ident: None
+Token main.Token.,
+Token main.Token.d_ident: resize
+Token main.Token.:
+Token main.Token.d_ident: Resize
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: with_stroke
+Token main.Token.(
+Token main.Token.d_ident: false
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: min_size
+Token main.Token.(
+Token main.Token.[
+Token main.Token.d_number: 96.0
+Token main.Token.,
+Token main.Token.d_number: 32.0
+Token main.Token.]
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: default_size
+Token main.Token.(
+Token main.Token.[
+Token main.Token.d_number: 340.0
+Token main.Token.,
+Token main.Token.d_number: 420.0
+Token main.Token.]
+Token main.Token.)
+Token main.Token.,
+    AFTER: // Default inner size of a window
+Token main.Token.d_ident: scroll
+Token main.Token.:
+Token main.Token.d_ident: ScrollArea
+Token main.Token.::
+Token main.Token.d_ident: neither
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: collapsible
+Token main.Token.:
+Token main.Token.d_ident: true
+Token main.Token.,
+Token main.Token.d_ident: default_open
+Token main.Token.:
+Token main.Token.d_ident: true
+Token main.Token.,
+Token main.Token.d_ident: with_title_bar
+Token main.Token.:
+Token main.Token.d_ident: true
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Assign a unique id to the Window. Required if the title changes, or is shared with another window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: id
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token.:
+Token main.Token.d_ident: Id
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: id
+Token main.Token.(
+Token main.Token.d_ident: id
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Call this to add a close-button to the window title bar.
+    BEFORE: ///
+    BEFORE: /// * If `*open == false`, the window will not be visible.
+    BEFORE: /// * If `*open == true`, the window will have a close button.
+    BEFORE: /// * If the close button is pressed, `*open` will be set to `false`.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: open
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: open
+Token main.Token.:
+Token main.Token.&
+Token main.Token.'
+Token main.Token.d_ident: open
+Token main.Token.kw_mut
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: open
+Token main.Token.=
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: open
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// If `false` the window will be grayed out and non-interactive.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: enabled
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: enabled
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: enabled
+Token main.Token.(
+Token main.Token.d_ident: enabled
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// If `false` the window will be non-interactive.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: interactable
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: interactable
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: interactable
+Token main.Token.(
+Token main.Token.d_ident: interactable
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// If `false` the window will be immovable.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: movable
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: movable
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: movable
+Token main.Token.(
+Token main.Token.d_ident: movable
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Usage: `Window::new(…).mutate(|w| w.resize = w.resize.auto_expand_width(true))`
+    BEFORE: // TODO(emilk): I'm not sure this is a good interface for this.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: mutate
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: mutate
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Fn
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Self
+Token main.Token.)
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: mutate
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Usage: `Window::new(…).resize(|r| r.auto_expand_width(true))`
+    BEFORE: // TODO(emilk): I'm not sure this is a good interface for this.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: resize
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: mutate
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Fn
+Token main.Token.(
+Token main.Token.d_ident: Resize
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Resize
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: mutate
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: edges_padded_for_resize
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: is_resizable
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Change the background color, margins, etc.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: frame
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: frame
+Token main.Token.:
+Token main.Token.d_ident: Frame
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: frame
+Token main.Token.=
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: frame
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set minimum width of the window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: min_width
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: min_width
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: min_width
+Token main.Token.(
+Token main.Token.d_ident: min_width
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set minimum height of the window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: min_height
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: min_height
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: min_height
+Token main.Token.(
+Token main.Token.d_ident: min_height
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set minimum size of the window, equivalent to calling both `min_width` and `min_height`.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: min_size
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: min_size
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Vec2
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: min_size
+Token main.Token.(
+Token main.Token.d_ident: min_size
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set maximum width of the window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: max_width
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: max_width
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: max_width
+Token main.Token.(
+Token main.Token.d_ident: max_width
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set maximum height of the window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: max_height
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: max_height
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: max_height
+Token main.Token.(
+Token main.Token.d_ident: max_height
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set maximum size of the window, equivalent to calling both `max_width` and `max_height`.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: max_size
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: max_size
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Vec2
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: max_size
+Token main.Token.(
+Token main.Token.d_ident: max_size
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set current position of the window.
+    BEFORE: /// If the window is movable it is up to you to keep track of where it moved to!
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: current_pos
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: current_pos
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: current_pos
+Token main.Token.(
+Token main.Token.d_ident: current_pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set initial position of the window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: default_pos
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: default_pos
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: default_pos
+Token main.Token.(
+Token main.Token.d_ident: default_pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Sets the window position and prevents it from being dragged around.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: fixed_pos
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: pos
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Pos2
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: fixed_pos
+Token main.Token.(
+Token main.Token.d_ident: pos
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Constrains this window to the screen bounds.
+    BEFORE: ///
+    BEFORE: /// To change the area to constrain to, use [`Self::constrain_to`].
+    BEFORE: ///
+    BEFORE: /// Default: `true`.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: constrain
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: constrain
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: constrain
+Token main.Token.(
+Token main.Token.d_ident: constrain
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Constrain the movement of the window to the given rectangle.
+    BEFORE: ///
+    BEFORE: /// For instance: `.constrain_to(ctx.screen_rect())`.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: constrain_to
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: constrain_rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: constrain_to
+Token main.Token.(
+Token main.Token.d_ident: constrain_rect
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Where the "root" of the window is.
+    BEFORE: ///
+    BEFORE: /// For instance, if you set this to [`Align2::RIGHT_TOP`]
+    BEFORE: /// then [`Self::fixed_pos`] will set the position of the right-top
+    BEFORE: /// corner of the window.
+    BEFORE: ///
+    BEFORE: /// Default: [`Align2::LEFT_TOP`].
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: pivot
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: pivot
+Token main.Token.:
+Token main.Token.d_ident: Align2
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: pivot
+Token main.Token.(
+Token main.Token.d_ident: pivot
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set anchor and distance.
+    BEFORE: ///
+    BEFORE: /// An anchor of `Align2::RIGHT_TOP` means "put the right-top corner of the window
+    BEFORE: /// in the right-top corner of the screen".
+    BEFORE: ///
+    BEFORE: /// The offset is added to the position, so e.g. an offset of `[-5.0, 5.0]`
+    BEFORE: /// would move the window left and down from the given anchor.
+    BEFORE: ///
+    BEFORE: /// Anchoring also makes the window immovable.
+    BEFORE: ///
+    BEFORE: /// It is an error to set both an anchor and a position.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: anchor
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: align
+Token main.Token.:
+Token main.Token.d_ident: Align2
+Token main.Token.,
+Token main.Token.d_ident: offset
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Vec2
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: anchor
+Token main.Token.(
+Token main.Token.d_ident: align
+Token main.Token.,
+Token main.Token.d_ident: offset
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set initial collapsed state of the window
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: default_open
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: default_open
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: default_open
+Token main.Token.=
+Token main.Token.d_ident: default_open
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set initial size of the window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: default_size
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: default_size
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Vec2
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: default_size
+Token main.Token.(
+Token main.Token.d_ident: default_size
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set initial width of the window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: default_width
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: default_width
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: default_width
+Token main.Token.(
+Token main.Token.d_ident: default_width
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set initial height of the window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: default_height
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: default_height
+Token main.Token.:
+Token main.Token.d_ident: f32
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: default_height
+Token main.Token.(
+Token main.Token.d_ident: default_height
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Sets the window size and prevents it from being resized by dragging its edges.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: fixed_size
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: size
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Vec2
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: fixed_size
+Token main.Token.(
+Token main.Token.d_ident: size
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: edges_padded_for_resize
+Token main.Token.(
+Token main.Token.d_ident: false
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Set initial position and size of the window.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: default_rect
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: default_pos
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: default_size
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: size
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// Sets the window pos and size and prevents it from being moved and resized by dragging its edges.
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: fixed_rect
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: fixed_pos
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: fixed_size
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: size
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+    BEFORE: /// Can the user resize the window by dragging its edges?
+    BEFORE: ///
+    BEFORE: /// Note that even if you set this to `false` the window may still auto-resize.
+    BEFORE: ///
+    BEFORE: /// Default is `true`.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: resizable
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: resizable
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: resizable
+Token main.Token.(
+Token main.Token.d_ident: resizable
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: edges_padded_for_resize
+Token main.Token.(
+Token main.Token.d_ident: resizable
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Can the window be collapsed by clicking on its title?
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: collapsible
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: collapsible
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: collapsible
+Token main.Token.=
+Token main.Token.d_ident: collapsible
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Show title bar on top of the window?
+    BEFORE: /// If `false`, the window will not be collapsible nor have a close-button.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: title_bar
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: title_bar
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: with_title_bar
+Token main.Token.=
+Token main.Token.d_ident: title_bar
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Not resizable, just takes the size of its contents.
+    BEFORE: /// Also disabled scrolling.
+    BEFORE: /// Text will not wrap, but will instead make your window width expand.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: auto_sized
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: auto_sized
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: scroll
+Token main.Token.=
+Token main.Token.d_ident: ScrollArea
+Token main.Token.::
+Token main.Token.d_ident: neither
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: edges_padded_for_resize
+Token main.Token.(
+Token main.Token.d_ident: false
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Enable/disable horizontal/vertical scrolling. `false` by default.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: scroll2
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: scroll
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Vec2b
+Token main.Token.>
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: scroll
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: scroll
+Token main.Token..
+Token main.Token.d_ident: scroll2
+Token main.Token.(
+Token main.Token.d_ident: scroll
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Enable/disable horizontal scrolling. `false` by default.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: hscroll
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: hscroll
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: scroll
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: scroll
+Token main.Token..
+Token main.Token.d_ident: hscroll
+Token main.Token.(
+Token main.Token.d_ident: hscroll
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Enable/disable vertical scrolling. `false` by default.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: vscroll
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: vscroll
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: scroll
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: scroll
+Token main.Token..
+Token main.Token.d_ident: vscroll
+Token main.Token.(
+Token main.Token.d_ident: vscroll
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+    BEFORE: /// Enable/disable scrolling on the window by dragging with the pointer. `true` by default.
+    BEFORE: ///
+    BEFORE: /// See [`ScrollArea::drag_to_scroll`] for more.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: drag_to_scroll
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: drag_to_scroll
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: scroll
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: scroll
+Token main.Token..
+Token main.Token.d_ident: drag_to_scroll
+Token main.Token.(
+Token main.Token.d_ident: drag_to_scroll
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: self
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.<
+Token main.Token.'
+Token main.Token.d_ident: open
+Token main.Token.>
+Token main.Token.d_ident: Window
+Token main.Token.<
+Token main.Token.'
+Token main.Token.d_ident: open
+Token main.Token.>
+Token main.Token.{
+    BEFORE: /// Returns `None` if the window is not open (if [`Window::open`] was called with `&mut false`).
+    BEFORE: /// Returns `Some(InnerResponse { inner: None })` if the window is collapsed.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: inline
+Token main.Token.]
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: show
+Token main.Token.<
+Token main.Token.d_ident: R
+Token main.Token.>
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: ctx
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Context
+Token main.Token.,
+Token main.Token.d_ident: add_contents
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: FnOnce
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Ui
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: R
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: InnerResponse
+Token main.Token.<
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: R
+Token main.Token.>
+Token main.Token.>
+Token main.Token.>
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: show_dyn
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.,
+Token main.Token.d_ident: Box
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: add_contents
+Token main.Token.)
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: show_dyn
+Token main.Token.<
+Token main.Token.'
+Token main.Token.d_ident: c
+Token main.Token.,
+Token main.Token.d_ident: R
+Token main.Token.>
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: ctx
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Context
+Token main.Token.,
+Token main.Token.d_ident: add_contents
+Token main.Token.:
+Token main.Token.d_ident: Box
+Token main.Token.<
+Token main.Token.kw_dyn
+Token main.Token.d_ident: FnOnce
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Ui
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: R
+Token main.Token.+
+Token main.Token.'
+Token main.Token.d_ident: c
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: InnerResponse
+Token main.Token.<
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: R
+Token main.Token.>
+Token main.Token.>
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: Window
+Token main.Token.{
+Token main.Token.d_ident: title
+Token main.Token.,
+Token main.Token.d_ident: open
+Token main.Token.,
+Token main.Token.d_ident: area
+Token main.Token.,
+Token main.Token.d_ident: frame
+Token main.Token.,
+Token main.Token.d_ident: resize
+Token main.Token.,
+Token main.Token.d_ident: scroll
+Token main.Token.,
+Token main.Token.d_ident: collapsible
+Token main.Token.,
+Token main.Token.d_ident: default_open
+Token main.Token.,
+Token main.Token.d_ident: with_title_bar
+Token main.Token.,
+Token main.Token.}
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: header_color
+Token main.Token.=
+Token main.Token.d_ident: frame
+Token main.Token..
+Token main.Token.d_ident: map_or_else
+Token main.Token.(
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: style
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token..
+Token main.Token.d_ident: widgets
+Token main.Token..
+Token main.Token.d_ident: open
+Token main.Token..
+Token main.Token.d_ident: weak_bg_fill
+Token main.Token.,
+Token main.Token.|
+Token main.Token.d_ident: f
+Token main.Token.|
+Token main.Token.d_ident: f
+Token main.Token..
+Token main.Token.d_ident: fill
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: window_frame
+Token main.Token.=
+Token main.Token.d_ident: frame
+Token main.Token..
+Token main.Token.d_ident: unwrap_or_else
+Token main.Token.(
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: Frame
+Token main.Token.::
+Token main.Token.d_ident: window
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: style
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+    BEFORE: // Keep the original inner margin for later use
+Token main.Token.kw_let
+Token main.Token.d_ident: window_margin
+Token main.Token.=
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: inner_margin
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: border_padding
+Token main.Token.=
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.;
+    BEFORE: // Add border padding to the inner margin to prevent it from covering the contents
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: inner_margin
+Token main.Token.+
+Token main.Token.=
+Token main.Token.d_ident: border_padding
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: is_explicitly_closed
+Token main.Token.=
+Token main.Token.d_ident: matches
+Token main.Token.!
+Token main.Token.(
+Token main.Token.d_ident: open
+Token main.Token.,
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: false
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: is_open
+Token main.Token.=
+Token main.Token.!
+Token main.Token.d_ident: is_explicitly_closed
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: memory
+Token main.Token.(
+Token main.Token.|
+Token main.Token.d_ident: mem
+Token main.Token.|
+Token main.Token.d_ident: mem
+Token main.Token..
+Token main.Token.d_ident: everything_is_visible
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: show_open_close_animation
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.,
+Token main.Token.&
+Token main.Token.d_ident: window_frame
+Token main.Token.,
+Token main.Token.d_ident: is_open
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.!
+Token main.Token.d_ident: is_open
+Token main.Token.{
+Token main.Token.kw_return
+Token main.Token.d_ident: None
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: area_id
+Token main.Token.=
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: id
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: area_layer_id
+Token main.Token.=
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: layer
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: resize_id
+Token main.Token.=
+Token main.Token.d_ident: area_id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "resize"
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: collapsing
+Token main.Token.=
+Token main.Token.d_ident: CollapsingState
+Token main.Token.::
+Token main.Token.d_ident: load_with_default_open
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.,
+Token main.Token.d_ident: area_id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "collapsing"
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: default_open
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: is_collapsed
+Token main.Token.=
+Token main.Token.d_ident: with_title_bar
+Token main.Token.&
+Token main.Token.&
+Token main.Token.!
+Token main.Token.d_ident: collapsing
+Token main.Token..
+Token main.Token.d_ident: is_open
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: possible
+Token main.Token.=
+Token main.Token.d_ident: PossibleInteractions
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: area
+Token main.Token.,
+Token main.Token.&
+Token main.Token.d_ident: resize
+Token main.Token.,
+Token main.Token.d_ident: is_collapsed
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: resizable
+Token main.Token.(
+Token main.Token.d_ident: false
+Token main.Token.)
+Token main.Token.;
+    AFTER: // We resize it manually
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: resize
+Token main.Token.=
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: id
+Token main.Token.(
+Token main.Token.d_ident: resize_id
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: on_top
+Token main.Token.=
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: area_layer_id
+Token main.Token.)
+Token main.Token.==
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: top_layer_id
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: area
+Token main.Token.=
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: begin
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.)
+Token main.Token.;
+    BEFORE: // Calculate roughly how much larger the window size is compared to the inner rect
+Token main.Token.kw_let
+Token main.Token.(
+Token main.Token.d_ident: title_bar_height
+Token main.Token.,
+Token main.Token.d_ident: title_content_spacing
+Token main.Token.)
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: with_title_bar
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: style
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: style
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: spacing
+Token main.Token.=
+Token main.Token.d_ident: window_margin
+Token main.Token..
+Token main.Token.d_ident: top
+Token main.Token.+
+Token main.Token.d_ident: window_margin
+Token main.Token..
+Token main.Token.d_ident: bottom
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: height
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: fonts
+Token main.Token.(
+Token main.Token.|
+Token main.Token.d_ident: f
+Token main.Token.|
+Token main.Token.d_ident: title
+Token main.Token..
+Token main.Token.d_ident: font_height
+Token main.Token.(
+Token main.Token.d_ident: f
+Token main.Token.,
+Token main.Token.&
+Token main.Token.d_ident: style
+Token main.Token.)
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: spacing
+Token main.Token.;
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.=
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token..
+Token main.Token.d_ident: clamp
+Token main.Token.(
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_ident: height
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.=
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token..
+Token main.Token.d_ident: clamp
+Token main.Token.(
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_ident: height
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.)
+Token main.Token.;
+Token main.Token.(
+Token main.Token.d_ident: height
+Token main.Token.,
+Token main.Token.d_ident: spacing
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_number: 0.0
+Token main.Token.)
+Token main.Token.}
+Token main.Token.;
+    BEFORE: // First check for resize to avoid frame delay:
+Token main.Token.kw_let
+Token main.Token.d_ident: last_frame_outer_rect
+Token main.Token.=
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: state
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: resize_interaction
+Token main.Token.=
+Token main.Token.d_ident: resize_interaction
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.,
+Token main.Token.d_ident: possible
+Token main.Token.,
+Token main.Token.d_ident: area_layer_id
+Token main.Token.,
+Token main.Token.d_ident: last_frame_outer_rect
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: margins
+Token main.Token.=
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: outer_margin
+Token main.Token..
+Token main.Token.d_ident: sum
+Token main.Token.(
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: inner_margin
+Token main.Token..
+Token main.Token.d_ident: sum
+Token main.Token.(
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: vec2
+Token main.Token.(
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.d_ident: title_bar_height
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: resize_response
+Token main.Token.(
+Token main.Token.d_ident: resize_interaction
+Token main.Token.,
+Token main.Token.d_ident: ctx
+Token main.Token.,
+Token main.Token.d_ident: margins
+Token main.Token.,
+Token main.Token.d_ident: area_layer_id
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: area
+Token main.Token.,
+Token main.Token.d_ident: resize_id
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: area_content_ui
+Token main.Token.=
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: content_ui
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: content_inner
+Token main.Token.=
+Token main.Token.{
+    BEFORE: // BEGIN FRAME --------------------------------
+Token main.Token.kw_let
+Token main.Token.d_ident: frame_stroke
+Token main.Token.=
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: stroke
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: frame
+Token main.Token.=
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: begin
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: area_content_ui
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: show_close_button
+Token main.Token.=
+Token main.Token.d_ident: open
+Token main.Token..
+Token main.Token.d_ident: is_some
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: where_to_put_header_background
+Token main.Token.=
+Token main.Token.&
+Token main.Token.d_ident: area_content_ui
+Token main.Token..
+Token main.Token.d_ident: painter
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: add
+Token main.Token.(
+Token main.Token.d_ident: Shape
+Token main.Token.::
+Token main.Token.d_ident: Noop
+Token main.Token.)
+Token main.Token.;
+    BEFORE: // Backup item spacing before the title bar
+Token main.Token.kw_let
+Token main.Token.d_ident: item_spacing
+Token main.Token.=
+Token main.Token.d_ident: frame
+Token main.Token..
+Token main.Token.d_ident: content_ui
+Token main.Token..
+Token main.Token.d_ident: spacing
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: item_spacing
+Token main.Token.;
+    BEFORE: // Use title bar spacing as the item spacing before the content
+Token main.Token.d_ident: frame
+Token main.Token..
+Token main.Token.d_ident: content_ui
+Token main.Token..
+Token main.Token.d_ident: spacing_mut
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: item_spacing
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: title_content_spacing
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: title_bar
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: with_title_bar
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: title_bar
+Token main.Token.=
+Token main.Token.d_ident: show_title_bar
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: frame
+Token main.Token..
+Token main.Token.d_ident: content_ui
+Token main.Token.,
+Token main.Token.d_ident: title
+Token main.Token.,
+Token main.Token.d_ident: show_close_button
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: collapsing
+Token main.Token.,
+Token main.Token.d_ident: collapsible
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: min_size
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.=
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: min_size
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token..
+Token main.Token.d_ident: at_least
+Token main.Token.(
+Token main.Token.d_ident: title_bar
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+    AFTER: // Prevent making window smaller than title bar width
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: title_bar
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: None
+Token main.Token.}
+Token main.Token.;
+    BEFORE: // Remove item spacing after the title bar
+Token main.Token.d_ident: frame
+Token main.Token..
+Token main.Token.d_ident: content_ui
+Token main.Token..
+Token main.Token.d_ident: spacing_mut
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: item_spacing
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_number: 0.0
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.(
+Token main.Token.d_ident: content_inner
+Token main.Token.,
+Token main.Token.kw_mut
+Token main.Token.d_ident: content_response
+Token main.Token.)
+Token main.Token.=
+Token main.Token.d_ident: collapsing
+Token main.Token..
+Token main.Token.d_ident: show_body_unindented
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: frame
+Token main.Token..
+Token main.Token.d_ident: content_ui
+Token main.Token.,
+Token main.Token.|
+Token main.Token.d_ident: ui
+Token main.Token.|
+Token main.Token.{
+    BEFORE: // Restore item spacing for the content
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: spacing_mut
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: item_spacing
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: item_spacing
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.;
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: show
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.,
+Token main.Token.|
+Token main.Token.d_ident: ui
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.d_ident: scroll
+Token main.Token..
+Token main.Token.d_ident: is_any_scroll_enabled
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: scroll
+Token main.Token..
+Token main.Token.d_ident: show
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.,
+Token main.Token.d_ident: add_contents
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: inner
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: add_contents
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.)
+Token main.Token.}
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: map_or
+Token main.Token.(
+Token main.Token.(
+Token main.Token.d_ident: None
+Token main.Token.,
+Token main.Token.d_ident: None
+Token main.Token.)
+Token main.Token.,
+Token main.Token.|
+Token main.Token.d_ident: ir
+Token main.Token.|
+Token main.Token.(
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: ir
+Token main.Token..
+Token main.Token.d_ident: inner
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: ir
+Token main.Token..
+Token main.Token.d_ident: response
+Token main.Token.)
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: outer_rect
+Token main.Token.=
+Token main.Token.d_ident: frame
+Token main.Token..
+Token main.Token.d_ident: end
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: area_content_ui
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.;
+Token main.Token.d_ident: paint_resize_corner
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: area_content_ui
+Token main.Token.,
+Token main.Token.&
+Token main.Token.d_ident: possible
+Token main.Token.,
+Token main.Token.d_ident: outer_rect
+Token main.Token.,
+Token main.Token.d_ident: frame_stroke
+Token main.Token.,
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: rounding
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+    BEFORE: // END FRAME --------------------------------
+Token main.Token.kw_if
+Token main.Token.kw_let
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: title_bar
+Token main.Token.)
+Token main.Token.=
+Token main.Token.d_ident: title_bar
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: title_rect
+Token main.Token.=
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_min_size
+Token main.Token.(
+Token main.Token.d_ident: outer_rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.+
+Token main.Token.d_ident: vec2
+Token main.Token.(
+Token main.Token.d_ident: border_padding
+Token main.Token.,
+Token main.Token.d_ident: border_padding
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: Vec2
+Token main.Token.{
+Token main.Token.d_ident: x
+Token main.Token.:
+Token main.Token.d_ident: outer_rect
+Token main.Token..
+Token main.Token.d_ident: size
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: border_padding
+Token main.Token.*
+Token main.Token.d_number: 2.0
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.:
+Token main.Token.d_ident: title_bar_height
+Token main.Token.,
+Token main.Token.}
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: title_rect
+Token main.Token.=
+Token main.Token.d_ident: area_content_ui
+Token main.Token..
+Token main.Token.d_ident: painter
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: round_rect_to_pixels
+Token main.Token.(
+Token main.Token.d_ident: title_rect
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: on_top
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: area_content_ui
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: window_highlight_topmost
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: round
+Token main.Token.=
+Token main.Token.d_ident: window_frame
+Token main.Token..
+Token main.Token.d_ident: rounding
+Token main.Token.;
+    BEFORE: // Eliminate the rounding gap between the title bar and the window frame
+Token main.Token.d_ident: round
+Token main.Token.-
+Token main.Token.=
+Token main.Token.d_ident: border_padding
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.!
+Token main.Token.d_ident: is_collapsed
+Token main.Token.{
+Token main.Token.d_ident: round
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.=
+Token main.Token.d_number: 0.0
+Token main.Token.;
+Token main.Token.d_ident: round
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token.=
+Token main.Token.d_number: 0.0
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: area_content_ui
+Token main.Token..
+Token main.Token.d_ident: painter
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: set
+Token main.Token.(
+Token main.Token.*
+Token main.Token.d_ident: where_to_put_header_background
+Token main.Token.,
+Token main.Token.d_ident: RectShape
+Token main.Token.::
+Token main.Token.d_ident: filled
+Token main.Token.(
+Token main.Token.d_ident: title_rect
+Token main.Token.,
+Token main.Token.d_ident: round
+Token main.Token.,
+Token main.Token.d_ident: header_color
+Token main.Token.)
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.;
+    BEFORE: // Fix title bar separator line position
+Token main.Token.kw_if
+Token main.Token.kw_let
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: response
+Token main.Token.)
+Token main.Token.=
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: content_response
+Token main.Token.{
+Token main.Token.d_ident: response
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: outer_rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_ident: title_bar_height
+Token main.Token.+
+Token main.Token.d_ident: border_padding
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: title_bar
+Token main.Token..
+Token main.Token.d_ident: ui
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: area_content_ui
+Token main.Token.,
+Token main.Token.d_ident: title_rect
+Token main.Token.,
+Token main.Token.&
+Token main.Token.d_ident: content_response
+Token main.Token.,
+Token main.Token.d_ident: open
+Token main.Token.,
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: collapsing
+Token main.Token.,
+Token main.Token.d_ident: collapsible
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: collapsing
+Token main.Token..
+Token main.Token.d_ident: store
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: paint_frame_interaction
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: area_content_ui
+Token main.Token.,
+Token main.Token.d_ident: outer_rect
+Token main.Token.,
+Token main.Token.d_ident: resize_interaction
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: content_inner
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: full_response
+Token main.Token.=
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: end
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.,
+Token main.Token.d_ident: area_content_ui
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: inner_response
+Token main.Token.=
+Token main.Token.d_ident: InnerResponse
+Token main.Token.{
+Token main.Token.d_ident: inner
+Token main.Token.:
+Token main.Token.d_ident: content_inner
+Token main.Token.,
+Token main.Token.d_ident: response
+Token main.Token.:
+Token main.Token.d_ident: full_response
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: inner_response
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: paint_resize_corner
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Ui
+Token main.Token.,
+Token main.Token.d_ident: possible
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: PossibleInteractions
+Token main.Token.,
+Token main.Token.d_ident: outer_rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Stroke
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token.:
+Token main.Token.kw_impl
+Token main.Token.d_ident: Into
+Token main.Token.<
+Token main.Token.d_ident: Rounding
+Token main.Token.>
+Token main.Token.,
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: stroke
+Token main.Token.=
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: rounding
+Token main.Token.=
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: into
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.(
+Token main.Token.d_ident: corner
+Token main.Token.,
+Token main.Token.d_ident: radius
+Token main.Token.)
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_right
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_bottom
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: Align2
+Token main.Token.::
+Token main.Token.d_ident: RIGHT_BOTTOM
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_left
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_bottom
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: Align2
+Token main.Token.::
+Token main.Token.d_ident: LEFT_BOTTOM
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_left
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_top
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: Align2
+Token main.Token.::
+Token main.Token.d_ident: LEFT_TOP
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_right
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_top
+Token main.Token.{
+Token main.Token.(
+Token main.Token.d_ident: Align2
+Token main.Token.::
+Token main.Token.d_ident: RIGHT_TOP
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.kw_return
+Token main.Token.;
+Token main.Token.}
+Token main.Token.;
+    BEFORE: // Adjust the corner offset to accommodate the stroke width and window rounding
+Token main.Token.kw_let
+Token main.Token.d_ident: offset
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: radius
+Token main.Token.<=
+Token main.Token.d_number: 2.0
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token.<
+Token main.Token.d_number: 2.0
+Token main.Token.{
+Token main.Token.d_number: 2.0
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+    BEFORE: // The corner offset is calculated to make the corner appear to be in the correct position
+Token main.Token.(
+Token main.Token.d_number: 2.0
+Token main.Token.d_ident: _f32
+Token main.Token..
+Token main.Token.d_ident: sqrt
+Token main.Token.(
+Token main.Token.)
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_number: 1.0
+Token main.Token.+
+Token main.Token.d_ident: radius
+Token main.Token.+
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: width
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.)
+Token main.Token.-
+Token main.Token.d_ident: radius
+Token main.Token.)
+Token main.Token.*
+Token main.Token.d_number: 45.0
+Token main.Token.d_ident: _f32
+Token main.Token..
+Token main.Token.d_ident: to_radians
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: cos
+Token main.Token.(
+Token main.Token.)
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: corner_size
+Token main.Token.=
+Token main.Token.d_ident: Vec2
+Token main.Token.::
+Token main.Token.d_ident: splat
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: resize_corner_size
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: corner_rect
+Token main.Token.=
+Token main.Token.d_ident: corner
+Token main.Token..
+Token main.Token.d_ident: align_size_within_rect
+Token main.Token.(
+Token main.Token.d_ident: corner_size
+Token main.Token.,
+Token main.Token.d_ident: outer_rect
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: corner_rect
+Token main.Token.=
+Token main.Token.d_ident: corner_rect
+Token main.Token..
+Token main.Token.d_ident: translate
+Token main.Token.(
+Token main.Token.-
+Token main.Token.d_ident: offset
+Token main.Token.*
+Token main.Token.d_ident: corner
+Token main.Token..
+Token main.Token.d_ident: to_sign
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+    AFTER: // move away from corner
+Token main.Token.d_ident: crate
+Token main.Token.::
+Token main.Token.d_ident: resize
+Token main.Token.::
+Token main.Token.d_ident: paint_resize_corner_with_style
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.,
+Token main.Token.&
+Token main.Token.d_ident: corner_rect
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token..
+Token main.Token.d_ident: color
+Token main.Token.,
+Token main.Token.d_ident: corner
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+    BEFORE: /// Which sides can be resized?
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Copy
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_struct
+Token main.Token.d_ident: PossibleInteractions
+Token main.Token.{
+    BEFORE: // Which sides can we drag to resize or move?
+Token main.Token.d_ident: resize_left
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.d_ident: resize_right
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.d_ident: resize_top
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.d_ident: resize_bottom
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: PossibleInteractions
+Token main.Token.{
+Token main.Token.kw_fn
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: area
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Area
+Token main.Token.,
+Token main.Token.d_ident: resize
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Resize
+Token main.Token.,
+Token main.Token.d_ident: is_collapsed
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: movable
+Token main.Token.=
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: is_enabled
+Token main.Token.(
+Token main.Token.)
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: is_movable
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: resizable
+Token main.Token.=
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: is_enabled
+Token main.Token.(
+Token main.Token.)
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: resize
+Token main.Token..
+Token main.Token.d_ident: is_resizable
+Token main.Token.(
+Token main.Token.)
+Token main.Token.&
+Token main.Token.&
+Token main.Token.!
+Token main.Token.d_ident: is_collapsed
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: pivot
+Token main.Token.=
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: get_pivot
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: resize_left
+Token main.Token.:
+Token main.Token.d_ident: resizable
+Token main.Token.&
+Token main.Token.&
+Token main.Token.(
+Token main.Token.d_ident: movable
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: pivot
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.(
+Token main.Token.)
+Token main.Token.!
+Token main.Token.=
+Token main.Token.d_ident: Align
+Token main.Token.::
+Token main.Token.d_ident: LEFT
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: resize_right
+Token main.Token.:
+Token main.Token.d_ident: resizable
+Token main.Token.&
+Token main.Token.&
+Token main.Token.(
+Token main.Token.d_ident: movable
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: pivot
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.(
+Token main.Token.)
+Token main.Token.!
+Token main.Token.=
+Token main.Token.d_ident: Align
+Token main.Token.::
+Token main.Token.d_ident: RIGHT
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: resize_top
+Token main.Token.:
+Token main.Token.d_ident: resizable
+Token main.Token.&
+Token main.Token.&
+Token main.Token.(
+Token main.Token.d_ident: movable
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: pivot
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.(
+Token main.Token.)
+Token main.Token.!
+Token main.Token.=
+Token main.Token.d_ident: Align
+Token main.Token.::
+Token main.Token.d_ident: TOP
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: resize_bottom
+Token main.Token.:
+Token main.Token.d_ident: resizable
+Token main.Token.&
+Token main.Token.&
+Token main.Token.(
+Token main.Token.d_ident: movable
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: pivot
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.(
+Token main.Token.)
+Token main.Token.!
+Token main.Token.=
+Token main.Token.d_ident: Align
+Token main.Token.::
+Token main.Token.d_ident: BOTTOM
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: resizable
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: bool
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize_left
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize_right
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize_top
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: resize_bottom
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Resizing the window edges.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Copy
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_struct
+Token main.Token.d_ident: ResizeInteraction
+Token main.Token.{
+Token main.Token.d_ident: start_rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: left
+Token main.Token.:
+Token main.Token.d_ident: SideResponse
+Token main.Token.,
+Token main.Token.d_ident: right
+Token main.Token.:
+Token main.Token.d_ident: SideResponse
+Token main.Token.,
+Token main.Token.d_ident: top
+Token main.Token.:
+Token main.Token.d_ident: SideResponse
+Token main.Token.,
+Token main.Token.d_ident: bottom
+Token main.Token.:
+Token main.Token.d_ident: SideResponse
+Token main.Token.,
+Token main.Token.}
+    BEFORE: /// A minitature version of `Response`, for each side of the window.
+Token main.Token.#
+Token main.Token.[
+Token main.Token.d_ident: derive
+Token main.Token.(
+Token main.Token.d_ident: Clone
+Token main.Token.,
+Token main.Token.d_ident: Copy
+Token main.Token.,
+Token main.Token.d_ident: Debug
+Token main.Token.,
+Token main.Token.d_ident: Default
+Token main.Token.)
+Token main.Token.]
+Token main.Token.kw_struct
+Token main.Token.d_ident: SideResponse
+Token main.Token.{
+Token main.Token.d_ident: hover
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.d_ident: drag
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: SideResponse
+Token main.Token.{
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: any
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: bool
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: std
+Token main.Token.::
+Token main.Token.d_ident: ops
+Token main.Token.::
+Token main.Token.d_ident: BitOrAssign
+Token main.Token.kw_for
+Token main.Token.d_ident: SideResponse
+Token main.Token.{
+Token main.Token.kw_fn
+Token main.Token.d_ident: bitor_assign
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: rhs
+Token main.Token.:
+Token main.Token.d_ident: Self
+Token main.Token.)
+Token main.Token.{
+Token main.Token.*
+Token main.Token.d_ident: self
+Token main.Token.=
+Token main.Token.d_ident: Self
+Token main.Token.{
+Token main.Token.d_ident: hover
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: rhs
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.,
+Token main.Token.d_ident: drag
+Token main.Token.:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: rhs
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: ResizeInteraction
+Token main.Token.{
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: set_cursor
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: ctx
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Context
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: left
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: left
+Token main.Token..
+Token main.Token.d_ident: any
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: right
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: right
+Token main.Token..
+Token main.Token.d_ident: any
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: top
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: top
+Token main.Token..
+Token main.Token.d_ident: any
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: bottom
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: bottom
+Token main.Token..
+Token main.Token.d_ident: any
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.(
+Token main.Token.d_ident: left
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: top
+Token main.Token.)
+Token main.Token.|
+Token main.Token.|
+Token main.Token.(
+Token main.Token.d_ident: right
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: bottom
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: set_cursor_icon
+Token main.Token.(
+Token main.Token.d_ident: CursorIcon
+Token main.Token.::
+Token main.Token.d_ident: ResizeNwSe
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.(
+Token main.Token.d_ident: right
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: top
+Token main.Token.)
+Token main.Token.|
+Token main.Token.|
+Token main.Token.(
+Token main.Token.d_ident: left
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: bottom
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: set_cursor_icon
+Token main.Token.(
+Token main.Token.d_ident: CursorIcon
+Token main.Token.::
+Token main.Token.d_ident: ResizeNeSw
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.d_ident: left
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: right
+Token main.Token.{
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: set_cursor_icon
+Token main.Token.(
+Token main.Token.d_ident: CursorIcon
+Token main.Token.::
+Token main.Token.d_ident: ResizeHorizontal
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.d_ident: bottom
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: top
+Token main.Token.{
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: set_cursor_icon
+Token main.Token.(
+Token main.Token.d_ident: CursorIcon
+Token main.Token.::
+Token main.Token.d_ident: ResizeVertical
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: any_hovered
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: bool
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: left
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: right
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: top
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: bottom
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.}
+Token main.Token.kw_pub
+Token main.Token.kw_fn
+Token main.Token.d_ident: any_dragged
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: bool
+Token main.Token.{
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: left
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: right
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: top
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: bottom
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: resize_response
+Token main.Token.(
+Token main.Token.d_ident: resize_interaction
+Token main.Token.:
+Token main.Token.d_ident: ResizeInteraction
+Token main.Token.,
+Token main.Token.d_ident: ctx
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Context
+Token main.Token.,
+Token main.Token.d_ident: margins
+Token main.Token.:
+Token main.Token.d_ident: Vec2
+Token main.Token.,
+Token main.Token.d_ident: area_layer_id
+Token main.Token.:
+Token main.Token.d_ident: LayerId
+Token main.Token.,
+Token main.Token.d_ident: area
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: area
+Token main.Token.::
+Token main.Token.d_ident: Prepared
+Token main.Token.,
+Token main.Token.d_ident: resize_id
+Token main.Token.:
+Token main.Token.d_ident: Id
+Token main.Token.,
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: new_rect
+Token main.Token.)
+Token main.Token.=
+Token main.Token.d_ident: move_and_resize_window
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.,
+Token main.Token.&
+Token main.Token.d_ident: resize_interaction
+Token main.Token.)
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.kw_return
+Token main.Token.;
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: new_rect
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: round_rect_to_pixels
+Token main.Token.(
+Token main.Token.d_ident: new_rect
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: constrain
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: new_rect
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: constrain_window_rect_to_area
+Token main.Token.(
+Token main.Token.d_ident: new_rect
+Token main.Token.,
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: constrain_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // TODO(emilk): add this to a Window state instead as a command "move here next frame"
+Token main.Token.d_ident: area
+Token main.Token..
+Token main.Token.d_ident: state_mut
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: set_left_top_pos
+Token main.Token.(
+Token main.Token.d_ident: new_rect
+Token main.Token..
+Token main.Token.d_ident: left_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: resize_interaction
+Token main.Token..
+Token main.Token.d_ident: any_dragged
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.kw_let
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: state
+Token main.Token.)
+Token main.Token.=
+Token main.Token.d_ident: resize
+Token main.Token.::
+Token main.Token.d_ident: State
+Token main.Token.::
+Token main.Token.d_ident: load
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.,
+Token main.Token.d_ident: resize_id
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: state
+Token main.Token..
+Token main.Token.d_ident: requested_size
+Token main.Token.=
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: new_rect
+Token main.Token..
+Token main.Token.d_ident: size
+Token main.Token.(
+Token main.Token.)
+Token main.Token.-
+Token main.Token.d_ident: margins
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: state
+Token main.Token..
+Token main.Token.d_ident: store
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.,
+Token main.Token.d_ident: resize_id
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: memory_mut
+Token main.Token.(
+Token main.Token.|
+Token main.Token.d_ident: mem
+Token main.Token.|
+Token main.Token.d_ident: mem
+Token main.Token..
+Token main.Token.d_ident: areas_mut
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: move_to_top
+Token main.Token.(
+Token main.Token.d_ident: area_layer_id
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: move_and_resize_window
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Context
+Token main.Token.,
+Token main.Token.d_ident: interaction
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: ResizeInteraction
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: Rect
+Token main.Token.>
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.!
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: any_dragged
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_return
+Token main.Token.d_ident: None
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: pointer_pos
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: input
+Token main.Token.(
+Token main.Token.|
+Token main.Token.d_ident: i
+Token main.Token.|
+Token main.Token.d_ident: i
+Token main.Token..
+Token main.Token.d_ident: pointer
+Token main.Token..
+Token main.Token.d_ident: interact_pos
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.?
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: rect
+Token main.Token.=
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: start_rect
+Token main.Token.;
+    AFTER: // prevent drift
+Token main.Token.kw_if
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: left
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.{
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: round_to_pixel
+Token main.Token.(
+Token main.Token.d_ident: pointer_pos
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: right
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.{
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: round_to_pixel
+Token main.Token.(
+Token main.Token.d_ident: pointer_pos
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: top
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.{
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: round_to_pixel
+Token main.Token.(
+Token main.Token.d_ident: pointer_pos
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: bottom
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.{
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: round_to_pixel
+Token main.Token.(
+Token main.Token.d_ident: pointer_pos
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.)
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: resize_interaction
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Context
+Token main.Token.,
+Token main.Token.d_ident: possible
+Token main.Token.:
+Token main.Token.d_ident: PossibleInteractions
+Token main.Token.,
+Token main.Token.d_ident: layer_id
+Token main.Token.:
+Token main.Token.d_ident: LayerId
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: ResizeInteraction
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.!
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resizable
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_return
+Token main.Token.d_ident: ResizeInteraction
+Token main.Token.{
+Token main.Token.d_ident: start_rect
+Token main.Token.:
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: left
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: right
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: top
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: bottom
+Token main.Token.:
+Token main.Token.d_ident: Default
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: is_dragging
+Token main.Token.=
+Token main.Token.|
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: create_widget
+Token main.Token.(
+Token main.Token.d_ident: WidgetRect
+Token main.Token.{
+Token main.Token.d_ident: layer_id
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: interact_rect
+Token main.Token.:
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: sense
+Token main.Token.:
+Token main.Token.d_ident: Sense
+Token main.Token.::
+Token main.Token.d_ident: drag
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: enabled
+Token main.Token.:
+Token main.Token.d_ident: true
+Token main.Token.,
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: SideResponse
+Token main.Token.{
+Token main.Token.d_ident: hover
+Token main.Token.:
+Token main.Token.d_ident: response
+Token main.Token..
+Token main.Token.d_ident: hovered
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: drag
+Token main.Token.:
+Token main.Token.d_ident: response
+Token main.Token..
+Token main.Token.d_ident: dragged
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.}
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: id
+Token main.Token.=
+Token main.Token.d_ident: Id
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.d_ident: layer_id
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "edge_drag"
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: side_grab_radius
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: style
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: resize_grab_radius_side
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: corner_grab_radius
+Token main.Token.=
+Token main.Token.d_ident: ctx
+Token main.Token..
+Token main.Token.d_ident: style
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: resize_grab_radius_corner
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: corner_rect
+Token main.Token.=
+Token main.Token.|
+Token main.Token.d_ident: center
+Token main.Token.:
+Token main.Token.d_ident: Pos2
+Token main.Token.|
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_center_size
+Token main.Token.(
+Token main.Token.d_ident: center
+Token main.Token.,
+Token main.Token.d_ident: Vec2
+Token main.Token.::
+Token main.Token.d_ident: splat
+Token main.Token.(
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.d_ident: corner_grab_radius
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+    BEFORE: // What are we dragging/hovering?
+Token main.Token.kw_let
+Token main.Token.[
+Token main.Token.kw_mut
+Token main.Token.d_ident: left
+Token main.Token.,
+Token main.Token.kw_mut
+Token main.Token.d_ident: right
+Token main.Token.,
+Token main.Token.kw_mut
+Token main.Token.d_ident: top
+Token main.Token.,
+Token main.Token.kw_mut
+Token main.Token.d_ident: bottom
+Token main.Token.]
+Token main.Token.=
+Token main.Token.[
+Token main.Token.d_ident: SideResponse
+Token main.Token.::
+Token main.Token.d_ident: default
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_number: 4
+Token main.Token.]
+Token main.Token.;
+    BEFORE: // ----------------------------------------
+    BEFORE: // Check sides first, so that corners are on top, covering the sides (i.e. corners have priority)
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_right
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: is_dragging
+Token main.Token.(
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_min_max
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: right_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: right_bottom
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: side_grab_radius
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "right"
+Token main.Token.)
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: right
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_left
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: is_dragging
+Token main.Token.(
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_min_max
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: left_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: left_bottom
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: side_grab_radius
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "left"
+Token main.Token.)
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: left
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_bottom
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: is_dragging
+Token main.Token.(
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_min_max
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: left_bottom
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: right_bottom
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: side_grab_radius
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "bottom"
+Token main.Token.)
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: bottom
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_top
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: is_dragging
+Token main.Token.(
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_min_max
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: left_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: right_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: side_grab_radius
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "top"
+Token main.Token.)
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: top
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // ----------------------------------------
+    BEFORE: // Now check corners:
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_right
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_bottom
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: is_dragging
+Token main.Token.(
+Token main.Token.d_ident: corner_rect
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: right_bottom
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "right_bottom"
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: right
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.d_ident: bottom
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_right
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_top
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: is_dragging
+Token main.Token.(
+Token main.Token.d_ident: corner_rect
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: right_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "right_top"
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: right
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.d_ident: top
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_left
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_bottom
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: is_dragging
+Token main.Token.(
+Token main.Token.d_ident: corner_rect
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: left_bottom
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "left_bottom"
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: left
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.d_ident: bottom
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_left
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: possible
+Token main.Token..
+Token main.Token.d_ident: resize_top
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: is_dragging
+Token main.Token.(
+Token main.Token.d_ident: corner_rect
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: left_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: id
+Token main.Token..
+Token main.Token.d_ident: with
+Token main.Token.(
+Token main.Token.d_string: "left_top"
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: left
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.d_ident: top
+Token main.Token.|
+Token main.Token.=
+Token main.Token.d_ident: response
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: interaction
+Token main.Token.=
+Token main.Token.d_ident: ResizeInteraction
+Token main.Token.{
+Token main.Token.d_ident: start_rect
+Token main.Token.:
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: left
+Token main.Token.,
+Token main.Token.d_ident: right
+Token main.Token.,
+Token main.Token.d_ident: top
+Token main.Token.,
+Token main.Token.d_ident: bottom
+Token main.Token.,
+Token main.Token.}
+Token main.Token.;
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: set_cursor
+Token main.Token.(
+Token main.Token.d_ident: ctx
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: interaction
+Token main.Token.}
+    BEFORE: /// Fill in parts of the window frame when we resize by dragging that part
+Token main.Token.kw_fn
+Token main.Token.d_ident: paint_frame_interaction
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Ui
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: interaction
+Token main.Token.:
+Token main.Token.d_ident: ResizeInteraction
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_use
+Token main.Token.d_ident: epaint
+Token main.Token.::
+Token main.Token.d_ident: tessellator
+Token main.Token.::
+Token main.Token.d_ident: path
+Token main.Token.::
+Token main.Token.d_ident: add_circle_quadrant
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: visuals
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: any_dragged
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: style
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token..
+Token main.Token.d_ident: widgets
+Token main.Token..
+Token main.Token.d_ident: active
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.kw_if
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: any_hovered
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: style
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token..
+Token main.Token.d_ident: widgets
+Token main.Token..
+Token main.Token.d_ident: hovered
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.kw_return
+Token main.Token.;
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.[
+Token main.Token.d_ident: left
+Token main.Token.,
+Token main.Token.d_ident: right
+Token main.Token.,
+Token main.Token.d_ident: top
+Token main.Token.,
+Token main.Token.d_ident: bottom
+Token main.Token.]
+Token main.Token.:
+Token main.Token.[
+Token main.Token.d_ident: bool
+Token main.Token.;
+Token main.Token.d_number: 4
+Token main.Token.]
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: any_dragged
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.d_ident: left
+Token main.Token.=
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: left
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.;
+Token main.Token.d_ident: right
+Token main.Token.=
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: right
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.;
+Token main.Token.d_ident: top
+Token main.Token.=
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: top
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.;
+Token main.Token.d_ident: bottom
+Token main.Token.=
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: bottom
+Token main.Token..
+Token main.Token.d_ident: drag
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: left
+Token main.Token.=
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: left
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.;
+Token main.Token.d_ident: right
+Token main.Token.=
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: right
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.;
+Token main.Token.d_ident: top
+Token main.Token.=
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: top
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.;
+Token main.Token.d_ident: bottom
+Token main.Token.=
+Token main.Token.d_ident: interaction
+Token main.Token..
+Token main.Token.d_ident: bottom
+Token main.Token..
+Token main.Token.d_ident: hover
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: rounding
+Token main.Token.=
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: window_rounding
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: Rect
+Token main.Token.{
+Token main.Token.d_ident: min
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token.}
+Token main.Token.=
+Token main.Token.d_ident: rect
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.kw_mut
+Token main.Token.d_ident: points
+Token main.Token.=
+Token main.Token.d_ident: Vec
+Token main.Token.::
+Token main.Token.d_ident: new
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: right
+Token main.Token.&
+Token main.Token.&
+Token main.Token.!
+Token main.Token.d_ident: bottom
+Token main.Token.&
+Token main.Token.&
+Token main.Token.!
+Token main.Token.d_ident: top
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: right
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: bottom
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: add_circle_quadrant
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.,
+Token main.Token.d_number: 0.0
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: bottom
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: left
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: bottom
+Token main.Token.{
+Token main.Token.d_ident: add_circle_quadrant
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token.,
+Token main.Token.d_number: 1.0
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: left
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: sw
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: left
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: top
+Token main.Token.{
+Token main.Token.d_ident: add_circle_quadrant
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.,
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.,
+Token main.Token.d_number: 2.0
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: top
+Token main.Token.{
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: nw
+Token main.Token.,
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.,
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.d_ident: right
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: top
+Token main.Token.{
+Token main.Token.d_ident: add_circle_quadrant
+Token main.Token.(
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.,
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.,
+Token main.Token.d_number: 3.0
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.+
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: ne
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: points
+Token main.Token..
+Token main.Token.d_ident: push
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_ident: rounding
+Token main.Token..
+Token main.Token.d_ident: se
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: painter
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: add
+Token main.Token.(
+Token main.Token.d_ident: Shape
+Token main.Token.::
+Token main.Token.d_ident: line
+Token main.Token.(
+Token main.Token.d_ident: points
+Token main.Token.,
+Token main.Token.d_ident: visuals
+Token main.Token..
+Token main.Token.d_ident: bg_stroke
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // ----------------------------------------------------------------------------
+Token main.Token.kw_struct
+Token main.Token.d_ident: TitleBar
+Token main.Token.{
+    BEFORE: /// A title Id used for dragging windows
+Token main.Token.d_ident: id
+Token main.Token.:
+Token main.Token.d_ident: Id
+Token main.Token.,
+    BEFORE: /// Prepared text in the title
+Token main.Token.d_ident: title_galley
+Token main.Token.:
+Token main.Token.d_ident: Arc
+Token main.Token.<
+Token main.Token.d_ident: Galley
+Token main.Token.>
+Token main.Token.,
+    BEFORE: /// Size of the title bar in a collapsed state (if window is collapsible),
+    BEFORE: /// which includes all necessary space for showing the expand button, the
+    BEFORE: /// title and the close button.
+Token main.Token.d_ident: min_rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+    BEFORE: /// Size of the title bar in an expanded state. This size become known only
+    BEFORE: /// after expanding window and painting its content
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.}
+Token main.Token.kw_fn
+Token main.Token.d_ident: show_title_bar
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Ui
+Token main.Token.,
+Token main.Token.d_ident: title
+Token main.Token.:
+Token main.Token.d_ident: WidgetText
+Token main.Token.,
+Token main.Token.d_ident: show_close_button
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.d_ident: collapsing
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: CollapsingState
+Token main.Token.,
+Token main.Token.d_ident: collapsible
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: TitleBar
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: inner_response
+Token main.Token.=
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: horizontal
+Token main.Token.(
+Token main.Token.|
+Token main.Token.d_ident: ui
+Token main.Token.|
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: height
+Token main.Token.=
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: fonts
+Token main.Token.(
+Token main.Token.|
+Token main.Token.d_ident: fonts
+Token main.Token.|
+Token main.Token.d_ident: title
+Token main.Token..
+Token main.Token.d_ident: font_height
+Token main.Token.(
+Token main.Token.d_ident: fonts
+Token main.Token.,
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: style
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: spacing
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: interact_size
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: set_min_height
+Token main.Token.(
+Token main.Token.d_ident: height
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: item_spacing
+Token main.Token.=
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: spacing
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: item_spacing
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: button_size
+Token main.Token.=
+Token main.Token.d_ident: Vec2
+Token main.Token.::
+Token main.Token.d_ident: splat
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: spacing
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: icon_width
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: pad
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: height
+Token main.Token.-
+Token main.Token.d_ident: button_size
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.;
+    AFTER: // calculated so that the icon is on the diagonal (if window padding is symmetrical)
+Token main.Token.kw_if
+Token main.Token.d_ident: collapsible
+Token main.Token.{
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: add_space
+Token main.Token.(
+Token main.Token.d_ident: pad
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: collapsing
+Token main.Token..
+Token main.Token.d_ident: show_default_button_with_size
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.,
+Token main.Token.d_ident: button_size
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: title_galley
+Token main.Token.=
+Token main.Token.d_ident: title
+Token main.Token..
+Token main.Token.d_ident: into_galley
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.,
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: false
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: f32
+Token main.Token.::
+Token main.Token.d_ident: INFINITY
+Token main.Token.,
+Token main.Token.d_ident: TextStyle
+Token main.Token.::
+Token main.Token.d_ident: Heading
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: minimum_width
+Token main.Token.=
+Token main.Token.kw_if
+Token main.Token.d_ident: collapsible
+Token main.Token.|
+Token main.Token.|
+Token main.Token.d_ident: show_close_button
+Token main.Token.{
+    BEFORE: // If at least one button is shown we make room for both buttons (since title is centered):
+Token main.Token.d_number: 2.0
+Token main.Token.*
+Token main.Token.(
+Token main.Token.d_ident: pad
+Token main.Token.+
+Token main.Token.d_ident: button_size
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_ident: item_spacing
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.+
+Token main.Token.d_ident: title_galley
+Token main.Token..
+Token main.Token.d_ident: size
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.}
+Token main.Token.kw_else
+Token main.Token.{
+Token main.Token.d_ident: pad
+Token main.Token.+
+Token main.Token.d_ident: title_galley
+Token main.Token..
+Token main.Token.d_ident: size
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.+
+Token main.Token.d_ident: pad
+Token main.Token.}
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: min_rect
+Token main.Token.=
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_min_size
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: min_rect
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token.,
+Token main.Token.d_ident: vec2
+Token main.Token.(
+Token main.Token.d_ident: minimum_width
+Token main.Token.,
+Token main.Token.d_ident: height
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: id
+Token main.Token.=
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: advance_cursor_after_rect
+Token main.Token.(
+Token main.Token.d_ident: min_rect
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: TitleBar
+Token main.Token.{
+Token main.Token.d_ident: id
+Token main.Token.,
+Token main.Token.d_ident: title_galley
+Token main.Token.,
+Token main.Token.d_ident: min_rect
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: NAN
+Token main.Token.,
+    AFTER: // Will be filled in later
+Token main.Token.}
+Token main.Token.}
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: title_bar
+Token main.Token.=
+Token main.Token.d_ident: inner_response
+Token main.Token..
+Token main.Token.d_ident: inner
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: rect
+Token main.Token.=
+Token main.Token.d_ident: inner_response
+Token main.Token..
+Token main.Token.d_ident: response
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.;
+Token main.Token.d_ident: TitleBar
+Token main.Token.{
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token...
+Token main.Token.d_ident: title_bar
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_impl
+Token main.Token.d_ident: TitleBar
+Token main.Token.{
+    BEFORE: /// Finishes painting of the title bar when the window content size already known.
+    BEFORE: ///
+    BEFORE: /// # Parameters
+    BEFORE: ///
+    BEFORE: /// - `ui`:
+    BEFORE: /// - `outer_rect`:
+    BEFORE: /// - `content_response`: if `None`, window is collapsed at this frame, otherwise contains
+    BEFORE: ///   a result of rendering the window content
+    BEFORE: /// - `open`: if `None`, no "Close" button will be rendered, otherwise renders and processes
+    BEFORE: ///   the "Close" button and writes a `false` if window was closed
+    BEFORE: /// - `collapsing`: holds the current expanding state. Can be changed by double click on the
+    BEFORE: ///   title if `collapsible` is `true`
+    BEFORE: /// - `collapsible`: if `true`, double click on the title bar will be handled for a change
+    BEFORE: ///   of `collapsing` state
+Token main.Token.kw_fn
+Token main.Token.d_ident: ui
+Token main.Token.(
+Token main.Token.kw_mut
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: ui
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Ui
+Token main.Token.,
+Token main.Token.d_ident: outer_rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.,
+Token main.Token.d_ident: content_response
+Token main.Token.:
+Token main.Token.&
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.d_ident: Response
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: open
+Token main.Token.:
+Token main.Token.d_ident: Option
+Token main.Token.<
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: bool
+Token main.Token.>
+Token main.Token.,
+Token main.Token.d_ident: collapsing
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: CollapsingState
+Token main.Token.,
+Token main.Token.d_ident: collapsible
+Token main.Token.:
+Token main.Token.d_ident: bool
+Token main.Token.,
+Token main.Token.)
+Token main.Token.{
+Token main.Token.kw_if
+Token main.Token.kw_let
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: content_response
+Token main.Token.)
+Token main.Token.=
+Token main.Token.&
+Token main.Token.d_ident: content_response
+Token main.Token.{
+    BEFORE: // Now we know how large we got to be:
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token.(
+Token main.Token.d_ident: content_response
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: max
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.kw_if
+Token main.Token.kw_let
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: open
+Token main.Token.)
+Token main.Token.=
+Token main.Token.d_ident: open
+Token main.Token.{
+    BEFORE: // Add close button now that we know our full width:
+Token main.Token.kw_if
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: close_button_ui
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: clicked
+Token main.Token.(
+Token main.Token.)
+Token main.Token.{
+Token main.Token.*
+Token main.Token.d_ident: open
+Token main.Token.=
+Token main.Token.d_ident: false
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+Token main.Token.kw_let
+Token main.Token.d_ident: full_top_rect
+Token main.Token.=
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_x_y_ranges
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: x_range
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: min_rect
+Token main.Token..
+Token main.Token.d_ident: y_range
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: text_pos
+Token main.Token.=
+Token main.Token.d_ident: emath
+Token main.Token.::
+Token main.Token.d_ident: align
+Token main.Token.::
+Token main.Token.d_ident: center_size_in_rect
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: title_galley
+Token main.Token..
+Token main.Token.d_ident: size
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: full_top_rect
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: left_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: text_pos
+Token main.Token.=
+Token main.Token.d_ident: text_pos
+Token main.Token.-
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: title_galley
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: min
+Token main.Token..
+Token main.Token.d_ident: to_vec2
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: text_pos
+Token main.Token.=
+Token main.Token.d_ident: text_pos
+Token main.Token.-
+Token main.Token.d_number: 1.5
+Token main.Token.*
+Token main.Token.d_ident: Vec2
+Token main.Token.::
+Token main.Token.d_ident: Y
+Token main.Token.;
+    AFTER: // HACK: center on x-height of text (looks better)
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: painter
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: galley
+Token main.Token.(
+Token main.Token.d_ident: text_pos
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: title_galley
+Token main.Token..
+Token main.Token.d_ident: clone
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: text_color
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.kw_let
+Token main.Token.d_ident: Some
+Token main.Token.(
+Token main.Token.d_ident: content_response
+Token main.Token.)
+Token main.Token.=
+Token main.Token.&
+Token main.Token.d_ident: content_response
+Token main.Token.{
+    BEFORE: // paint separator between title and content:
+Token main.Token.kw_let
+Token main.Token.d_ident: y
+Token main.Token.=
+Token main.Token.d_ident: content_response
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.;
+    BEFORE: // let y = lerp(self.rect.bottom()..=content_response.rect.top(), 0.5);
+Token main.Token.kw_let
+Token main.Token.d_ident: stroke
+Token main.Token.=
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: visuals
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: widgets
+Token main.Token..
+Token main.Token.d_ident: noninteractive
+Token main.Token..
+Token main.Token.d_ident: bg_stroke
+Token main.Token.;
+    BEFORE: // Workaround: To prevent border infringement,
+    BEFORE: // the 0.1 value should ideally be calculated using TessellationOptions::feathering_size_in_pixels
+Token main.Token.kw_let
+Token main.Token.d_ident: x_range
+Token main.Token.=
+Token main.Token.d_ident: outer_rect
+Token main.Token..
+Token main.Token.d_ident: x_range
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: shrink
+Token main.Token.(
+Token main.Token.d_number: 0.1
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: painter
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: hline
+Token main.Token.(
+Token main.Token.d_ident: x_range
+Token main.Token.,
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+    BEFORE: // Don't cover the close- and collapse buttons:
+Token main.Token.kw_let
+Token main.Token.d_ident: double_click_rect
+Token main.Token.=
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: shrink2
+Token main.Token.(
+Token main.Token.d_ident: vec2
+Token main.Token.(
+Token main.Token.d_number: 32.0
+Token main.Token.,
+Token main.Token.d_number: 0.0
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_if
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: interact
+Token main.Token.(
+Token main.Token.d_ident: double_click_rect
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: id
+Token main.Token.,
+Token main.Token.d_ident: Sense
+Token main.Token.::
+Token main.Token.d_ident: click
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: double_clicked
+Token main.Token.(
+Token main.Token.)
+Token main.Token.&
+Token main.Token.&
+Token main.Token.d_ident: collapsible
+Token main.Token.{
+Token main.Token.d_ident: collapsing
+Token main.Token..
+Token main.Token.d_ident: toggle
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.)
+Token main.Token.;
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Paints the "Close" button at the right side of the title bar
+    BEFORE: /// and processes clicks on it.
+    BEFORE: ///
+    BEFORE: /// The button is square and its size is determined by the
+    BEFORE: /// [`crate::style::Spacing::icon_width`] setting.
+Token main.Token.kw_fn
+Token main.Token.d_ident: close_button_ui
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: self
+Token main.Token.,
+Token main.Token.d_ident: ui
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Ui
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Response
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: button_size
+Token main.Token.=
+Token main.Token.d_ident: Vec2
+Token main.Token.::
+Token main.Token.d_ident: splat
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: spacing
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: icon_width
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: pad
+Token main.Token.=
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: height
+Token main.Token.(
+Token main.Token.)
+Token main.Token.-
+Token main.Token.d_ident: button_size
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.)
+Token main.Token./
+Token main.Token.d_number: 2.0
+Token main.Token.;
+    AFTER: // calculated so that the icon is on the diagonal (if window padding is symmetrical)
+Token main.Token.kw_let
+Token main.Token.d_ident: button_rect
+Token main.Token.=
+Token main.Token.d_ident: Rect
+Token main.Token.::
+Token main.Token.d_ident: from_min_size
+Token main.Token.(
+Token main.Token.d_ident: pos2
+Token main.Token.(
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: right
+Token main.Token.(
+Token main.Token.)
+Token main.Token.-
+Token main.Token.d_ident: pad
+Token main.Token.-
+Token main.Token.d_ident: button_size
+Token main.Token..
+Token main.Token.d_ident: x
+Token main.Token.,
+Token main.Token.d_ident: self
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: center
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.-
+Token main.Token.d_number: 0.5
+Token main.Token.*
+Token main.Token.d_ident: button_size
+Token main.Token..
+Token main.Token.d_ident: y
+Token main.Token.,
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: button_size
+Token main.Token.,
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: close_button
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.,
+Token main.Token.d_ident: button_rect
+Token main.Token.)
+Token main.Token.}
+Token main.Token.}
+    BEFORE: /// Paints the "Close" button of the window and processes clicks on it.
+    BEFORE: ///
+    BEFORE: /// The close button is just an `X` symbol painted by a current stroke
+    BEFORE: /// for foreground elements (such as a label text).
+    BEFORE: ///
+    BEFORE: /// # Parameters
+    BEFORE: /// - `ui`:
+    BEFORE: /// - `rect`: The rectangular area to fit the button in
+    BEFORE: ///
+    BEFORE: /// Returns the result of a click on a button if it was pressed
+Token main.Token.kw_fn
+Token main.Token.d_ident: close_button
+Token main.Token.(
+Token main.Token.d_ident: ui
+Token main.Token.:
+Token main.Token.&
+Token main.Token.kw_mut
+Token main.Token.d_ident: Ui
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token.:
+Token main.Token.d_ident: Rect
+Token main.Token.)
+Token main.Token.->
+Token main.Token.d_ident: Response
+Token main.Token.{
+Token main.Token.kw_let
+Token main.Token.d_ident: close_id
+Token main.Token.=
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: auto_id_with
+Token main.Token.(
+Token main.Token.d_string: "window_close_button"
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: response
+Token main.Token.=
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: interact
+Token main.Token.(
+Token main.Token.d_ident: rect
+Token main.Token.,
+Token main.Token.d_ident: close_id
+Token main.Token.,
+Token main.Token.d_ident: Sense
+Token main.Token.::
+Token main.Token.d_ident: click
+Token main.Token.(
+Token main.Token.)
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: expand_to_include_rect
+Token main.Token.(
+Token main.Token.d_ident: response
+Token main.Token..
+Token main.Token.d_ident: rect
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: visuals
+Token main.Token.=
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: style
+Token main.Token.(
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: interact
+Token main.Token.(
+Token main.Token.&
+Token main.Token.d_ident: response
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: rect
+Token main.Token.=
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: shrink
+Token main.Token.(
+Token main.Token.d_number: 2.0
+Token main.Token.)
+Token main.Token..
+Token main.Token.d_ident: expand
+Token main.Token.(
+Token main.Token.d_ident: visuals
+Token main.Token..
+Token main.Token.d_ident: expansion
+Token main.Token.)
+Token main.Token.;
+Token main.Token.kw_let
+Token main.Token.d_ident: stroke
+Token main.Token.=
+Token main.Token.d_ident: visuals
+Token main.Token..
+Token main.Token.d_ident: fg_stroke
+Token main.Token.;
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: painter
+Token main.Token.(
+Token main.Token.)
+    AFTER: // paints \
+Token main.Token..
+Token main.Token.d_ident: line_segment
+Token main.Token.(
+Token main.Token.[
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: left_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: right_bottom
+Token main.Token.(
+Token main.Token.)
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: ui
+Token main.Token..
+Token main.Token.d_ident: painter
+Token main.Token.(
+Token main.Token.)
+    AFTER: // paints /
+Token main.Token..
+Token main.Token.d_ident: line_segment
+Token main.Token.(
+Token main.Token.[
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: right_top
+Token main.Token.(
+Token main.Token.)
+Token main.Token.,
+Token main.Token.d_ident: rect
+Token main.Token..
+Token main.Token.d_ident: left_bottom
+Token main.Token.(
+Token main.Token.)
+Token main.Token.]
+Token main.Token.,
+Token main.Token.d_ident: stroke
+Token main.Token.)
+Token main.Token.;
+Token main.Token.d_ident: response
+Token main.Token.}
