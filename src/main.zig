@@ -48,6 +48,7 @@ const Token = enum {
     @">",
     @".",
     @"|",
+    @"?",
     @"!", // For macros.
     @"&",
     @",",
@@ -1399,6 +1400,11 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
         } else if (toks.match(i.*, "::")) |m| {
             // Double colon doesn't exist in Zig.
             _ = try writer.write(" . ");
+            i.* += m.len;
+        } else if (toks.match(i.*, "?")) |m| {
+            // In Zig we use `try`. But it has to be placed before expression - not after it.
+            // So translation would be hard. Instead we just ignore `?`
+            // and let Zig compiler to show error.
             i.* += m.len;
         } else if (toks.startsWithAny(
             i.*,
