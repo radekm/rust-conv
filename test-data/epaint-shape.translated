@@ -50,14 +50,12 @@ fn from(shapes: ArrayList(Shape))Shape{
 Self . Vec ( shapes ) 
 }
 
-}
 // END: impl From < Vec < Self > > for Shape
 // BEGIN: impl From < Mesh > for Shape
 fn from(mesh: Mesh)Shape{
 Self . Mesh ( mesh ) 
 }
 
-}
 // END: impl From < Mesh > for Shape
 /// ## Constructors
 // BEGIN: impl Shape
@@ -201,7 +199,6 @@ Rect . fromTwoPos ( points[0] , points[1] )  . expand ( stroke . width / 2.0 )
 
 }
 
-}
 // END: impl Shape
 /// ## Inspection and transforms
 // BEGIN: impl Shape
@@ -304,7 +301,6 @@ shape . rect = transform * shape . rect;
 
 }
 
-}
 // END: impl Shape
 // ----------------------------------------------------------------------------
 /// How to paint a circle.
@@ -331,14 +327,12 @@ Rect . fromCenterSize ( self . center , Vec2 . splat ( self . radius * 2.0 + sel
 
 }
 
-}
 // END: impl CircleShape
 // BEGIN: impl From < CircleShape > for Shape
 fn from(shape: CircleShape)Shape{
 Self . Circle ( shape ) 
 }
 
-}
 // END: impl From < CircleShape > for Shape
 // ----------------------------------------------------------------------------
 /// A path which can be stroked and/or filled (if closed).
@@ -382,14 +376,12 @@ Rect . fromPoints (  & self . points )  . expand ( self . stroke . width / 2.0 )
 
 }
 
-}
 // END: impl PathShape
 // BEGIN: impl From < PathShape > for Shape
 fn from(shape: PathShape)Shape{
 Self . Path ( shape ) 
 }
 
-}
 // END: impl From < PathShape > for Shape
 // ----------------------------------------------------------------------------
 /// How to paint a rectangle.
@@ -433,14 +425,12 @@ self . rect . expand ( self . stroke . width / 2.0 )
 
 }
 
-}
 // END: impl RectShape
 // BEGIN: impl From < RectShape > for Shape
 fn from(shape: RectShape)Shape{
 Self . Rect ( shape ) 
 }
 
-}
 // END: impl From < RectShape > for Shape
 /// How rounded the corners of things should be
 const Rounding = struct {
@@ -457,14 +447,12 @@ fn default()Rounding{
 Self . ZERO
 }
 
-}
 // END: impl Default for Rounding
 // BEGIN: impl From < f32 > for Rounding
 fn from(radius: f32)Rounding{
 Rounding {.nw = radius,.ne = radius,.sw = radius,.se = radius,}
 }
 
-}
 // END: impl From < f32 > for Rounding
 // BEGIN: impl Rounding
 /// No rounding on any corner.
@@ -485,7 +473,6 @@ pub fn atMost(self: Rounding,max: f32)Rounding{
 Rounding {.nw = self . nw . min ( max ) ,.ne = self . ne . min ( max ) ,.sw = self . sw . min ( max ) ,.se = self . se . min ( max ) ,}
 }
 
-}
 // END: impl Rounding
 // ----------------------------------------------------------------------------
 /// How to paint some text on screen.
@@ -545,14 +532,12 @@ self . opacity_factor = opacity_factor;
 self
 }
 
-}
 // END: impl TextShape
 // BEGIN: impl From < TextShape > for Shape
 fn from(shape: TextShape)Shape{
 Self . Text ( shape ) 
 }
 
-}
 // END: impl From < TextShape > for Shape
 // ----------------------------------------------------------------------------
 /// Creates equally spaced filled circles from a line.
@@ -673,7 +658,6 @@ const height_px = bottom_px - top_px;
 ViewportInPixels {.left_px = left_px,.top_px = top_px,.from_bottom_px = screen_height - height_px - top_px,.width_px = width_px,.height_px = height_px,}
 }
 
-}
 // END: impl ViewportInPixels
 fn testViewportRounding()void{
 for (0 ..= 10_000) |i|{
@@ -701,7 +685,6 @@ pub fn clipRectInPixels(self: PaintCallbackInfo)ViewportInPixels{
 ViewportInPixels . fromPoints (  & self . clip_rect , self . pixels_per_point , self . screen_size_px ) 
 }
 
-}
 // END: impl PaintCallbackInfo
 /// If you want to paint some 3D shapes inside an egui region, you can use this.
 ///
@@ -733,7 +716,6 @@ fn fmt(self: PaintCallback,f: *std.fmt./* Ziggify: Formatter<'_> */)std.fmt.Resu
 f . debugStruct ( "CustomShape" )  . field ( "rect" ,  & self . rect )  . finishNonExhaustive (  ) 
 }
 
-}
 // END: impl std :: fmt :: Debug for PaintCallback
 // BEGIN: impl std :: cmp :: PartialEq for PaintCallback
 fn eq(self: PaintCallback,other: PaintCallback)bool{
@@ -745,12 +727,10 @@ self . rect . eq (  & other . rect )  and Arc . ptrEq (  & self . callback ,  & 
 
 }
 
-}
 // END: impl std :: cmp :: PartialEq for PaintCallback
 // BEGIN: impl From < PaintCallback > for Shape
 fn from(shape: PaintCallback)Shape{
 Self . Callback ( shape ) 
 }
 
-}
 // END: impl From < PaintCallback > for Shape

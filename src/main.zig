@@ -964,9 +964,12 @@ fn translateOptional(writer: anytype, toks: Toks, i: *usize, token: Token) !void
     }
 }
 
+const TokenIndex = usize; // Index into `tokens`.
+const SelfTypeRange = struct { from: TokenIndex, to_excl: TokenIndex };
+
 // TODO: Translate `self_type` everywhere (eg. in generics) and not only when type is simple identifier.
 // TODO: Consider generalizing `translateType`.
-fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8) !void {
+fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRange) !void {
     // All references are translated to pointer.
     if (toks.match(i.*, "& ' ident mut")) |m| {
         _ = try writer.write("*");
@@ -1033,7 +1036,11 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
         }
     } else if (toks.startsWithAndGetData(i.*, &.{.d_ident})) |ld| {
         if (std.mem.eql(u8, ld.data, "Self")) {
-            try writer.print("{s}", .{self_type orelse ld.data});
+            if (self_type) |range| {
+                try writeTokens(writer, toks, range.from, range.to_excl);
+            } else {
+                try writer.print("{s}", .{ld.data});
+            }
         } else {
             try writer.print("{s}", .{ld.data});
         }
@@ -1319,7 +1326,7 @@ fn translateEnum(
 ///
 /// `translateBody` doesn't parse closing `}` or `]` unless it parsed corresponding opening bracket.
 /// Currently this is not true with parens.
-fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8) !void {
+fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRange) !void {
     while (i.* < toks.tokens.len) {
         // Process comment before construct or before end of module.
         try writeCommentBefore(writer, toks, i.*);
@@ -1419,10 +1426,14 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
             // This may be wrong. We may need more involved analysis
             // (eg. if identifier in `identifier {` starts with uppercase letter
             // then assume it's struct construction).
-            if (std.mem.eql(u8, m_struct.name, "Self"))
-                try writer.print("{s} {{", .{self_type orelse m_struct.name})
-            else
-                try writer.print("{s} {{", .{m_struct.name});
+            if (std.mem.eql(u8, m_struct.name, "Self")) {
+                if (self_type) |range| {
+                    try writeTokens(writer, toks, range.from, range.to_excl);
+                } else {
+                    try writer.print("{s}", .{m_struct.name});
+                }
+                _ = try writer.write(" {");
+            } else try writer.print("{s} {{", .{m_struct.name});
             i.* += m_struct.len;
 
             // Translate assignment to fields.
@@ -1620,7 +1631,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?[]const u8)
     }
 }
 
-fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: ?[]const u8) !bool {
+fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: ?SelfTypeRange) !bool {
     if (toks.startsWithAnyAndGetData(i.*, &.{
         &.{ .kw_fn, .d_ident },
         // Functions which can be evaluated at compile time.
@@ -1647,7 +1658,7 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
         try translate(writer, toks, i, .@"(");
 
         // Translate first parameter where type can be omitted.
-        if (self_type) |tpe| {
+        if (self_type) |range| {
             if (toks.startsWithAnyAndGetData(
                 i.*,
                 &.{
@@ -1659,7 +1670,8 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                 },
             )) |ld_param| {
                 const param_name = ld_param.data;
-                try writer.print("{s}: {s}", .{ param_name, tpe });
+                try writer.print("{s}: ", .{param_name});
+                try writeTokens(writer, toks, range.from, range.to_excl);
                 i.* += ld_param.len;
 
                 if (toks.tokens[i.* - 1] == .@",") {
@@ -1678,7 +1690,8 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                 },
             )) |ld_param| {
                 const param_name = ld_param.data;
-                try writer.print("{s}: *{s}", .{ param_name, tpe });
+                try writer.print("{s}: *", .{param_name});
+                try writeTokens(writer, toks, range.from, range.to_excl);
                 i.* += ld_param.len;
 
                 if (toks.tokens[i.* - 1] == .@",") {
@@ -1761,37 +1774,54 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
 fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
     const impl_from = i.*;
 
-    // FIXME: This won't work for generic types which consist of multiple tokens.
-    var self_type_name: []const u8 = undefined;
-    if (toks.startsWithAndGetData(i.*, &.{ .kw_impl, .d_ident, .@"{" })) |ld| {
-        self_type_name = ld.data;
-        i.* += ld.len;
-    } else if (toks.match(i.*, "impl")) |m| {
+    var self_type: SelfTypeRange = undefined;
+    if (toks.match(i.*, "impl")) |m| {
         i.* += m.len;
+
+        // Skip tokens so we get before type.
         const len = try toks.typeLen(i.*, "for {");
         switch (toks.tokens[i.* + len]) {
             .kw_for => {
-                // It's a trait implementation. Let's extract self type name.
-                i.* += len + 1;
-                if (toks.match(i.*, "name {")) |m_type| {
-                    self_type_name = m_type.name;
-                    i.* += m_type.len;
-                } else return ParserError.Other;
+                // It's a trait implementation.
+
+                i.* += len + 1; // Skip tokens up to and including `for`.
             },
-            .@"{" => @panic("Inherent implementatins like this are not supported"),
+            .@"{" => {
+                // It's inherent implementation.
+
+                // Skip generic params if any.
+                if (toks.match(i.*, "<")) |m_generic_params| {
+                    i.* += m_generic_params.len;
+                    i.* += try toks.typeLen(i.*, ">") + 1;
+                }
+            },
             else => unreachable,
         }
+
+        // Now we're before type. The type continues till `where` or `{`.
+        self_type = .{
+            .from = i.*,
+            .to_excl = i.* + try toks.typeLen(i.*, "where {"),
+        };
+
+        i.* = self_type.to_excl;
+
+        // Skip `where` if there's one.
+        // We should be right before opening brace which encloses `impl` body.
+        i.* += try toks.typeLen(i.*, "{");
     } else return false;
 
-    const impl_to_excl = i.* - 1;
+    const impl_to_excl = i.*;
+    i.* += 1; // Skip opening `{`.
 
     try writeCommentWithTokens(writer, toks, impl_from, impl_to_excl, "BEGIN: ");
 
-    try translateRustToZig(writer, toks, i, self_type_name);
+    try translateRustToZig(writer, toks, i, self_type);
 
-    _ = try writer.write("\n");
-    try translate(writer, toks, i, .@"}");
-    _ = try writer.write("\n");
+    if (toks.match(i.*, "}")) |_| {
+        i.* += 1; // Skip closing `}`.
+        _ = try writer.write("\n");
+    }
 
     try writeCommentWithTokens(writer, toks, impl_from, impl_to_excl, "END: ");
 
@@ -1802,7 +1832,7 @@ fn translateRustToZig(
     writer: anytype,
     toks: Toks,
     i: *usize,
-    self_type: ?[]const u8,
+    self_type: ?SelfTypeRange,
 ) (@TypeOf(writer).Error || ParserError || Allocator.Error)!void {
     while (i.* < toks.tokens.len) {
         // Process comment before construct or before end of module.

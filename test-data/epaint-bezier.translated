@@ -298,14 +298,12 @@ flattenCubicBezierWithT ( self , tolerance , callback ) ;
 
 }
 
-}
 // END: impl CubicBezierShape
 // BEGIN: impl From < CubicBezierShape > for Shape
 fn from(shape: CubicBezierShape)Shape{
 Self . CubicBezier ( shape ) 
 }
 
-}
 // END: impl From < CubicBezierShape > for Shape
 // ----------------------------------------------------------------------------
 /// A quadratic [Bézier Curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
@@ -446,14 +444,12 @@ callback ( self . sample ( 1.0 )  , 1.0 ) ;
 
 }
 
-}
 // END: impl QuadraticBezierShape
 // BEGIN: impl From < QuadraticBezierShape > for Shape
 fn from(shape: QuadraticBezierShape)Shape{
 Self . QuadraticBezier ( shape ) 
 }
 
-}
 // END: impl From < QuadraticBezierShape > for Shape
 // ----------------------------------------------------------------------------
 // lyon_geom::flatten_cubic.rs
@@ -538,7 +534,6 @@ const u = approxParabolaInvIntegral ( self . integral_from + self . integral_ste
  ( u - self . inv_integral_from )  * self . div_inv_integral_diff
 }
 
-}
 // END: impl FlatteningParameters
 /// Compute an approximation to integral (1 + 4x^2) ^ -0.25 dx used in the flattening code.
 fn approxParabolaIntegral(x: f32)f32{
