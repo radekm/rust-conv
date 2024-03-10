@@ -1703,7 +1703,10 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
         }
 
         while (i.* < toks.tokens.len) {
-            if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":", .@"&", .kw_mut })) |ld_param| {
+            if (toks.startsWithAnyAndGetData(i.*, &.{
+                &.{ .d_ident, .@":", .@"&", .@"'", .d_ident, .kw_mut },
+                &.{ .d_ident, .@":", .@"&", .kw_mut },
+            })) |ld_param| {
                 const param_name = ld_param.data;
                 try writer.print("{s}: *", .{param_name});
                 i.* += ld_param.len;
@@ -1712,6 +1715,7 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
             } else if (toks.startsWithAnyAndGetData(
                 i.*,
                 &.{
+                    &.{ .d_ident, .@":", .@"&", .@"'", .d_ident },
                     &.{ .d_ident, .@":", .@"&" },
                     &.{ .d_ident, .@":" },
                 },
