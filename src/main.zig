@@ -1077,10 +1077,28 @@ fn translateStruct(
     toks: Toks,
     i: *usize,
 ) !bool {
-    if (toks.match(i.*, "struct name {")) |m| {
-        try writer.print("const {s} = struct {{\n", .{m.name});
-        i.* += m.len;
+    if (toks.match(i.*, "struct name <")) |m| {
+        const generic_params_from = i.* + m.len - 1;
+        const generic_params_to_excl = generic_params_from + try toks.typeLen(
+            generic_params_from + 1,
+            ">",
+        ) + 2; // `+2` to include both `<` and `>`.
+        try writeCommentWithTokens(
+            writer,
+            toks,
+            generic_params_from,
+            generic_params_to_excl,
+            "Ziggify generic struct: ",
+        );
+        try writer.print("const {s} = struct ", .{m.name});
+        i.* = generic_params_to_excl;
+    } else if (toks.match(i.*, "struct name {")) |m| {
+        try writer.print("const {s} = struct ", .{m.name});
+        i.* += m.len - 1;
     } else return false;
+
+    try translate(writer, toks, i, .@"{");
+    _ = try writer.write("\n");
 
     while (i.* < toks.tokens.len) {
         // Process comment before field or before end of struct.
