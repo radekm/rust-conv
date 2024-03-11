@@ -309,7 +309,8 @@ center: Pos2,
 radius: f32,
 fill: Color32,
 stroke: Stroke,
-}// BEGIN: impl CircleShape
+}
+// BEGIN: impl CircleShape
 pub fn filled(center: Pos2,radius: f32,fill_color: Color32)CircleShape{
 CircleShape {.center = center,.radius = radius,.fill = fill_color . into (  ) ,.stroke = Default . default (  ) ,}
 }
@@ -348,7 +349,8 @@ fill: Color32,
 stroke: Stroke,
 // TODO(emilk): Add texture support either by supplying uv for each point,
 // or by some transform from points to uv (e.g. a callback or a linear transform matrix).
-}// BEGIN: impl PathShape
+}
+// BEGIN: impl PathShape
 /// A line through many points.
 ///
 /// Use [`Shape::line_segment`] instead if your line only connects two points.
@@ -404,7 +406,8 @@ fill_texture_id: TextureId,
 ///
 /// Use [`Rect::ZERO`] to turn off texturing.
 uv: Rect,
-}// BEGIN: impl RectShape
+}
+// BEGIN: impl RectShape
 pub fn new(rect: Rect,rounding: Rounding,fill_color: Color32,stroke: Stroke,)RectShape{
 RectShape {.rect = rect,.rounding = rounding . into (  ) ,.fill = fill_color . into (  ) ,.stroke = stroke . into (  ) ,.fill_texture_id = Default . default (  ) ,.uv = Rect . ZERO,}
 }
@@ -442,7 +445,8 @@ ne: f32,
 sw: f32,
 /// Radius of the rounding of the South-East (right bottom) corner.
 se: f32,
-}// BEGIN: impl Default for Rounding
+}
+// BEGIN: impl Default for Rounding
 fn default()Rounding{
 Self . ZERO
 }
@@ -500,7 +504,8 @@ opacity_factor: f32,
 /// Rotate text by this many radians clockwise.
 /// The pivot is `pos` (the upper left corner of the text).
 angle: f32,
-}// BEGIN: impl TextShape
+}
+// BEGIN: impl TextShape
 /// The given fallback color will be used for any uncolored part of the galley (using [`Color32::PLACEHOLDER`]).
 ///
 /// Any non-placeholder color in the galley takes precedence over this fallback color.
@@ -623,7 +628,8 @@ clip_rect: Rect,
 pixels_per_point: f32,
 /// Full size of the screen, in pixels.
 screen_size_px: [2]u32,
-}/// Size of the viewport in whole, physical pixels.
+}
+/// Size of the viewport in whole, physical pixels.
 const ViewportInPixels = struct {
 /// Physical pixel offset for left side of the viewport.
 left_px: i32,
@@ -637,7 +643,8 @@ from_bottom_px: i32,
 width_px: i32,
 /// Viewport height in physical pixels.
 height_px: i32,
-}// BEGIN: impl ViewportInPixels
+}
+// BEGIN: impl ViewportInPixels
 fn fromPoints(rect: Rect,pixels_per_point: f32,screen_size_px: [2]u32)ViewportInPixels{
 // Fractional pixel values for viewports are generally valid, but may cause sampling issues
 // and rounding errors might cause us to get out of bounds.
@@ -711,7 +718,8 @@ rect: Rect,
 ///
 /// Shape has to be clone, therefore this has to be an `Arc` instead of a `Box`.
 callback: /* Ziggify: Pointer to anything clonable */,
-}// BEGIN: impl std :: fmt :: Debug for PaintCallback
+}
+// BEGIN: impl std :: fmt :: Debug for PaintCallback
 fn fmt(self: PaintCallback,f: *std.fmt./* Ziggify: Formatter<'_> */)std.fmt.Result{
 f . debugStruct ( "CustomShape" )  . field ( "rect" ,  & self . rect )  . finishNonExhaustive (  ) 
 }

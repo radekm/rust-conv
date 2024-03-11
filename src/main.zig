@@ -1167,6 +1167,7 @@ fn translateStruct(
     }
 
     try translate(writer, toks, i, .@"}");
+    _ = try writer.write("\n");
 
     return true;
 }
