@@ -11,6 +11,7 @@ const Token = enum {
     kw_struct,
     kw_enum,
     kw_const,
+    kw_static,
     kw_fn,
     kw_where,
     kw_trait,
@@ -1880,6 +1881,40 @@ fn translateImpl(writer: anytype, toks: Toks, i: *usize) !bool {
     return true;
 }
 
+fn translateThreadLocals(
+    writer: anytype,
+    toks: Toks,
+    i: *usize,
+    self_type: ?SelfTypeRange,
+) !bool {
+    if (toks.matchEql(i.*, "thread_local ! {", .{ .thread_local = "thread_local" })) |m| {
+        i.* += m.len;
+    } else return false;
+
+    while (i.* < toks.tokens.len) {
+        // Process comment before construct or before end of thread local block.
+        try writeCommentBefore(writer, toks, i.*);
+
+        if (toks.match(i.*, "static name :")) |m| {
+            try writer.print("threadlocal var {s} : ", .{m.name});
+            i.* += m.len;
+            try translateType(writer, toks, i, self_type);
+            try translate(writer, toks, i, .@"=");
+
+            const len = try toks.expressionLen(i.*, ";");
+            try translateBody(writer, toks.restrict(i.* + len), i, self_type);
+            try translate(writer, toks, i, .@";");
+            _ = try writer.write("\n");
+        } else break;
+    }
+
+    if (toks.match(i.*, "}")) |m| {
+        i.* += m.len;
+    } else return ParserError.ClosingBracketNotFound;
+
+    return true;
+}
+
 fn translateRustToZig(
     writer: anytype,
     toks: Toks,
@@ -1912,6 +1947,8 @@ fn translateRustToZig(
 
             try translate(writer, toks, i, .@";");
             _ = try writer.write("\n");
+        } else if (try translateThreadLocals(writer, toks, i, self_type)) {
+            //
         } else if (try translateStruct(writer, toks, i)) {
             //
         } else if (try translateEnum(writer, toks, i)) {
