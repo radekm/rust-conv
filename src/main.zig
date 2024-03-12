@@ -1133,42 +1133,67 @@ fn translateStruct(
     } else if (toks.match(i.*, "struct name {")) |m| {
         try writer.print("const {s} = struct ", .{m.name});
         i.* += m.len - 1;
+    } else if (toks.match(i.*, "struct name (")) |m| {
+        try writer.print("const {s} = struct ", .{m.name});
+        i.* += m.len - 1;
     } else return false;
 
-    try translate(writer, toks, i, .@"{");
-    _ = try writer.write("\n");
+    if (toks.match(i.*, "{")) |_| {
+        // Struct struct.
 
-    while (i.* < toks.tokens.len) {
-        // Process comment before field or before end of struct.
-        try writeCommentBefore(writer, toks, i.*);
+        try translate(writer, toks, i, .@"{");
+        _ = try writer.write("\n");
 
-        // Ignore field visibility.
-        const public = toks.tokens[i.*] == .kw_pub;
-        if (public) {
-            i.* += 1;
+        while (i.* < toks.tokens.len) {
+            // Process comment before field or before end of struct.
+            try writeCommentBefore(writer, toks, i.*);
+
+            // Ignore field visibility.
+            const public = toks.tokens[i.*] == .kw_pub;
+            if (public) {
+                i.* += 1;
+            }
+
+            if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":" })) |ld| {
+                const field_name = ld.data;
+                try writer.print("{s}: ", .{field_name});
+                i.* += ld.len;
+
+                try translateType(writer, toks, i, null);
+                try writer.print(",", .{});
+
+                try writeCommentAfterOrNewLine(writer, toks, i.*);
+            } else {
+                // Field doesn't start here.
+                break;
+            }
+
+            if (toks.startsWith(i.*, &.{.@","})) |len| {
+                i.* += len;
+            }
         }
 
-        if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":" })) |ld| {
-            const field_name = ld.data;
-            try writer.print("{s}: ", .{field_name});
-            i.* += ld.len;
+        try translate(writer, toks, i, .@"}");
+        _ = try writer.write(";\n");
+    } else if (toks.match(i.*, "(")) |m_opening| {
+        // Tuple struct.
 
+        _ = try writer.write("{\n");
+        i.* += m_opening.len;
+
+        // Translate types separated by comma.
+        var field: usize = 0;
+        while (i.* < toks.tokens.len and toks.tokens[i.*] != .@")") : (field += 1) {
+            try writer.print("@\"{}\":", .{field});
             try translateType(writer, toks, i, null);
-            try writer.print(",", .{});
-
-            try writeCommentAfterOrNewLine(writer, toks, i.*);
-        } else {
-            // Field doesn't start here.
-            break;
+            try translateOptional(writer, toks, i, .@",");
         }
 
-        if (toks.startsWith(i.*, &.{.@","})) |len| {
-            i.* += len;
-        }
-    }
-
-    try translate(writer, toks, i, .@"}");
-    _ = try writer.write("\n");
+        if (toks.match(i.*, ");")) |m_closing| {
+            _ = try writer.write("\n};\n");
+            i.* += m_closing.len;
+        } else return ParserError.Other;
+    } else return ParserError.Other;
 
     return true;
 }

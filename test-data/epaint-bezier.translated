@@ -9,7 +9,7 @@ points: [4]Pos2,
 closed: bool,
 fill: Color32,
 stroke: Stroke,
-}
+};
 // BEGIN: impl CubicBezierShape
 /// Creates a cubic Bézier curve based on 4 points and stroke.
 ///
@@ -317,7 +317,7 @@ points: [3]Pos2,
 closed: bool,
 fill: Color32,
 stroke: Stroke,
-}
+};
 // BEGIN: impl QuadraticBezierShape
 /// Create a new quadratic Bézier shape based on the 3 points and stroke.
 ///
@@ -495,7 +495,7 @@ integral_step: f32,
 inv_integral_from: f32,
 div_inv_integral_diff: f32,
 is_point: bool,
-}
+};
 // BEGIN: impl FlatteningParameters
 // https://raphlinus.github.io/graphics/curves/2019/12/23/flatten-quadbez.html
 pub fn fromCurve(curve: QuadraticBezierShape,tolerance: f32)FlatteningParameters{

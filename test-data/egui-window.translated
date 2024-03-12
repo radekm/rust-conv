@@ -31,7 +31,7 @@ scroll: ScrollArea,
 collapsible: bool,
 default_open: bool,
 with_title_bar: bool,
-}
+};
 // BEGIN: impl < ' open > Window < ' open >
 /// The window title is used as a unique [`Id`] and must be unique, and should not change.
 /// This is true even if you disable the title bar with `.title_bar(false)`.
@@ -432,7 +432,7 @@ resize_left: bool,
 resize_right: bool,
 resize_top: bool,
 resize_bottom: bool,
-}
+};
 // BEGIN: impl PossibleInteractions
 fn new(area: Area,resize: Resize,is_collapsed: bool)PossibleInteractions{
 const movable = area . isEnabled (  )  and area . isMovable (  ) ;
@@ -452,12 +452,12 @@ left: SideResponse,
 right: SideResponse,
 top: SideResponse,
 bottom: SideResponse,
-}
+};
 /// A minitature version of `Response`, for each side of the window.
 const SideResponse = struct {
 hover: bool,
 drag: bool,
-}
+};
 // BEGIN: impl SideResponse
 pub fn any(self: SideResponse)bool{
 self . hover or self . drag
@@ -692,7 +692,7 @@ min_rect: Rect,
 /// Size of the title bar in an expanded state. This size become known only
 /// after expanding window and painting its content
 rect: Rect,
-}
+};
 fn showTitleBar(ui: *Ui,title: WidgetText,show_close_button: bool,collapsing: *CollapsingState,collapsible: bool,)TitleBar{
 const inner_response = ui . horizontal (  | ui | {
 const height = ui . fonts (  | fonts | title . fontHeight ( fonts , ui . style (  )  )  )  . max ( ui . spacing (  )  . interact_size . y ) ;
