@@ -10,6 +10,7 @@ const Token = enum {
     kw_use,
     kw_struct,
     kw_enum,
+    kw_type,
     kw_const,
     kw_static,
     kw_fn,
@@ -1969,6 +1970,15 @@ fn translateRustToZig(
 
             const right_side_len = try toks.expressionLen(i.*, ";");
             try translateBody(writer, toks.restrict(i.* + right_side_len), i, self_type);
+
+            try translate(writer, toks, i, .@";");
+            _ = try writer.write("\n");
+        } else if (toks.match(i.*, "type name = ")) |m| {
+            try writer.print("const {s} = ", .{m.name});
+            i.* += m.len;
+
+            const right_side_len = try toks.typeLen(i.*, ";");
+            try translateType(writer, toks.restrict(i.* + right_side_len), i, self_type);
 
             try translate(writer, toks, i, .@";");
             _ = try writer.write("\n");
