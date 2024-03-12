@@ -977,7 +977,13 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
     if (toks.match(i.*, "& ' ident mut")) |m| {
         _ = try writer.write("*");
         i.* += m.len;
+    } else if (toks.match(i.*, "& ' static mut")) |m| {
+        _ = try writer.write("*");
+        i.* += m.len;
     } else if (toks.match(i.*, "& ' ident")) |m| {
+        _ = try writer.write("*");
+        i.* += m.len;
+    } else if (toks.match(i.*, "& ' static")) |m| {
         _ = try writer.write("*");
         i.* += m.len;
     } else if (toks.match(i.*, "& mut")) |m| {
@@ -1742,6 +1748,8 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                     &.{ .d_ident, .@")" },
                     &.{ .@"&", .d_ident, .@"," },
                     &.{ .@"&", .d_ident, .@")" },
+                    &.{ .@"&", .kw_static, .@"," },
+                    &.{ .@"&", .kw_static, .@")" },
                 },
             )) |ld_param| {
                 const param_name = ld_param.data;
@@ -1762,6 +1770,8 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                     &.{ .kw_mut, .d_ident, .@")" },
                     &.{ .@"&", .kw_mut, .d_ident, .@"," },
                     &.{ .@"&", .kw_mut, .d_ident, .@")" },
+                    &.{ .@"&", .kw_mut, .kw_static, .@"," },
+                    &.{ .@"&", .kw_mut, .kw_static, .@")" },
                 },
             )) |ld_param| {
                 const param_name = ld_param.data;
@@ -1780,6 +1790,7 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
         while (i.* < toks.tokens.len) {
             if (toks.startsWithAnyAndGetData(i.*, &.{
                 &.{ .d_ident, .@":", .@"&", .@"'", .d_ident, .kw_mut },
+                &.{ .d_ident, .@":", .@"&", .@"'", .kw_static, .kw_mut },
                 &.{ .d_ident, .@":", .@"&", .kw_mut },
             })) |ld_param| {
                 const param_name = ld_param.data;
@@ -1791,6 +1802,7 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                 i.*,
                 &.{
                     &.{ .d_ident, .@":", .@"&", .@"'", .d_ident },
+                    &.{ .d_ident, .@":", .@"&", .@"'", .kw_static },
                     &.{ .d_ident, .@":", .@"&" },
                     &.{ .d_ident, .@":" },
                 },
