@@ -1616,6 +1616,24 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
                 try writer.print(", 0..) |{s}, {s}|", .{ m.elem, m.index });
                 i.* += for_start_len;
             } else @panic("Control expression of for doesn't end with .iter().enumerate()");
+        } else if (toks.match(i.*, "for")) |m| {
+            // Handle other patterns in `for`.
+
+            _ = try writer.write("for (");
+            i.* += m.len;
+
+            const pattern_from = i.*;
+            const pattern_to_excl = i.* + try toks.expressionLen(i.*, "in");
+            i.* = pattern_to_excl + 1; // Skip `in`.
+
+            // Translate expression after `in` to the first `{`.
+            // Note it may happen that `{` belongs to struct construction and not to `for` body.
+            const control_expr_to_excl = i.* + try toks.expressionLen(i.*, "{");
+            try translateBody(writer, toks.restrict(control_expr_to_excl), i, self_type);
+
+            _ = try writer.write(") |/* Ziggify: ");
+            try writeTokens(writer, toks, pattern_from, pattern_to_excl);
+            _ = try writer.write("*/|");
         } else if (toks.match(i.*, "if let")) |m| {
             _ = try writer.write("if (/* Ziggify: ");
             i.* += m.len;
