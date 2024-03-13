@@ -1153,7 +1153,7 @@ fn translateStruct(
         _ = try writer.write("\n");
 
         while (i.* < toks.tokens.len) {
-            // Process comment before field or before end of struct.
+            // Process comment before field or attribute or before end of struct.
             try writeCommentBefore(writer, toks, i.*);
 
             // Ignore field visibility.
@@ -1162,7 +1162,9 @@ fn translateStruct(
                 i.* += 1;
             }
 
-            if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":" })) |ld| {
+            if (try skipAttribute(toks, i)) {
+                //
+            } else if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":" })) |ld| {
                 const field_name = ld.data;
                 try writer.print("{s}: ", .{field_name});
                 i.* += ld.len;
