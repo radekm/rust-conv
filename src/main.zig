@@ -20,6 +20,7 @@ const Token = enum {
     kw_dyn,
     kw_while,
     kw_for,
+    kw_in,
     kw_if,
     kw_else,
     kw_match,

@@ -207,7 +207,7 @@ Token main.Token.d_ident: i
 Token main.Token.,
 Token main.Token.d_ident: origin_point
 Token main.Token.)
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.d_ident: self
 Token main.Token..
 Token main.Token.d_ident: points
@@ -312,7 +312,7 @@ Token main.Token.)
 Token main.Token.;
 Token main.Token.kw_for
 Token main.Token.d_ident: points
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.d_ident: points_vec
 Token main.Token..
 Token main.Token.d_ident: drain
@@ -2570,7 +2570,7 @@ Token main.Token.d_ident: i
 Token main.Token.,
 Token main.Token.d_ident: origin_point
 Token main.Token.)
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.d_ident: self
 Token main.Token..
 Token main.Token.d_ident: points
@@ -3330,7 +3330,7 @@ Token main.Token.d_ident: u32
 Token main.Token.;
 Token main.Token.kw_for
 Token main.Token.d_ident: index
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.d_number: 1
 Token main.Token...
 Token main.Token.d_ident: count
@@ -3487,7 +3487,7 @@ Token main.Token.d_number: 0.0
 Token main.Token.;
 Token main.Token.kw_for
 Token main.Token.d_ident: _
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.d_number: 0
 Token main.Token...
 Token main.Token.(

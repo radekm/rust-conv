@@ -1497,7 +1497,7 @@ Token main.Token.d_ident: NOTHING
 Token main.Token.;
 Token main.Token.kw_for
 Token main.Token.d_ident: shape
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.d_ident: shapes
 Token main.Token.{
 Token main.Token.d_ident: rect
@@ -1770,7 +1770,7 @@ Token main.Token.=>
 Token main.Token.{
 Token main.Token.kw_for
 Token main.Token.d_ident: shape
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.d_ident: shapes
 Token main.Token.{
 Token main.Token.d_ident: shape
@@ -1833,7 +1833,7 @@ Token main.Token.=>
 Token main.Token.{
 Token main.Token.kw_for
 Token main.Token.d_ident: p
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.d_ident: points
 Token main.Token.{
 Token main.Token.*
@@ -1865,7 +1865,7 @@ Token main.Token.=>
 Token main.Token.{
 Token main.Token.kw_for
 Token main.Token.d_ident: p
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.&
 Token main.Token.kw_mut
 Token main.Token.d_ident: path_shape
@@ -1958,7 +1958,7 @@ Token main.Token.)
 Token main.Token.;
 Token main.Token.kw_for
 Token main.Token.d_ident: row
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.&
 Token main.Token.kw_mut
 Token main.Token.d_ident: galley
@@ -1983,7 +1983,7 @@ Token main.Token.d_ident: mesh_bounds
 Token main.Token.;
 Token main.Token.kw_for
 Token main.Token.d_ident: v
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.&
 Token main.Token.kw_mut
 Token main.Token.d_ident: row
@@ -2144,7 +2144,7 @@ Token main.Token.=>
 Token main.Token.{
 Token main.Token.kw_for
 Token main.Token.d_ident: p
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.&
 Token main.Token.kw_mut
 Token main.Token.d_ident: cubic_curve
@@ -4606,7 +4606,7 @@ Token main.Token.)
 Token main.Token.{
 Token main.Token.kw_for
 Token main.Token.d_ident: i
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.d_number: 0
 Token main.Token...=
 Token main.Token.d_number: 10
@@ -4678,7 +4678,7 @@ Token main.Token.)
 Token main.Token.;
 Token main.Token.kw_for
 Token main.Token.d_ident: pixels_per_point
-Token main.Token.d_ident: in
+Token main.Token.kw_in
 Token main.Token.[
 Token main.Token.d_number: 0.618
 Token main.Token.,
