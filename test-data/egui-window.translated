@@ -42,7 +42,7 @@ const area = Area . new ( Id . new ( title . text (  )  )  )  . constrain ( true
 Window < ' open > {.title = title,.open = None,.area = area,.frame = None,.resize = Resize . default (  )  . withStroke ( false )  . minSize ( [96.0 , 32.0] )  . defaultSize ( [340.0 , 420.0] ) ,.scroll = ScrollArea . neither (  ) ,.collapsible = true,.default_open = true,.with_title_bar = true,}
 }
 /// Assign a unique id to the Window. Required if the title changes, or is shared with another window.
-pub fn id(self: *Window < ' open >,id: Id)Window < ' open >{
+pub fn id(self: /* Ziggify: mut ownership */ Window < ' open >,id: Id)Window < ' open >{
 self . area = self . area . id ( id ) ;
 self
 }
@@ -51,86 +51,86 @@ self
 /// * If `*open == false`, the window will not be visible.
 /// * If `*open == true`, the window will have a close button.
 /// * If the close button is pressed, `*open` will be set to `false`.
-pub fn open(self: *Window < ' open >,open: *bool)Window < ' open >{
+pub fn open(self: /* Ziggify: mut ownership */ Window < ' open >,open: *bool)Window < ' open >{
 self . open = Some ( open ) ;
 self
 }
 /// If `false` the window will be grayed out and non-interactive.
-pub fn enabled(self: *Window < ' open >,enabled: bool)Window < ' open >{
+pub fn enabled(self: /* Ziggify: mut ownership */ Window < ' open >,enabled: bool)Window < ' open >{
 self . area = self . area . enabled ( enabled ) ;
 self
 }
 /// If `false` the window will be non-interactive.
-pub fn interactable(self: *Window < ' open >,interactable: bool)Window < ' open >{
+pub fn interactable(self: /* Ziggify: mut ownership */ Window < ' open >,interactable: bool)Window < ' open >{
 self . area = self . area . interactable ( interactable ) ;
 self
 }
 /// If `false` the window will be immovable.
-pub fn movable(self: *Window < ' open >,movable: bool)Window < ' open >{
+pub fn movable(self: /* Ziggify: mut ownership */ Window < ' open >,movable: bool)Window < ' open >{
 self . area = self . area . movable ( movable ) ;
 self
 }
 /// Usage: `Window::new(…).mutate(|w| w.resize = w.resize.auto_expand_width(true))`
 // TODO(emilk): I'm not sure this is a good interface for this.
-pub fn mutate(self: *Window < ' open >,mutate: /* Ziggify: impl Fn ( & mut Self ) */)Window < ' open >{
+pub fn mutate(self: /* Ziggify: mut ownership */ Window < ' open >,mutate: /* Ziggify: impl Fn ( & mut Self ) */)Window < ' open >{
 mutate ( &self ) ;
 self
 }
 /// Usage: `Window::new(…).resize(|r| r.auto_expand_width(true))`
 // TODO(emilk): I'm not sure this is a good interface for this.
-pub fn resize(self: *Window < ' open >,mutate: /* Ziggify: impl Fn ( Resize ) -> Resize */)Window < ' open >{
+pub fn resize(self: /* Ziggify: mut ownership */ Window < ' open >,mutate: /* Ziggify: impl Fn ( Resize ) -> Resize */)Window < ' open >{
 self . resize = mutate ( self . resize ) ;
 self . area = self . area . edgesPaddedForResize ( self . resize . isResizable (  )  ) ;
 self
 }
 /// Change the background color, margins, etc.
-pub fn frame(self: *Window < ' open >,frame: Frame)Window < ' open >{
+pub fn frame(self: /* Ziggify: mut ownership */ Window < ' open >,frame: Frame)Window < ' open >{
 self . frame = Some ( frame ) ;
 self
 }
 /// Set minimum width of the window.
-pub fn minWidth(self: *Window < ' open >,min_width: f32)Window < ' open >{
+pub fn minWidth(self: /* Ziggify: mut ownership */ Window < ' open >,min_width: f32)Window < ' open >{
 self . resize = self . resize . minWidth ( min_width ) ;
 self
 }
 /// Set minimum height of the window.
-pub fn minHeight(self: *Window < ' open >,min_height: f32)Window < ' open >{
+pub fn minHeight(self: /* Ziggify: mut ownership */ Window < ' open >,min_height: f32)Window < ' open >{
 self . resize = self . resize . minHeight ( min_height ) ;
 self
 }
 /// Set minimum size of the window, equivalent to calling both `min_width` and `min_height`.
-pub fn minSize(self: *Window < ' open >,min_size: Vec2)Window < ' open >{
+pub fn minSize(self: /* Ziggify: mut ownership */ Window < ' open >,min_size: Vec2)Window < ' open >{
 self . resize = self . resize . minSize ( min_size ) ;
 self
 }
 /// Set maximum width of the window.
-pub fn maxWidth(self: *Window < ' open >,max_width: f32)Window < ' open >{
+pub fn maxWidth(self: /* Ziggify: mut ownership */ Window < ' open >,max_width: f32)Window < ' open >{
 self . resize = self . resize . maxWidth ( max_width ) ;
 self
 }
 /// Set maximum height of the window.
-pub fn maxHeight(self: *Window < ' open >,max_height: f32)Window < ' open >{
+pub fn maxHeight(self: /* Ziggify: mut ownership */ Window < ' open >,max_height: f32)Window < ' open >{
 self . resize = self . resize . maxHeight ( max_height ) ;
 self
 }
 /// Set maximum size of the window, equivalent to calling both `max_width` and `max_height`.
-pub fn maxSize(self: *Window < ' open >,max_size: Vec2)Window < ' open >{
+pub fn maxSize(self: /* Ziggify: mut ownership */ Window < ' open >,max_size: Vec2)Window < ' open >{
 self . resize = self . resize . maxSize ( max_size ) ;
 self
 }
 /// Set current position of the window.
 /// If the window is movable it is up to you to keep track of where it moved to!
-pub fn currentPos(self: *Window < ' open >,current_pos: Pos2)Window < ' open >{
+pub fn currentPos(self: /* Ziggify: mut ownership */ Window < ' open >,current_pos: Pos2)Window < ' open >{
 self . area = self . area . currentPos ( current_pos ) ;
 self
 }
 /// Set initial position of the window.
-pub fn defaultPos(self: *Window < ' open >,default_pos: Pos2)Window < ' open >{
+pub fn defaultPos(self: /* Ziggify: mut ownership */ Window < ' open >,default_pos: Pos2)Window < ' open >{
 self . area = self . area . defaultPos ( default_pos ) ;
 self
 }
 /// Sets the window position and prevents it from being dragged around.
-pub fn fixedPos(self: *Window < ' open >,pos: Pos2)Window < ' open >{
+pub fn fixedPos(self: /* Ziggify: mut ownership */ Window < ' open >,pos: Pos2)Window < ' open >{
 self . area = self . area . fixedPos ( pos ) ;
 self
 }
@@ -139,14 +139,14 @@ self
 /// To change the area to constrain to, use [`Self::constrain_to`].
 ///
 /// Default: `true`.
-pub fn constrain(self: *Window < ' open >,constrain: bool)Window < ' open >{
+pub fn constrain(self: /* Ziggify: mut ownership */ Window < ' open >,constrain: bool)Window < ' open >{
 self . area = self . area . constrain ( constrain ) ;
 self
 }
 /// Constrain the movement of the window to the given rectangle.
 ///
 /// For instance: `.constrain_to(ctx.screen_rect())`.
-pub fn constrainTo(self: *Window < ' open >,constrain_rect: Rect)Window < ' open >{
+pub fn constrainTo(self: /* Ziggify: mut ownership */ Window < ' open >,constrain_rect: Rect)Window < ' open >{
 self . area = self . area . constrainTo ( constrain_rect ) ;
 self
 }
@@ -157,7 +157,7 @@ self
 /// corner of the window.
 ///
 /// Default: [`Align2::LEFT_TOP`].
-pub fn pivot(self: *Window < ' open >,pivot: Align2)Window < ' open >{
+pub fn pivot(self: /* Ziggify: mut ownership */ Window < ' open >,pivot: Align2)Window < ' open >{
 self . area = self . area . pivot ( pivot ) ;
 self
 }
@@ -172,32 +172,32 @@ self
 /// Anchoring also makes the window immovable.
 ///
 /// It is an error to set both an anchor and a position.
-pub fn anchor(self: *Window < ' open >,align: Align2,offset: Vec2)Window < ' open >{
+pub fn anchor(self: /* Ziggify: mut ownership */ Window < ' open >,align: Align2,offset: Vec2)Window < ' open >{
 self . area = self . area . anchor ( align , offset ) ;
 self
 }
 /// Set initial collapsed state of the window
-pub fn defaultOpen(self: *Window < ' open >,default_open: bool)Window < ' open >{
+pub fn defaultOpen(self: /* Ziggify: mut ownership */ Window < ' open >,default_open: bool)Window < ' open >{
 self . default_open = default_open;
 self
 }
 /// Set initial size of the window.
-pub fn defaultSize(self: *Window < ' open >,default_size: Vec2)Window < ' open >{
+pub fn defaultSize(self: /* Ziggify: mut ownership */ Window < ' open >,default_size: Vec2)Window < ' open >{
 self . resize = self . resize . defaultSize ( default_size ) ;
 self
 }
 /// Set initial width of the window.
-pub fn defaultWidth(self: *Window < ' open >,default_width: f32)Window < ' open >{
+pub fn defaultWidth(self: /* Ziggify: mut ownership */ Window < ' open >,default_width: f32)Window < ' open >{
 self . resize = self . resize . defaultWidth ( default_width ) ;
 self
 }
 /// Set initial height of the window.
-pub fn defaultHeight(self: *Window < ' open >,default_height: f32)Window < ' open >{
+pub fn defaultHeight(self: /* Ziggify: mut ownership */ Window < ' open >,default_height: f32)Window < ' open >{
 self . resize = self . resize . defaultHeight ( default_height ) ;
 self
 }
 /// Sets the window size and prevents it from being resized by dragging its edges.
-pub fn fixedSize(self: *Window < ' open >,size: Vec2)Window < ' open >{
+pub fn fixedSize(self: /* Ziggify: mut ownership */ Window < ' open >,size: Vec2)Window < ' open >{
 self . resize = self . resize . fixedSize ( size ) ;
 self . area = self . area . edgesPaddedForResize ( false ) ;
 self
@@ -215,50 +215,50 @@ self . fixedPos ( rect . min )  . fixedSize ( rect . size (  )  )
 /// Note that even if you set this to `false` the window may still auto-resize.
 ///
 /// Default is `true`.
-pub fn resizable(self: *Window < ' open >,resizable: bool)Window < ' open >{
+pub fn resizable(self: /* Ziggify: mut ownership */ Window < ' open >,resizable: bool)Window < ' open >{
 self . resize = self . resize . resizable ( resizable ) ;
 self . area = self . area . edgesPaddedForResize ( resizable ) ;
 self
 }
 /// Can the window be collapsed by clicking on its title?
-pub fn collapsible(self: *Window < ' open >,collapsible: bool)Window < ' open >{
+pub fn collapsible(self: /* Ziggify: mut ownership */ Window < ' open >,collapsible: bool)Window < ' open >{
 self . collapsible = collapsible;
 self
 }
 /// Show title bar on top of the window?
 /// If `false`, the window will not be collapsible nor have a close-button.
-pub fn titleBar(self: *Window < ' open >,title_bar: bool)Window < ' open >{
+pub fn titleBar(self: /* Ziggify: mut ownership */ Window < ' open >,title_bar: bool)Window < ' open >{
 self . with_title_bar = title_bar;
 self
 }
 /// Not resizable, just takes the size of its contents.
 /// Also disabled scrolling.
 /// Text will not wrap, but will instead make your window width expand.
-pub fn autoSized(self: *Window < ' open >)Window < ' open >{
+pub fn autoSized(self: /* Ziggify: mut ownership */ Window < ' open >)Window < ' open >{
 self . resize = self . resize . autoSized (  ) ;
 self . scroll = ScrollArea . neither (  ) ;
 self . area = self . area . edgesPaddedForResize ( false ) ;
 self
 }
 /// Enable/disable horizontal/vertical scrolling. `false` by default.
-pub fn scroll2(self: *Window < ' open >,scroll: Vec2b)Window < ' open >{
+pub fn scroll2(self: /* Ziggify: mut ownership */ Window < ' open >,scroll: Vec2b)Window < ' open >{
 self . scroll = self . scroll . scroll2 ( scroll ) ;
 self
 }
 /// Enable/disable horizontal scrolling. `false` by default.
-pub fn hscroll(self: *Window < ' open >,hscroll: bool)Window < ' open >{
+pub fn hscroll(self: /* Ziggify: mut ownership */ Window < ' open >,hscroll: bool)Window < ' open >{
 self . scroll = self . scroll . hscroll ( hscroll ) ;
 self
 }
 /// Enable/disable vertical scrolling. `false` by default.
-pub fn vscroll(self: *Window < ' open >,vscroll: bool)Window < ' open >{
+pub fn vscroll(self: /* Ziggify: mut ownership */ Window < ' open >,vscroll: bool)Window < ' open >{
 self . scroll = self . scroll . vscroll ( vscroll ) ;
 self
 }
 /// Enable/disable scrolling on the window by dragging with the pointer. `true` by default.
 ///
 /// See [`ScrollArea::drag_to_scroll`] for more.
-pub fn dragToScroll(self: *Window < ' open >,drag_to_scroll: bool)Window < ' open >{
+pub fn dragToScroll(self: /* Ziggify: mut ownership */ Window < ' open >,drag_to_scroll: bool)Window < ' open >{
 self . scroll = self . scroll . dragToScroll ( drag_to_scroll ) ;
 self
 }
@@ -738,7 +738,7 @@ TitleBar {.rect = rect,/* Ziggify: .. title_bar*/}
 ///   title if `collapsible` is `true`
 /// - `collapsible`: if `true`, double click on the title bar will be handled for a change
 ///   of `collapsing` state
-fn ui(self: *TitleBar,ui: *Ui,outer_rect: Rect,content_response: ?Response,open: Option(*bool),collapsing: *CollapsingState,collapsible: bool,)void{
+fn ui(self: /* Ziggify: mut ownership */ TitleBar,ui: *Ui,outer_rect: Rect,content_response: ?Response,open: Option(*bool),collapsing: *CollapsingState,collapsible: bool,)void{
 if (/* Ziggify: Some ( content_response ) */  & content_response) {
 // Now we know how large we got to be:
 self . rect . max . x = self . rect . max . x . max ( content_response . rect . max . x ) ;

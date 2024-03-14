@@ -1787,8 +1787,6 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                 i.*,
                 &.{
                     // There may be comma or closing paren after the first param.
-                    &.{ .kw_mut, .d_ident, .@"," },
-                    &.{ .kw_mut, .d_ident, .@")" },
                     &.{ .@"&", .kw_mut, .d_ident, .@"," },
                     &.{ .@"&", .kw_mut, .d_ident, .@")" },
                     &.{ .@"&", .kw_mut, .kw_static, .@"," },
@@ -1797,6 +1795,21 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
             )) |ld_param| {
                 const param_name = ld_param.data;
                 try writer.print("{s}: *", .{param_name});
+                try writeTokens(writer, toks, range.from, range.to_excl);
+                i.* += ld_param.len;
+
+                if (toks.tokens[i.* - 1] == .@",") {
+                    _ = try writer.write(",");
+                } else {
+                    i.* -= 1; // Don't skip `)` token.
+                }
+            } else if (toks.startsWithAnyAndGetData(i.*, &.{
+                // There may be comma or closing paren after the first param.
+                &.{ .kw_mut, .d_ident, .@"," },
+                &.{ .kw_mut, .d_ident, .@")" },
+            })) |ld_param| {
+                const param_name = ld_param.data;
+                try writer.print("{s}: /* Ziggify: mut ownership */ ", .{param_name});
                 try writeTokens(writer, toks, range.from, range.to_excl);
                 i.* += ld_param.len;
 
@@ -1817,6 +1830,12 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                 const param_name = ld_param.data;
                 try writer.print("{s}: *", .{param_name});
                 i.* += ld_param.len;
+
+                try translateType(writer, toks, i, self_type);
+            } else if (toks.match(i.*, "mut name :")) |m| {
+                // This can either transfer ownership or be borrowed.
+                try writer.print("{s}: /* Ziggify: mut param */ ", .{m.name});
+                i.* += m.len;
 
                 try translateType(writer, toks, i, self_type);
             } else if (toks.startsWithAnyAndGetData(

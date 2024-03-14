@@ -516,23 +516,23 @@ TextShape {.pos = pos,.galley = galley,.underline = Stroke . NONE,.fallback_colo
 pub fn visualBoundingRect(self: TextShape)Rect{
 self . galley . mesh_bounds . translate ( self . pos . toVec2 (  )  ) 
 }
-pub fn withUnderline(self: *TextShape,underline: Stroke)TextShape{
+pub fn withUnderline(self: /* Ziggify: mut ownership */ TextShape,underline: Stroke)TextShape{
 self . underline = underline;
 self
 }
 /// Use the given color for the text, regardless of what color is already in the galley.
-pub fn withOverrideTextColor(self: *TextShape,override_text_color: Color32)TextShape{
+pub fn withOverrideTextColor(self: /* Ziggify: mut ownership */ TextShape,override_text_color: Color32)TextShape{
 self . override_text_color = Some ( override_text_color ) ;
 self
 }
 /// Rotate text by this many radians clockwise.
 /// The pivot is `pos` (the upper left corner of the text).
-pub fn withAngle(self: *TextShape,angle: f32)TextShape{
+pub fn withAngle(self: /* Ziggify: mut ownership */ TextShape,angle: f32)TextShape{
 self . angle = angle;
 self
 }
 /// Render text with this opacity in gamma space
-pub fn withOpacityFactor(self: *TextShape,opacity_factor: f32)TextShape{
+pub fn withOpacityFactor(self: /* Ziggify: mut ownership */ TextShape,opacity_factor: f32)TextShape{
 self . opacity_factor = opacity_factor;
 self
 }
