@@ -1118,6 +1118,19 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
     } else return ParserError.Other;
 }
 
+fn consumePub(
+    toks: Toks,
+    i: *usize,
+) bool {
+    if (toks.matchEql(i.*, "pub ( crate )", .{ .crate = "crate" })) |m| {
+        i.* += m.len;
+        return true;
+    } else if (toks.match(i.*, "pub")) |m| {
+        i.* += m.len;
+        return true;
+    } else return false;
+}
+
 fn translateStruct(
     writer: anytype,
     toks: Toks,
@@ -1157,10 +1170,7 @@ fn translateStruct(
             try writeCommentBefore(writer, toks, i.*);
 
             // Ignore field visibility.
-            const public = toks.tokens[i.*] == .kw_pub;
-            if (public) {
-                i.* += 1;
-            }
+            _ = consumePub(toks, i);
 
             if (try skipAttribute(toks, i)) {
                 //
@@ -2003,10 +2013,7 @@ fn translateRustToZig(
         // Process comment before construct or before end of module.
         try writeCommentBefore(writer, toks, i.*);
 
-        const public = toks.tokens[i.*] == .kw_pub;
-        if (public) {
-            i.* += 1;
-        }
+        const public = consumePub(toks, i);
 
         if (try skipAttribute(toks, i)) {
             //
