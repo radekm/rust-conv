@@ -522,13 +522,6 @@ const Toks = struct {
         return null;
     }
 
-    fn startsWith(self: Toks, i: usize, needle: []const Token) ?usize {
-        if (std.mem.startsWith(Token, self.tokens[i..], needle))
-            return needle.len
-        else
-            return null;
-    }
-
     // Returned token count does not include stop token.
     fn genericBracketedCountUntilAny(
         self: Toks,
@@ -1088,8 +1081,8 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
             try writer.print("{s}", .{m.name});
         }
         i.* += m.len;
-    } else if (toks.startsWith(i.*, &.{.@"["})) |len| {
-        i.* += len;
+    } else if (toks.match(i.*, "[")) |m_opening| {
+        i.* += m_opening.len;
 
         // This could be slice or array.
         switch (toks.tokens[i.* + try toks.typeLen(i.*, "; ]")]) {
@@ -1191,8 +1184,8 @@ fn translateStruct(
                 break;
             }
 
-            if (toks.startsWith(i.*, &.{.@","})) |len| {
-                i.* += len;
+            if (toks.match(i.*, ",")) |m_comma| {
+                i.* += m_comma.len;
             }
         }
 
@@ -1262,8 +1255,8 @@ fn translateEnum(
                 i.* += 1;
 
                 // Ignore optional comma.
-                if (toks.startsWith(i.*, &.{.@","})) |len| {
-                    i.* += len;
+                if (toks.match(i.*, ",")) |m_comma| {
+                    i.* += m_comma.len;
                 }
                 try writeInSnakeCase(writer, m.name);
                 _ = try writer.write(",\n");
@@ -1290,13 +1283,13 @@ fn translateEnum(
                             try translateOptional(writer, toks, i, .@",");
                         }
 
-                        if (toks.startsWith(i.*, &.{.@")"})) |len| {
-                            i.* += len;
+                        if (toks.match(i.*, ")")) |m_closing| {
+                            i.* += m_closing.len;
                         } else return ParserError.ClosingBracketNotFound;
 
                         // Ignore optional comma after enum tuple item.
-                        if (toks.startsWith(i.*, &.{.@","})) |len| {
-                            i.* += len;
+                        if (toks.match(i.*, ",")) |m_comma| {
+                            i.* += m_comma.len;
                         }
                         try writer.print(" }}),\n", .{});
 
@@ -1312,13 +1305,13 @@ fn translateEnum(
                     i.* += m_comma.len;
                 }
 
-                if (toks.startsWith(i.*, &.{.@")"})) |len| {
-                    i.* += len;
+                if (toks.match(i.*, ")")) |m_closing| {
+                    i.* += m_closing.len;
                 } else return ParserError.ClosingBracketNotFound;
 
                 // Ignore optional comma after enum tuple item.
-                if (toks.startsWith(i.*, &.{.@","})) |len| {
-                    i.* += len;
+                if (toks.match(i.*, ",")) |m_comma| {
+                    i.* += m_comma.len;
                 }
                 try writer.print(",\n", .{});
             }
@@ -1326,8 +1319,8 @@ fn translateEnum(
             i.* += m.len;
             i.* += try toks.expressionLen(i.*, "}") + 1;
             // Ignore optional comma after enum struct item.
-            if (toks.startsWith(i.*, &.{.@","})) |len| {
-                i.* += len;
+            if (toks.match(i.*, ",")) |m_comma| {
+                i.* += m_comma.len;
             }
             try writeInSnakeCase(writer, m.name);
             try writer.print(": {s},\n", .{m.name});
@@ -1370,8 +1363,8 @@ fn translateEnum(
                     try writer.print(",", .{});
 
                     // Ignore optional comma after struct field.
-                    if (toks.startsWith(i.*, &.{.@","})) |len| {
-                        i.* += len;
+                    if (toks.match(i.*, ",")) |m_comma| {
+                        i.* += m_comma.len;
                     }
                 } else {
                     // Struct field doesn't start here.
@@ -1384,8 +1377,8 @@ fn translateEnum(
             _ = try writer.write(";\n");
 
             // Ignore optional comma after struct.
-            if (toks.startsWith(i.*, &.{.@","})) |len| {
-                i.* += len;
+            if (toks.match(i.*, ",")) |m_comma| {
+                i.* += m_comma.len;
             }
         } else {
             // Probably end of enum.
@@ -1412,8 +1405,8 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
 
         if (try skipAttribute(toks, i)) {
             //
-        } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
-            i.* += len;
+        } else if (toks.match(i.*, "use")) |m| {
+            i.* += m.len;
             i.* += try toks.expressionLen(i.*, ";") + 1;
         } else if (toks.match(i.*, "&mut |")) |m| {
             _ = try writer.write("/* Ziggify: ");
@@ -1683,9 +1676,9 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
             // Translate just `return`.
             try translate(writer, toks, i, .kw_return);
             _ = try writer.write(" ");
-        } else if (toks.startsWith(i.*, &.{.kw_match})) |len| {
+        } else if (toks.match(i.*, "match")) |m| {
             _ = try writer.write("switch (");
-            i.* += len;
+            i.* += m.len;
 
             // Translate match control expression to the first `{`.
             // Note it may happen that `{` belongs to struct construction and not to `match` body.
@@ -1707,7 +1700,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
                 i.* += pattern_len;
                 try translate(writer, toks, i, .@"=>");
 
-                if (toks.startsWith(i.*, &.{.@"{"})) |_| {
+                if (toks.match(i.*, "{")) |_| {
                     // Code for current case is enclosed in braces.
                     try translate(writer, toks, i, .@"{");
                     _ = try writer.write("\n");
@@ -1858,24 +1851,24 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                 try translateType(writer, toks, i, self_type);
             } else break;
 
-            if (toks.startsWith(i.*, &.{.@","})) |len| {
+            if (toks.match(i.*, ",")) |m_comma| {
                 _ = try writer.write(",");
-                i.* += len;
+                i.* += m_comma.len;
             }
 
             // TODO: Read comment associated with a parameter (it's before or after? or both?).
         }
 
-        if (toks.startsWith(i.*, &.{.@")"})) |len| {
+        if (toks.match(i.*, ")")) |m_closing| {
             _ = try writer.write(")");
-            i.* += len;
+            i.* += m_closing.len;
         } else {
             return ParserError.ClosingBracketNotFound;
         }
 
         // Translate optional return type.
-        if (toks.startsWith(i.*, &.{.@"->"})) |len| {
-            i.* += len;
+        if (toks.match(i.*, "->")) |m_arrow| {
+            i.* += m_arrow.len;
             // TODO: Instead of returning self return actual type.
             try translateType(writer, toks, i, self_type);
         } else {
@@ -1883,7 +1876,7 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
         }
 
         // Translate optional where clause - just wrap it in comment.
-        if (toks.startsWith(i.*, &.{.kw_where})) |_| {
+        if (toks.match(i.*, "where")) |_| {
             const where_len = try toks.expressionLen(i.*, "{");
             _ = try writer.write(" /* ");
             try writeTokens(writer, toks, i.*, i.* + where_len);
@@ -2010,8 +2003,8 @@ fn translateRustToZig(
 
         if (try skipAttribute(toks, i)) {
             //
-        } else if (toks.startsWith(i.*, &.{.kw_use})) |len| {
-            i.* += len;
+        } else if (toks.match(i.*, "use")) |m| {
+            i.* += m.len;
             i.* += try toks.expressionLen(i.*, ";") + 1;
         } else if (toks.match(i.*, "const name :")) |m| {
             try writer.print("const {s} : ", .{m.name});
