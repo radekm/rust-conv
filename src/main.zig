@@ -296,18 +296,6 @@ fn getChar(data: []const u8) ?[]const u8 {
     return null;
 }
 
-const LenAndData = struct {
-    len: usize,
-    data: []const u8,
-};
-
-fn LenAndMultiData(n: comptime_int) type {
-    return struct {
-        len: usize,
-        data: [n][]const u8,
-    };
-}
-
 const CommentIndex = usize; // Index into `comments`.
 const CommentRange = struct { from: CommentIndex, to_excl: CommentIndex };
 
@@ -318,6 +306,30 @@ const Match = struct {
         capture_field_names: []const ?[]const u8,
         // Number of non-null `capture_field_names`.
         capture_count: usize,
+
+        fn compareStrings(_: void, lhs: []const u8, rhs: []const u8) bool {
+            return std.mem.order(u8, lhs, rhs).compare(std.math.CompareOperator.lt);
+        }
+
+        fn getCaptureFieldNamesOrdered(comptime pattern: Pattern) [pattern.capture_count][]const u8 {
+            var result: [pattern.capture_count][]const u8 = undefined;
+
+            // First step is to get non-null field names.
+            var i: usize = 0;
+            for (pattern.capture_field_names) |optional_field_name| {
+                if (optional_field_name) |field_name| {
+                    result[i] = field_name;
+                    i += 1;
+                }
+            }
+            if (i != pattern.capture_count)
+                @compileError("Wrong capture_count");
+
+            // Second step is to sort field names.
+            std.sort.pdq([]const u8, &result, {}, compareStrings);
+
+            return result;
+        }
     };
 
     /// Used to process `Toks.match` patterns.
@@ -470,59 +482,51 @@ const Toks = struct {
         return null;
     }
 
+    fn matchAny(self: Toks, i: usize, comptime patterns: []const []const u8) ?Match.Result(patterns[0]) {
+        comptime if (patterns.len == 0)
+            @compileError("At least one pattern must be given");
+        comptime var pats: [patterns.len]Match.Pattern = undefined;
+        inline for (patterns, 0..) |pattern, j| {
+            pats[j] = comptime Match.parsePattern(pattern);
+        }
+
+        // Check that all patterns capture same fields.
+        // Order of captured fields is not important.
+        const capture_field_names = comptime pats[0].getCaptureFieldNamesOrdered();
+        inline for (1..pats.len) |j| {
+            const capture_field_names2 = comptime pats[j].getCaptureFieldNamesOrdered();
+            comptime if (capture_field_names.len != capture_field_names2.len)
+                @compileError("All patterns must capture same fields");
+            inline for (capture_field_names, capture_field_names2) |name, name2| {
+                comptime if (!std.mem.eql(u8, name, name2))
+                    @compileError("Field names differ: " ++ name ++ " is not equal to " ++ name2);
+            }
+        }
+
+        inline for (pats) |pat| {
+            if (std.mem.startsWith(Token, self.tokens[i..], pat.tokens)) {
+                var result: Match.Result(patterns[0]) = undefined;
+                result.len = pat.tokens.len;
+                inline for (pat.capture_field_names, 0..) |capture_field_name, pat_i| {
+                    if (capture_field_name) |field_name| {
+                        if (self.token_data[i + pat_i]) |data| {
+                            @field(result, field_name) = data;
+                        } else {
+                            @panic("No value captured for field " ++ field_name);
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+        return null;
+    }
+
     fn startsWith(self: Toks, i: usize, needle: []const Token) ?usize {
         if (std.mem.startsWith(Token, self.tokens[i..], needle))
             return needle.len
         else
             return null;
-    }
-
-    fn startsWithAny(self: Toks, i: usize, needles: []const []const Token) ?usize {
-        for (needles) |needle| {
-            if (self.startsWith(i, needle)) |len|
-                return len;
-        }
-        return null;
-    }
-
-    fn startsWithAndGetData(self: Toks, i: usize, needle: []const Token) ?LenAndData {
-        if (std.mem.startsWith(Token, self.tokens[i..], needle)) {
-            for (self.token_data[i..][0..needle.len]) |data| {
-                if (data) |d|
-                    return .{ .len = needle.len, .data = d };
-            }
-            return null;
-        } else {
-            return null;
-        }
-    }
-
-    fn startsWithAnyAndGetData(self: Toks, i: usize, needles: []const []const Token) ?LenAndData {
-        for (needles) |needle| {
-            if (self.startsWithAndGetData(i, needle)) |ld|
-                return ld;
-        }
-        return null;
-    }
-
-    // CONSIDER: Infer `n` from comptime `needle`.
-    //           Or replace this function by `match`?
-    fn startsWithAndGetMultiData(self: Toks, n: comptime_int, i: usize, needle: []const Token) ?LenAndMultiData(n) {
-        if (self.startsWith(i, needle)) |len| {
-            var found: usize = 0;
-            var result: LenAndMultiData(n) = .{ .len = len, .data = undefined };
-            for (self.token_data[i..][0..needle.len]) |data| {
-                if (data) |d| {
-                    result.data[found] = d;
-                    found += 1;
-                    if (found == n)
-                        return result;
-                }
-            }
-            return null;
-        } else {
-            return null;
-        }
     }
 
     // Returned token count does not include stop token.
@@ -1073,17 +1077,17 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
             _ = try writer.write(")");
             i.* += m_closing.len;
         }
-    } else if (toks.startsWithAndGetData(i.*, &.{.d_ident})) |ld| {
-        if (std.mem.eql(u8, ld.data, "Self")) {
+    } else if (toks.match(i.*, "name")) |m| {
+        if (std.mem.eql(u8, m.name, "Self")) {
             if (self_type) |range| {
                 try writeTokens(writer, toks, range.from, range.to_excl);
             } else {
-                try writer.print("{s}", .{ld.data});
+                try writer.print("{s}", .{m.name});
             }
         } else {
-            try writer.print("{s}", .{ld.data});
+            try writer.print("{s}", .{m.name});
         }
-        i.* += ld.len;
+        i.* += m.len;
     } else if (toks.startsWith(i.*, &.{.@"["})) |len| {
         i.* += len;
 
@@ -1174,10 +1178,9 @@ fn translateStruct(
 
             if (try skipAttribute(toks, i)) {
                 //
-            } else if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":" })) |ld| {
-                const field_name = ld.data;
-                try writer.print("{s}: ", .{field_name});
-                i.* += ld.len;
+            } else if (toks.match(i.*, "name :")) |m_field| {
+                try writer.print("{s}: ", .{m_field.name});
+                i.* += m_field.len;
 
                 try translateType(writer, toks, i, null);
                 try writer.print(",", .{});
@@ -1359,10 +1362,9 @@ fn translateEnum(
             i.* += m.len;
 
             while (i.* < toks.tokens.len) {
-                if (toks.startsWithAndGetData(i.*, &.{ .d_ident, .@":" })) |ld| {
-                    const field_name = ld.data;
-                    try writer.print("{s}: ", .{field_name});
-                    i.* += ld.len;
+                if (toks.match(i.*, "name :")) |m_field| {
+                    try writer.print("{s}: ", .{m_field.name});
+                    i.* += m_field.len;
 
                     try translateType(writer, toks, i, null);
                     try writer.print(",", .{});
@@ -1456,15 +1458,15 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
             // So translation would be hard. Instead we just ignore `?`
             // and let Zig compiler to show error.
             i.* += m.len;
-        } else if (toks.startsWithAny(
+        } else if (toks.matchAny(
             i.*,
             &.{
-                &.{.@"..="}, &.{.@".."}, &.{.@"=="}, &.{.@"<="}, &.{.@"<"},
-                &.{.@">="},  &.{.@">"},  &.{.@"."},  &.{.@"|"},  &.{.@"!"},
-                &.{.@"&"},   &.{.@","},  &.{.@"*"},  &.{.@"/"},  &.{.@"+"},
-                &.{.@"-"},   &.{.@":"},  &.{.@"="},  &.{.@"("},  &.{.@")"},
+                "..=", "..", "==", "<=", "<",
+                ">=",  ">",  ".",  "|",  "!",
+                "&",   ",",  "*",  "/",  "+",
+                "-",   ":",  "=",  "(",  ")",
             },
-        )) |len| {
+        )) |m| {
             // Operators which are translated to themselves.
             //
             // Note that some of these translations are wrong.
@@ -1473,9 +1475,9 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
             // can't be simply translated to Zig because Zig doesn't have lambdas
             // and translating it to itself is wrong.
             _ = try writer.write(" ");
-            try writeTokens(writer, toks, i.*, i.* + len);
+            try writeTokens(writer, toks, i.*, i.* + m.len);
             _ = try writer.write(" ");
-            i.* += len;
+            i.* += m.len;
         } else if (toks.match(i.*, "[")) |_| {
             try translate(writer, toks, i, .@"[");
 
@@ -1660,9 +1662,9 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
             const right_side_len = try toks.expressionLen(i.*, "{");
             try translateBody(writer, toks.restrict(i.* + right_side_len), i, self_type);
             _ = try writer.write(") ");
-        } else if (toks.startsWithAny(i.*, &.{&.{.kw_if}})) |len| {
-            try writeTokens(writer, toks, i.*, i.* + len);
-            i.* += len;
+        } else if (toks.match(i.*, "if")) |m| {
+            try writeTokens(writer, toks, i.*, i.* + m.len);
+            i.* += m.len;
 
             _ = try writer.write("(");
             // Translate control expression to the first `{`.
@@ -1745,20 +1747,19 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
 }
 
 fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: ?SelfTypeRange) !bool {
-    if (toks.startsWithAnyAndGetData(i.*, &.{
-        &.{ .kw_fn, .d_ident },
+    if (toks.matchAny(i.*, &.{
+        "fn name",
         // Functions which can be evaluated at compile time.
         // These in Zig don't need `const` or any other special flag.
-        &.{ .kw_const, .kw_fn, .d_ident },
-    })) |ld| {
-        const fn_name = ld.data;
+        "const fn name",
+    })) |m_fn| {
         if (public)
             try writer.print("pub fn ", .{})
         else
             try writer.print("fn ", .{});
 
-        try writeInCamelCase(writer, fn_name);
-        i.* += ld.len;
+        try writeInCamelCase(writer, m_fn.name);
+        i.* += m_fn.len;
 
         const len_before_paren = try toks.typeLen(i.*, "(");
         if (len_before_paren > 0) {
@@ -1772,57 +1773,50 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
 
         // Translate first parameter where type can be omitted.
         if (self_type) |range| {
-            if (toks.startsWithAnyAndGetData(
+            if (toks.matchAny(
                 i.*,
                 &.{
                     // There may be comma or closing paren after the first param.
-                    &.{ .d_ident, .@"," },
-                    &.{ .d_ident, .@")" },
-                    &.{ .@"&", .d_ident, .@"," },
-                    &.{ .@"&", .d_ident, .@")" },
-                    &.{ .@"&", .kw_static, .@"," },
-                    &.{ .@"&", .kw_static, .@")" },
+                    "name , ",
+                    "name ) ",
+                    "& name ,",
+                    "& name )",
                 },
-            )) |ld_param| {
-                const param_name = ld_param.data;
-                try writer.print("{s}: ", .{param_name});
+            )) |m_param| {
+                try writer.print("{s}: ", .{m_param.name});
                 try writeTokens(writer, toks, range.from, range.to_excl);
-                i.* += ld_param.len;
+                i.* += m_param.len;
 
                 if (toks.tokens[i.* - 1] == .@",") {
                     _ = try writer.write(",");
                 } else {
                     i.* -= 1; // Don't skip `)` token.
                 }
-            } else if (toks.startsWithAnyAndGetData(
+            } else if (toks.matchAny(
                 i.*,
                 &.{
                     // There may be comma or closing paren after the first param.
-                    &.{ .@"&", .kw_mut, .d_ident, .@"," },
-                    &.{ .@"&", .kw_mut, .d_ident, .@")" },
-                    &.{ .@"&", .kw_mut, .kw_static, .@"," },
-                    &.{ .@"&", .kw_mut, .kw_static, .@")" },
+                    "& mut name ,",
+                    "& mut name )",
                 },
-            )) |ld_param| {
-                const param_name = ld_param.data;
-                try writer.print("{s}: *", .{param_name});
+            )) |m_param| {
+                try writer.print("{s}: *", .{m_param.name});
                 try writeTokens(writer, toks, range.from, range.to_excl);
-                i.* += ld_param.len;
+                i.* += m_param.len;
 
                 if (toks.tokens[i.* - 1] == .@",") {
                     _ = try writer.write(",");
                 } else {
                     i.* -= 1; // Don't skip `)` token.
                 }
-            } else if (toks.startsWithAnyAndGetData(i.*, &.{
+            } else if (toks.matchAny(i.*, &.{
                 // There may be comma or closing paren after the first param.
-                &.{ .kw_mut, .d_ident, .@"," },
-                &.{ .kw_mut, .d_ident, .@")" },
-            })) |ld_param| {
-                const param_name = ld_param.data;
-                try writer.print("{s}: /* Ziggify: mut ownership */ ", .{param_name});
+                "mut name ,",
+                "mut name )",
+            })) |m_param| {
+                try writer.print("{s}: /* Ziggify: mut ownership */ ", .{m_param.name});
                 try writeTokens(writer, toks, range.from, range.to_excl);
-                i.* += ld_param.len;
+                i.* += m_param.len;
 
                 if (toks.tokens[i.* - 1] == .@",") {
                     _ = try writer.write(",");
@@ -1833,14 +1827,13 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
         }
 
         while (i.* < toks.tokens.len) {
-            if (toks.startsWithAnyAndGetData(i.*, &.{
-                &.{ .d_ident, .@":", .@"&", .@"'", .d_ident, .kw_mut },
-                &.{ .d_ident, .@":", .@"&", .@"'", .kw_static, .kw_mut },
-                &.{ .d_ident, .@":", .@"&", .kw_mut },
-            })) |ld_param| {
-                const param_name = ld_param.data;
-                try writer.print("{s}: *", .{param_name});
-                i.* += ld_param.len;
+            if (toks.matchAny(i.*, &.{
+                "name : & ' _lifetime mut",
+                "name : & ' static mut",
+                "name : & mut",
+            })) |m_param| {
+                try writer.print("{s}: *", .{m_param.name});
+                i.* += m_param.len;
 
                 try translateType(writer, toks, i, self_type);
             } else if (toks.match(i.*, "mut name :")) |m| {
@@ -1849,19 +1842,18 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                 i.* += m.len;
 
                 try translateType(writer, toks, i, self_type);
-            } else if (toks.startsWithAnyAndGetData(
+            } else if (toks.matchAny(
                 i.*,
                 &.{
-                    &.{ .d_ident, .@":", .@"&", .@"'", .d_ident },
-                    &.{ .d_ident, .@":", .@"&", .@"'", .kw_static },
-                    &.{ .d_ident, .@":", .@"&" },
-                    &.{ .d_ident, .@":" },
+                    "name : & ' _lifetime",
+                    "name : & ' static",
+                    "name : &",
+                    "name :",
                 },
-            )) |ld_param| {
+            )) |m_param| {
                 // Immutable param.
-                const param_name = ld_param.data;
-                try writer.print("{s}: ", .{param_name});
-                i.* += ld_param.len;
+                try writer.print("{s}: ", .{m_param.name});
+                i.* += m_param.len;
 
                 try translateType(writer, toks, i, self_type);
             } else break;
