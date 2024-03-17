@@ -1976,6 +1976,11 @@ fn translateFn(writer: anytype, toks: Toks, i: *usize, public: bool, self_type: 
                 },
             )) |m_param| {
                 // Immutable param.
+
+                // If this is immutable reference we don't want to translate it to pointer
+                // and emit leading `*`. This is the reason why we can't use `translateType`
+                // to translate whole parameter type and instead we skip reference before giving
+                // the rest to `translateType`.
                 try writer.print("{s}: ", .{m_param.name});
                 i.* += m_param.len;
 
