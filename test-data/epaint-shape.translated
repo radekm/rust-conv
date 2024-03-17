@@ -140,14 +140,14 @@ Self . galley ( rect . min , galley , color )
 /// Any uncolored parts of the [`Galley`] (using [`Color32::PLACEHOLDER`]) will be replaced with the given color.
 ///
 /// Any non-placeholder color in the galley takes precedence over this fallback color.
-pub fn galley(pos: Pos2,galley: Galley,fallback_color: Color32)Shape{
+pub fn galley(pos: Pos2,galley: /* Ziggify:  Arc< Galley>*/,fallback_color: Color32)Shape{
 TextShape . new ( pos , galley , fallback_color )  . into (  ) 
 }
 /// All text color in the [`Galley`] will be replaced with the given color.
-pub fn galleyWithOverrideTextColor(pos: Pos2,galley: Galley,text_color: Color32,)Shape{
+pub fn galleyWithOverrideTextColor(pos: Pos2,galley: /* Ziggify:  Arc< Galley>*/,text_color: Color32,)Shape{
 TextShape . new ( pos , galley , text_color )  . withOverrideTextColor ( text_color )  . into (  ) 
 }
-pub fn galleyWithColor(pos: Pos2,galley: Galley,text_color: Color32)Shape{
+pub fn galleyWithColor(pos: Pos2,galley: /* Ziggify:  Arc< Galley>*/,text_color: Color32)Shape{
 Self . galleyWithOverrideTextColor ( pos , galley , text_color ) 
 }
 pub fn mesh(mesh: Mesh)Shape{
@@ -486,7 +486,7 @@ const TextShape = struct {
 /// Top left corner of the first character.
 pos: Pos2,
 /// The laid out text, from [`Fonts::layout_job`].
-galley: Galley,
+galley: /* Ziggify:  Arc< Galley>*/,
 /// Add this underline to the whole text.
 /// You can also set an underline when creating the galley.
 underline: Stroke,
@@ -509,7 +509,7 @@ angle: f32,
 /// The given fallback color will be used for any uncolored part of the galley (using [`Color32::PLACEHOLDER`]).
 ///
 /// Any non-placeholder color in the galley takes precedence over this fallback color.
-pub fn new(pos: Pos2,galley: Galley,fallback_color: Color32)TextShape{
+pub fn new(pos: Pos2,galley: /* Ziggify:  Arc< Galley>*/,fallback_color: Color32)TextShape{
 TextShape {.pos = pos,.galley = galley,.underline = Stroke . NONE,.fallback_color = fallback_color,.override_text_color = None,.opacity_factor = 1.0,.angle = 0.0,}
 }
 /// The visual bounding rectangle
@@ -717,10 +717,10 @@ rect: Rect,
 /// program, vertex array, etc.
 ///
 /// Shape has to be clone, therefore this has to be an `Arc` instead of a `Box`.
-callback: /* Ziggify: Pointer to anything clonable */,
+callback: /* Ziggify:  Arc< dyn Any + Send + Sync>*/,
 };
 // BEGIN: impl std :: fmt :: Debug for PaintCallback
-fn fmt(self: PaintCallback,f: *std.fmt./* Ziggify: Formatter<'_> */)std.fmt.Result{
+fn fmt(self: PaintCallback,f: */* Ziggify:  std :: fmt :: Formatter< ' _>*/)std.fmt.Result{
 f . debugStruct ( "CustomShape" )  . field ( "rect" ,  & self . rect )  . finishNonExhaustive (  ) 
 }
 

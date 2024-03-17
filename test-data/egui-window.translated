@@ -23,7 +23,7 @@
 // Ziggify generic struct: < ' open >
 const Window = struct {
 title: WidgetText,
-open: Option(*bool),
+open: ?*bool,
 area: Area,
 frame: ?Frame,
 resize: Resize,
@@ -72,13 +72,13 @@ self
 }
 /// Usage: `Window::new(…).mutate(|w| w.resize = w.resize.auto_expand_width(true))`
 // TODO(emilk): I'm not sure this is a good interface for this.
-pub fn mutate(self: /* Ziggify: mut ownership */ Window < ' open >,mutate: /* Ziggify: impl Fn ( & mut Self ) */)Window < ' open >{
+pub fn mutate(self: /* Ziggify: mut ownership */ Window < ' open >,mutate: /* Ziggify:  impl Fn( & mut Self)*/)Window < ' open >{
 mutate ( &self ) ;
 self
 }
 /// Usage: `Window::new(…).resize(|r| r.auto_expand_width(true))`
 // TODO(emilk): I'm not sure this is a good interface for this.
-pub fn resize(self: /* Ziggify: mut ownership */ Window < ' open >,mutate: /* Ziggify: impl Fn ( Resize ) -> Resize */)Window < ' open >{
+pub fn resize(self: /* Ziggify: mut ownership */ Window < ' open >,mutate: /* Ziggify:  impl Fn( Resize) -> Resize*/)Window < ' open >{
 self . resize = mutate ( self . resize ) ;
 self . area = self . area . edgesPaddedForResize ( self . resize . isResizable (  )  ) ;
 self
@@ -267,10 +267,10 @@ self
 // BEGIN: impl < ' open > Window < ' open >
 /// Returns `None` if the window is not open (if [`Window::open`] was called with `&mut false`).
 /// Returns `Some(InnerResponse { inner: None })` if the window is collapsed.
-pub fn show /* < R > */ (self: Window < ' open >,ctx: Context,add_contents: /* Ziggify: impl FnOnce ( & mut Ui ) -> R */,)Option(InnerResponse(?R)){
+pub fn show /* < R > */ (self: Window < ' open >,ctx: Context,add_contents: /* Ziggify:  impl FnOnce( & mut Ui) -> R*/,)?/* Ziggify:  InnerResponse< Option< R>>*/{
 self . showDyn ( ctx , Box . new ( add_contents )  ) 
 }
-fn showDyn /* < ' c , R > */ (self: Window < ' open >,ctx: Context,add_contents: Box(/* Ziggify: dyn FnOnce ( & mut Ui ) -> R + ' c*/),)Option(InnerResponse(?R)){
+fn showDyn /* < ' c , R > */ (self: Window < ' open >,ctx: Context,add_contents: /* Ziggify:  Box< dyn FnOnce( & mut Ui) -> R + ' c>*/,)?/* Ziggify:  InnerResponse< Option< R>>*/{
 const /* Ziggify: Window { title , open , area , frame , resize , scroll , collapsible , default_open , with_title_bar , } */ =self;
 const header_color = frame . mapOrElse (  or ctx . style (  )  . visuals . widgets . open . weak_bg_fill ,  | f | f . fill ) ;
 var window_frame = frame . unwrapOrElse (  or Frame . window (  & ctx . style (  )  )  ) ;
@@ -684,7 +684,7 @@ const TitleBar = struct {
 /// A title Id used for dragging windows
 id: Id,
 /// Prepared text in the title
-title_galley: Galley,
+title_galley: /* Ziggify:  Arc< Galley>*/,
 /// Size of the title bar in a collapsed state (if window is collapsible),
 /// which includes all necessary space for showing the expand button, the
 /// title and the close button.
@@ -738,7 +738,7 @@ TitleBar {.rect = rect,/* Ziggify: .. title_bar*/}
 ///   title if `collapsible` is `true`
 /// - `collapsible`: if `true`, double click on the title bar will be handled for a change
 ///   of `collapsing` state
-fn ui(self: /* Ziggify: mut ownership */ TitleBar,ui: *Ui,outer_rect: Rect,content_response: ?Response,open: Option(*bool),collapsing: *CollapsingState,collapsible: bool,)void{
+fn ui(self: /* Ziggify: mut ownership */ TitleBar,ui: *Ui,outer_rect: Rect,content_response: ?Response,open: ?*bool,collapsing: *CollapsingState,collapsible: bool,)void{
 if (/* Ziggify: Some ( content_response ) */  & content_response) {
 // Now we know how large we got to be:
 self . rect . max . x = self . rect . max . x . max ( content_response . rect . max . x ) ;

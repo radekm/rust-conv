@@ -100,7 +100,7 @@ max_y = y;
 Rect {.min = Pos2 {.x = min_x,.y = min_y},.max = Pos2 {.x = max_x,.y = max_y},}
 }
 /// split the original cubic curve into a new one within a range.
-pub fn splitRange(self: CubicBezierShape,t_range: Range(f32))CubicBezierShape{
+pub fn splitRange(self: CubicBezierShape,t_range: /* Ziggify:  Range< f32>*/)CubicBezierShape{
 crate . epaint_assert !  ( t_range . start >= 0.0 and t_range . end <= 1.0 and t_range . start <= t_range . end , "range should be in [0.0,1.0]" ) ;
 const from = self . sample ( t_range . start ) ;
 const to = self . sample ( t_range . end ) ;
@@ -229,7 +229,7 @@ result
 /// this api will check whether the curve will cross the base line or not when closed = true.
 /// The result will be a vec of vec of Pos2. it will store two closed aren in different vec.
 /// The epsilon is used to compare a float value.
-pub fn flattenClosed(self: CubicBezierShape,tolerance: ?f32,epsilon: ?f32)/* Ziggify: Vec<Vec<Pos2>> */{
+pub fn flattenClosed(self: CubicBezierShape,tolerance: ?f32,epsilon: ?f32)ArrayList(ArrayList(Pos2)){
 const tolerance = tolerance . unwrapOr (  ( self . points[0] . x - self . points[3] . x )  . abs (  )  * 0.001 ) ;
 const epsilon = epsilon . unwrapOr ( 1.0e-5 ) ;
 var result = Vec . new (  ) ;

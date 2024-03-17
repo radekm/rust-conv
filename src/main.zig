@@ -968,120 +968,173 @@ fn translateOptional(writer: anytype, toks: Toks, i: *usize, token: Token) !void
 const TokenIndex = usize; // Index into `tokens`.
 const SelfTypeRange = struct { from: TokenIndex, to_excl: TokenIndex };
 
-// TODO: Translate `self_type` everywhere (eg. in generics) and not only when type is simple identifier.
-// TODO: Consider generalizing `translateType`.
-fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRange) !void {
-    // All references are translated to pointer.
-    if (toks.match(i.*, "& ' ident mut")) |m| {
-        _ = try writer.write("*");
-        i.* += m.len;
-    } else if (toks.match(i.*, "& ' static mut")) |m| {
-        _ = try writer.write("*");
-        i.* += m.len;
-    } else if (toks.match(i.*, "& ' ident")) |m| {
-        _ = try writer.write("*");
-        i.* += m.len;
-    } else if (toks.match(i.*, "& ' static")) |m| {
-        _ = try writer.write("*");
-        i.* += m.len;
-    } else if (toks.match(i.*, "& mut")) |m| {
-        _ = try writer.write("*");
-        i.* += m.len;
-    } else if (toks.match(i.*, "&")) |m| {
-        _ = try writer.write("*");
+fn translateSimpleType(
+    writer: anytype,
+    toks: Toks,
+    i: *usize,
+    self_type: ?SelfTypeRange,
+) !bool {
+    const type_from = i.*;
+
+    // All kinds of references are translated to pointer.
+    var is_pointer = false;
+    if (toks.matchAny(i.*, &.{
+        "& ' _lifetime mut",
+        "& ' static mut",
+        "& ' _lifetime",
+        "& ' static",
+        "& mut",
+        "&",
+    })) |m| {
+        is_pointer = true;
         i.* += m.len;
     }
 
-    if (toks.match(i.*, "name ::")) |m| {
-        try writer.print("{s}.", .{m.name});
-        i.* += m.len;
-        try translateType(writer, toks, i, self_type);
-    } else if (toks.matchEql(i.*, "impl trait_name < type_name >", .{ .trait_name = "Into" })) |m| {
-        try writer.print("{s}", .{m.type_name});
-        i.* += m.len;
-    } else if (toks.matchEql(i.*, "impl trait_name", .{ .trait_name = "ToString" })) |m| {
-        try writer.print("[]const u8", .{});
-        i.* += m.len;
-    } else if (toks.matchEql(i.*, "arc < type_name >", .{ .arc = "Arc" })) |m| {
-        try writer.print("{s}", .{m.type_name}); // TODO: Shouldn't we translate it to pointer?
-        i.* += m.len;
-    } else if (toks.matchEql(
-        i.*,
-        "arc < dyn any + send + sync >",
-        .{ .arc = "Arc", .any = "Any", .send = "Send", .sync = "Sync" },
-    )) |m| {
-        _ = try writer.write("/* Ziggify: Pointer to anything clonable */");
-        i.* += m.len;
-    } else if (toks.matchEql(i.*, "option < type_name >", .{ .option = "Option" })) |m| {
-        try writer.print("?{s}", .{m.type_name});
-        i.* += m.len;
-    } else if (toks.matchEql(i.*, "vec < vec2 < type_name > >", .{ .vec = "Vec", .vec2 = "Vec" })) |m| {
-        // I doubt that nested `ArrayList` is good option in Zig.
-        try writer.print("/* Ziggify: Vec<Vec<{s}>> */", .{m.type_name});
-        i.* += m.len;
-    } else if (toks.matchEql(i.*, "formatter < ' lifetime >", .{ .formatter = "Formatter" })) |m| {
-        try writer.print("/* Ziggify: Formatter<'{s}> */", .{m.lifetime});
-        i.* += m.len;
-    } else if (toks.match(i.*, "impl fn_trait (")) |m| {
-        if (!std.mem.eql(u8, m.fn_trait, "Fn") and
-            !std.mem.eql(u8, m.fn_trait, "FnMut") and
-            !std.mem.eql(u8, m.fn_trait, "FnOnce"))
-        {
-            @panic("Unsupported fn trait");
+    const non_ref_from = i.*;
+    if (toks.match(i.*, "ident ::")) |_| {
+        // Handle all types starting with path.
+        // Only non-generic types with path can be translated.
+        // For example `foo::bar::Baz` is ok but `foo:bar::Baz<i32>` is not ok.
+
+        // Find end of path and check that the type is non-generic.
+        while (toks.match(i.*, "ident ::")) |m| {
+            i.* += m.len;
+        }
+        if (toks.match(i.*, "ident <")) |_| {
+            // Generic types are not supported.
+            i.* = type_from;
+            return false;
+        }
+        if (toks.match(i.*, "ident") == null) {
+            // There's no type at the end of path.
+            i.* = type_from;
+            return false;
         }
 
-        const from = i.*;
-        i.* += m.len;
-        i.* += try toks.typeLen(i.*, ")") + 1;
-
-        // Skip return type.
-        if (toks.match(i.*, "->")) |_| {
-            i.* += 1;
-            i.* += try toks.typeLen(i.*, "> ] ) } { ,");
+        // Now we checked that we can translate this case. so let's actually translate it.
+        i.* = non_ref_from;
+        if (is_pointer)
+            _ = try writer.write("*");
+        // Translate path.
+        while (toks.match(i.*, "ident ::")) |m| {
+            try writer.print("{s}.", .{m.ident});
+            i.* += m.len;
         }
-
-        _ = try writer.write("/* Ziggify: ");
-        try writeTokens(writer, toks, from, i.*);
-        _ = try writer.write(" */");
-    } else if (toks.match(i.*, "name <")) |m| {
-        // zig fmt: off
-        const name =
-            if (std.mem.eql(u8, "Vec", m.name)) "ArrayList"
-            else m.name;
-        // zig fmt: on
-
-        try writer.print("{s}(", .{name});
+        // Translate non-generic type.
+        const m = toks.match(i.*, "ident").?;
+        _ = try writer.print("{s}", .{m.ident});
         i.* += m.len;
 
-        if (toks.match(i.*, "dyn")) |_| {
-            const len = try toks.typeLen(i.*, ">");
-            _ = try writer.write("/* Ziggify: ");
-            try writeTokens(writer, toks, i.*, i.* + len);
-            _ = try writer.write("*/");
-            i.* += len;
-        } else {
-            while (i.* < toks.tokens.len and toks.tokens[i.*] != .@">") {
-                try translateType(writer, toks, i, self_type);
-                try translateOptional(writer, toks, i, .@",");
+        return true;
+    } else if (toks.match(i.*, "impl name")) |m_trait| {
+        // Handle simple impls (impls starting with `impl for<` are not matched).
+        // Only `impl ToString` and `impl Into<T>` are translated.
+        i.* += m_trait.len;
+
+        if (std.mem.eql(u8, m_trait.name, "ToString")) {
+            // Translate `impl ToString` to `[]const u8`.
+            // Ensure that `ToString` is not followed by `<` or `+`.
+            if (toks.matchAny(i.*, &.{ "<", "+" })) |_| {
+                i.* = type_from;
+                return false;
             }
-        }
 
-        if (toks.match(i.*, ">")) |m_closing| {
-            _ = try writer.write(")");
-            i.* += m_closing.len;
-        }
-    } else if (toks.match(i.*, "name")) |m| {
-        if (std.mem.eql(u8, m.name, "Self")) {
-            if (self_type) |range| {
-                try writeTokens(writer, toks, range.from, range.to_excl);
+            if (is_pointer)
+                _ = try writer.write("*");
+            _ = try writer.write("[]const u8");
+
+            return true;
+        } else if (std.mem.eql(u8, m_trait.name, "Into")) {
+            // Translate `impl Into<T>` to translation of `T`.
+
+            if (toks.match(i.*, "<")) |m_opening| {
+                i.* += m_opening.len;
             } else {
-                try writer.print("{s}", .{m.name});
+                i.* = type_from;
+                return false;
             }
+            const inner_type_from = i.*;
+            // Check that there's no comma between `<` and `>`.
+            const inner_type_len = try toks.typeLen(i.*, ", >");
+            if (toks.match(i.* + inner_type_len, ",")) |_| {
+                // Generics with multiple parameters are not supported.
+                i.* = type_from;
+                return false;
+            }
+
+            i.* += inner_type_len + 1; // Skip closing `>`.
+
+            // Ensure that `impl Into<T>` is not followed by `+`.
+            if (toks.match(i.*, "+")) |_| {
+                i.* = type_from;
+                return false;
+            }
+
+            // Now we checked that we can translate this case. so let's actually translate it.
+            i.* = inner_type_from;
+            if (is_pointer)
+                _ = try writer.write("*");
+            try translateType(writer, toks, i, self_type);
+
+            // Ensure that whole inner type has been translated.
+            if (i.* != inner_type_from + inner_type_len)
+                return ParserError.Other;
+
+            // Skip closing `>`.
+            i.* += 1;
+
+            return true;
         } else {
-            try writer.print("{s}", .{m.name});
+            // Unsupported trait.
+
+            i.* = type_from;
+            return false;
         }
-        i.* += m.len;
+    } else if (toks.match(i.*, "ident <")) |m_generic| {
+        // Handle generic types.
+        // Only `Option<T>` and `Vec<T>` are translated.
+
+        i.* += m_generic.len;
+
+        const inner_type_from = i.*;
+        // Check that there's no comma between `<` and `>`.
+        const inner_type_len = try toks.typeLen(i.*, ", >");
+        if (toks.match(i.* + inner_type_len, ",")) |_| {
+            // Generics with multiple parameters are not supported.
+            i.* = type_from;
+            return false;
+        }
+
+        var prefix: []const u8 = "";
+        var suffix: []const u8 = "";
+        if (std.mem.eql(u8, m_generic.ident, "Option")) {
+            prefix = "?";
+        } else if (std.mem.eql(u8, m_generic.ident, "Vec")) {
+            prefix = "ArrayList(";
+            suffix = ")";
+        } else {
+            // Unsupported generic type.
+            i.* = type_from;
+            return false;
+        }
+
+        if (is_pointer)
+            _ = try writer.write("*");
+
+        _ = try writer.write(prefix);
+        try translateType(writer, toks, i, self_type);
+        // Ensure that whole inner type has been translated.
+        if (i.* != inner_type_from + inner_type_len)
+            return ParserError.Other;
+        _ = try writer.write(suffix);
+
+        // Skip closing `>`.
+        i.* += 1;
+
+        return true;
     } else if (toks.match(i.*, "[")) |m_opening| {
+        // Translate arrays and slices.
+        // At this point we won't return `false`.
         i.* += m_opening.len;
 
         // This could be slice or array.
@@ -1094,15 +1147,18 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
                 try translateType(fbs.writer(), toks, i, self_type);
 
                 if (toks.match(i.*, "; size:num ]")) |m| {
+                    if (is_pointer)
+                        _ = try writer.write("*");
                     try writer.print("[{s}]{s}", .{ m.size, fbs.getWritten() });
                     i.* += m.len;
                 } else {
-                    // Expected semicolon and length a closing bracket weren't found.
+                    // Expected tokens semicolon, length and closing bracket weren't found.
                     return ParserError.Other;
                 }
             },
             .@"]" => {
                 // Slice.
+                // NOTE: We ignore `is_pointer` because slice is already a kind of pointer.
                 _ = try writer.write("[]");
                 try translateType(writer, toks, i, self_type);
                 if (toks.match(i.*, "]")) |m|
@@ -1112,7 +1168,82 @@ fn translateType(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
             },
             else => unreachable,
         }
-    } else return ParserError.Other;
+
+        return true;
+    } else if (toks.match(i.*, "name")) |m| {
+        // Translate non-generic type without path.
+
+        if (is_pointer)
+            _ = try writer.write("*");
+        if (std.mem.eql(u8, m.name, "Self")) {
+            if (self_type) |range| {
+                try writeTokens(writer, toks, range.from, range.to_excl);
+            } else {
+                try writer.print("{s}", .{m.name});
+            }
+        } else {
+            try writer.print("{s}", .{m.name});
+        }
+        i.* += m.len;
+
+        return true;
+    } else {
+        i.* = type_from;
+        return false;
+    }
+}
+
+fn translateTooComplexTypeHelper(writer: anytype, toks: Toks, i: *usize, allowed_token: ?Token) !void {
+    while (i.* < toks.tokens.len) {
+        if (toks.match(i.*, "(")) |_| {
+            // Parens can contain comma. It appears in tuples like `(String, i32)`
+            // or functions like `impl Fn(String, int32)`
+            // or function pointers like `fn(i32, i32) -> i32`
+            try translate(writer, toks, i, .@"(");
+            try translateTooComplexTypeHelper(writer, toks, i, .@",");
+            try translate(writer, toks, i, .@")");
+        } else if (toks.match(i.*, "<")) |_| {
+            // Angle brackets can contain comma. It appears when giving multiple generic arguments.
+            try translate(writer, toks, i, .@"<");
+            try translateTooComplexTypeHelper(writer, toks, i, .@",");
+            try translate(writer, toks, i, .@">");
+        } else if (toks.match(i.*, "[")) |_| {
+            // Square brackets can contain semicolon. It appears in arrays.
+            try translate(writer, toks, i, .@"[");
+            try translateTooComplexTypeHelper(writer, toks, i, .@";");
+            try translate(writer, toks, i, .@"]");
+        } else if (toks.matchAny(i.*, &.{
+            "_ident", "::", "static", "&", "'", "mut", "dyn", "impl", "for", "+", "->", "fn", "!",
+        })) |m| {
+            _ = try writer.write(" ");
+            try writeTokens(writer, toks, i.*, i.* + m.len);
+            i.* += m.len;
+        } else if (allowed_token != null and toks.tokens[i.*] == allowed_token.?) {
+            _ = try writer.write(" ");
+            try writeTokens(writer, toks, i.*, i.* + 1);
+            i.* += 1;
+        } else {
+            // We assume this is end of type.
+            break;
+        }
+    }
+}
+
+fn translateTooComplexType(writer: anytype, toks: Toks, i: *usize) !void {
+    _ = try writer.write("/* Ziggify: ");
+    try translateTooComplexTypeHelper(writer, toks, i, null);
+    _ = try writer.write("*/");
+}
+
+fn translateType(
+    writer: anytype,
+    toks: Toks,
+    i: *usize,
+    self_type: ?SelfTypeRange,
+) (@TypeOf(writer).Error || ParserError || Allocator.Error)!void {
+    if (!try translateSimpleType(writer, toks, i, self_type)) {
+        try translateTooComplexType(writer, toks, i);
+    }
 }
 
 fn consumePub(
