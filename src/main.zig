@@ -1732,13 +1732,15 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
             try translateBody(writer, toks.restrict(i.* + len_before_brace), i, self_type);
             try writer.print(") |{s}|", .{m.elem});
         } else if (toks.match(i.*, "for (index, elem) in")) |m| {
+            i.* += m.len;
+
             // Note it may happen that `{` belongs to struct construction and not to `for` body.
-            const for_start_len = try toks.expressionLen(i.*, "{");
-            const enumerate_len = 8;
+            const control_expression_len = try toks.expressionLen(i.*, "{");
+            const enumerate_len = 8; // Length of `.iter().enumerate()`.
 
             // If expression after `in` ends with `.iter().enumerate()`.
             if (toks.matchEql(
-                i.* + for_start_len - enumerate_len,
+                i.* + control_expression_len - enumerate_len,
                 ".iter().enumerate()",
                 .{ .iter = "iter", .enumerate = "enumerate" },
             )) |_| {
@@ -1746,15 +1748,24 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
 
                 // Translate expression after `in` except `.iter().enumerate()`.
                 // We create `temp_toks` which doesn't contain `.iter().enumerate()`.
-                const token_count = i.* + for_start_len - enumerate_len;
-                const temp_toks = toks.restrict(token_count);
-                var temp_i = i.* + m.len; // We don't want to update `i`.
-                try translateBody(writer, temp_toks, &temp_i, self_type);
-                if (temp_i != token_count)
-                    @panic("Expression after in not processed whole");
+                const token_count = i.* + control_expression_len - enumerate_len;
+                try translateBody(writer, toks.restrict(token_count), i, self_type);
+                if (i.* != token_count) {
+                    // Control expression not processed whole.
+                    return ParserError.Other;
+                }
                 try writer.print(", 0..) |{s}, {s}|", .{ m.elem, m.index });
-                i.* += for_start_len;
-            } else @panic("Control expression of for doesn't end with .iter().enumerate()");
+                i.* += enumerate_len; // Skip `.iter().enumerate()`.
+            } else {
+                _ = try writer.write("for (");
+                const token_count = i.* + control_expression_len;
+                try translateBody(writer, toks.restrict(token_count), i, self_type);
+                if (i.* != token_count) {
+                    // Control expression not processed whole.
+                    return ParserError.Other;
+                }
+                try writer.print(") |/* Ziggify: ({s}, {s}) */|", .{ m.elem, m.index });
+            }
         } else if (toks.match(i.*, "for")) |m| {
             // Handle other patterns in `for`.
 
