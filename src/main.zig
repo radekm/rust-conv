@@ -1652,9 +1652,9 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
                 if (toks.match(i.*, "name ,")) |m_field| {
                     try writer.print(".{s} = {s},", .{ m_field.name, m_field.name });
                     i.* += m_field.len;
-                } else if (toks.match(i.*, "name )")) |m_field| {
+                } else if (toks.match(i.*, "name }")) |m_field| {
                     try writer.print(".{s} = {s}", .{ m_field.name, m_field.name });
-                    i.* += m_field.len - 1; // Don't skip closing paren.
+                    i.* += m_field.len - 1; // Don't skip closing brace.
                 } else if (toks.match(i.*, "name :")) |m_field| {
                     try writer.print(".{s} = ", .{m_field.name});
                     i.* += m_field.len;
