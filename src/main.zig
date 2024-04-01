@@ -59,6 +59,7 @@ const Token = enum {
     @";",
     @"*",
     @"/",
+    @"%",
     @"+",
     @"-",
 
@@ -1596,9 +1597,9 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
             &.{
                 "..=", "..", "==", "<=", "<",
                 ">=",  ">",  ".",  "|",  "!",
-                "&",   ",",  "*",  "/",  "+",
-                "-",   ":",  "=",  "(",  ")",
-                "as",
+                "&",   ",",  "*",  "/",  "%",
+                "+",   "-",  ":",  "=",  "(",
+                ")",   "as",
             },
         )) |m| {
             // Operators which are translated to themselves.
