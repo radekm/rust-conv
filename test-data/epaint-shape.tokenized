@@ -4427,7 +4427,7 @@ Token main.Token..
 Token main.Token.d_ident: round
 Token main.Token.(
 Token main.Token.)
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: i32
 Token main.Token.;
     AFTER: // inclusive
@@ -4447,7 +4447,7 @@ Token main.Token..
 Token main.Token.d_ident: round
 Token main.Token.(
 Token main.Token.)
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: i32
 Token main.Token.;
     AFTER: // inclusive
@@ -4467,7 +4467,7 @@ Token main.Token..
 Token main.Token.d_ident: round
 Token main.Token.(
 Token main.Token.)
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: i32
 Token main.Token.;
     AFTER: // exclusive
@@ -4487,7 +4487,7 @@ Token main.Token..
 Token main.Token.d_ident: round
 Token main.Token.(
 Token main.Token.)
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: i32
 Token main.Token.;
     AFTER: // exclusive
@@ -4499,7 +4499,7 @@ Token main.Token.d_ident: screen_size_px
 Token main.Token.[
 Token main.Token.d_number: 0
 Token main.Token.]
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: i32
 Token main.Token.;
 Token main.Token.kw_let
@@ -4509,7 +4509,7 @@ Token main.Token.d_ident: screen_size_px
 Token main.Token.[
 Token main.Token.d_number: 1
 Token main.Token.]
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: i32
 Token main.Token.;
 Token main.Token.kw_let
@@ -4617,7 +4617,7 @@ Token main.Token.kw_let
 Token main.Token.d_ident: x
 Token main.Token.=
 Token main.Token.d_ident: i
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: f32
 Token main.Token./
 Token main.Token.d_number: 97.0

@@ -5327,7 +5327,7 @@ Token main.Token.[
 Token main.Token.d_ident: PointerButton
 Token main.Token.::
 Token main.Token.d_ident: Primary
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: usize
 Token main.Token.]
 Token main.Token.=
@@ -5369,7 +5369,7 @@ Token main.Token.[
 Token main.Token.d_ident: PointerButton
 Token main.Token.::
 Token main.Token.d_ident: Primary
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: usize
 Token main.Token.]
 Token main.Token.=
@@ -5535,7 +5535,7 @@ Token main.Token.d_ident: clicked
 Token main.Token.[
 Token main.Token.*
 Token main.Token.d_ident: button
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: usize
 Token main.Token.]
 Token main.Token.=
@@ -5547,7 +5547,7 @@ Token main.Token.d_ident: double_clicked
 Token main.Token.[
 Token main.Token.*
 Token main.Token.d_ident: button
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: usize
 Token main.Token.]
 Token main.Token.=
@@ -5563,7 +5563,7 @@ Token main.Token.d_ident: triple_clicked
 Token main.Token.[
 Token main.Token.*
 Token main.Token.d_ident: button
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: usize
 Token main.Token.]
 Token main.Token.=
@@ -12202,7 +12202,7 @@ Token main.Token.(
 Token main.Token.)
 Token main.Token.,
 Token main.Token.d_ident: bytes
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: f64
 Token main.Token.*
 Token main.Token.d_number: 1e-6
@@ -12340,11 +12340,11 @@ Token main.Token.=
 Token main.Token.d_ident: vec2
 Token main.Token.(
 Token main.Token.d_ident: w
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: f32
 Token main.Token.,
 Token main.Token.d_ident: h
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: f32
 Token main.Token.)
 Token main.Token.;
@@ -12431,11 +12431,11 @@ Token main.Token.=
 Token main.Token.d_ident: vec2
 Token main.Token.(
 Token main.Token.d_ident: w
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: f32
 Token main.Token.,
 Token main.Token.d_ident: h
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: f32
 Token main.Token.)
 Token main.Token.;
@@ -12517,7 +12517,7 @@ Token main.Token..
 Token main.Token.d_ident: bytes_used
 Token main.Token.(
 Token main.Token.)
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: f64
 Token main.Token.*
 Token main.Token.d_number: 1e-6
@@ -14074,7 +14074,7 @@ Token main.Token.kw_use
 Token main.Token.d_ident: load
 Token main.Token.::
 Token main.Token.d_ident: BytesLoader
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: _
 Token main.Token.;
 Token main.Token.d_ident: crate
@@ -14187,7 +14187,7 @@ Token main.Token.kw_use
 Token main.Token.d_ident: load
 Token main.Token.::
 Token main.Token.d_ident: BytesLoader
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: _
 Token main.Token.;
 Token main.Token.d_ident: crate

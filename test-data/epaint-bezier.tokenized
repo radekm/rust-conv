@@ -1176,7 +1176,7 @@ Token main.Token.d_ident: max
 Token main.Token.(
 Token main.Token.d_number: 1.0
 Token main.Token.)
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: u32
 Token main.Token.}
     BEFORE: /// Find out the t value for the point where the curve is intersected with the base line.
@@ -3325,7 +3325,7 @@ Token main.Token.=
 Token main.Token.d_ident: params
 Token main.Token..
 Token main.Token.d_ident: count
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: u32
 Token main.Token.;
 Token main.Token.kw_for
@@ -3343,7 +3343,7 @@ Token main.Token..
 Token main.Token.d_ident: t_at_iteration
 Token main.Token.(
 Token main.Token.d_ident: index
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: f32
 Token main.Token.)
 Token main.Token.;
@@ -3471,7 +3471,7 @@ Token main.Token.=
 Token main.Token.d_number: 1.0
 Token main.Token./
 Token main.Token.d_ident: num_quadratics
-Token main.Token.d_ident: as
+Token main.Token.kw_as
 Token main.Token.d_ident: f32
 Token main.Token.;
 Token main.Token.kw_let

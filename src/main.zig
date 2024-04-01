@@ -27,6 +27,7 @@ const Token = enum {
     kw_let,
     kw_mut,
     kw_return,
+    kw_as,
 
     // Operators.
     @"=>",
@@ -1592,6 +1593,7 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
                 ">=",  ">",  ".",  "|",  "!",
                 "&",   ",",  "*",  "/",  "+",
                 "-",   ":",  "=",  "(",  ")",
+                "as",
             },
         )) |m| {
             // Operators which are translated to themselves.

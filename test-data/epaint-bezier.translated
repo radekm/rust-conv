@@ -125,7 +125,7 @@ crate . epaint_assert !  ( tolerance > 0.0 , "the tolerance should be positive" 
 const x = self . points[0] . x - 3.0 * self . points[1] . x + 3.0 * self . points[2] . x - self . points[3] . x;
 const y = self . points[0] . y - 3.0 * self . points[1] . y + 3.0 * self . points[2] . y - self . points[3] . y;
 const err = x * x + y * y;
- ( err /  ( 432.0 * tolerance * tolerance )  )  . powf ( 1.0 / 6.0 )  . ceil (  )  . max ( 1.0 ) asu32
+ ( err /  ( 432.0 * tolerance * tolerance )  )  . powf ( 1.0 / 6.0 )  . ceil (  )  . max ( 1.0 )  as u32
 }
 /// Find out the t value for the point where the curve is intersected with the base line.
 /// The base line is the line from P0 to P3.
@@ -436,9 +436,9 @@ if(params . is_point){
 return ;
 
 }
-const count = params . countasu32;
+const count = params . count as u32;
 for (1 .. count) |index|{
-const t = params . tAtIteration ( indexasf32 ) ;
+const t = params . tAtIteration ( index as f32 ) ;
 callback ( self . sample ( t )  , t ) ;
 
 }
@@ -461,7 +461,7 @@ fn flattenCubicBezierWithT /* < F : FnMut ( Pos2 , f32 ) > */ (curve: CubicBezie
 const quadratics_tolerance = tolerance * 0.2;
 const flattening_tolerance = tolerance * 0.8;
 const num_quadratics = curve . numQuadratics ( quadratics_tolerance ) ;
-const step = 1.0 / num_quadraticsasf32;
+const step = 1.0 / num_quadratics as f32;
 const n = num_quadratics;
 var t0 = 0.0;
 for (0 ..  ( n - 1 ) ) |_|{

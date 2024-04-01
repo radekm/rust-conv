@@ -649,13 +649,13 @@ fn fromPoints(rect: Rect,pixels_per_point: f32,screen_size_px: [2]u32)ViewportIn
 // Fractional pixel values for viewports are generally valid, but may cause sampling issues
 // and rounding errors might cause us to get out of bounds.
 // Round:
-const left_px =  ( pixels_per_point * rect . min . x )  . round (  ) asi32;// inclusive
-const top_px =  ( pixels_per_point * rect . min . y )  . round (  ) asi32;// inclusive
-const right_px =  ( pixels_per_point * rect . max . x )  . round (  ) asi32;// exclusive
-const bottom_px =  ( pixels_per_point * rect . max . y )  . round (  ) asi32;// exclusive
+const left_px =  ( pixels_per_point * rect . min . x )  . round (  )  as i32;// inclusive
+const top_px =  ( pixels_per_point * rect . min . y )  . round (  )  as i32;// inclusive
+const right_px =  ( pixels_per_point * rect . max . x )  . round (  )  as i32;// exclusive
+const bottom_px =  ( pixels_per_point * rect . max . y )  . round (  )  as i32;// exclusive
 // Clamp to screen:
-const screen_width = screen_size_px[0]asi32;
-const screen_height = screen_size_px[1]asi32;
+const screen_width = screen_size_px[0] as i32;
+const screen_height = screen_size_px[1] as i32;
 const left_px = left_px . clamp ( 0 , screen_width ) ;
 const right_px = right_px . clamp ( left_px , screen_width ) ;
 const top_px = top_px . clamp ( 0 , screen_height ) ;
@@ -669,7 +669,7 @@ ViewportInPixels {.left_px = left_px,.top_px = top_px,.from_bottom_px = screen_h
 fn testViewportRounding()void{
 for (0 ..= 10_000) |i|{
 // Two adjacent viewports should never overlap:
-const x = iasf32 / 97.0;
+const x = i as f32 / 97.0;
 const left = Rect . fromMinMax ( pos2 ( 0.0 , 0.0 )  , pos2 ( 100.0 , 100.0 )  )  . withMaxX ( x ) ;
 const right = Rect . fromMinMax ( pos2 ( 0.0 , 0.0 )  , pos2 ( 100.0 , 100.0 )  )  . withMinX ( x ) ;
 for ([0.618 , 1.0 , std . f32 . consts . PI]) |pixels_per_point|{

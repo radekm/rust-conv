@@ -815,11 +815,11 @@ const input =  & viewport . input;
 const memory = &ctx . memory;
 if(sense . click and memory . hasFocus ( id )  and  ( input . keyPressed ( Key . Space )  or input . keyPressed ( Key . Enter )  ) ){
 // Space/enter works like a primary click for e.g. selected buttons
-res . clicked[PointerButton . Primaryasusize] = true;
+res . clicked[PointerButton . Primary as usize] = true;
 
 }
 if(sense . click and input . hasAccesskitActionRequest ( id , accesskit . Action . Default ) ){
-res . clicked[PointerButton . Primaryasusize] = true;
+res . clicked[PointerButton . Primary as usize] = true;
 
 }
 const interaction = memory . interaction (  ) ;
@@ -836,9 +836,9 @@ for ( & input . pointer . pointer_events) |pointer_event|{
 if (/* Ziggify: PointerEvent :: Released { click , button } */ pointer_event) {
 if(sense . click and clicked){
 if (/* Ziggify: Some ( click ) */ click) {
-res . clicked[ * buttonasusize] = true;
-res . double_clicked[ * buttonasusize] = click . isDouble (  ) ;
-res . triple_clicked[ * buttonasusize] = click . isTriple (  ) ;
+res . clicked[ * button as usize] = true;
+res . double_clicked[ * button as usize] = click . isDouble (  ) ;
+res . triple_clicked[ * button as usize] = click . isTriple (  ) ;
 
 }
 
@@ -2053,7 +2053,7 @@ for ( & textures) |/* Ziggify: (tex, _) */|{
 bytes +  = tex . bytesUsed (  ) ;
 
 }
-ui . label ( format !  ( "{} allocated texture(s), using {:.1} MB" , textures . len (  )  , bytesasf64 * 1e-6 )  ) ;
+ui . label ( format !  ( "{} allocated texture(s), using {:.1} MB" , textures . len (  )  , bytes as f64 * 1e-6 )  ) ;
 const max_preview_size = vec2 ( 48.0 , 32.0 ) ;
 ui . group (  | ui | {
 ScrollArea . vertical (  )  . maxHeight ( 300.0 )  . autoShrink ( [false , true] )  . show ( ui ,  | ui | {
@@ -2061,13 +2061,13 @@ ui . styleMut (  )  . override_text_style = Some ( TextStyle . Monospace ) ;
 Grid . new ( "textures" )  . striped ( true )  . numColumns ( 4 )  . spacing ( vec2 ( 16.0 , 2.0 )  )  . minRowHeight ( max_preview_size . y )  . show ( ui ,  | ui | {
 for (textures) |/* Ziggify: ( & texture_id , meta )*/|{
 const /* Ziggify: [ w , h ] */ =meta . size;
-var size = vec2 ( wasf32 , hasf32 ) ;
+var size = vec2 ( w as f32 , h as f32 ) ;
 size *  =  ( max_preview_size . x / size . x )  . min ( 1.0 ) ;
 size *  =  ( max_preview_size . y / size . y )  . min ( 1.0 ) ;
 ui . image ( SizedTexture . new ( texture_id , size )  )  . onHoverUi (  | ui | {
 // show larger on hover
 const max_size = 0.5 * ui . ctx (  )  . screenRect (  )  . size (  ) ;
-var size = vec2 ( wasf32 , hasf32 ) ;
+var size = vec2 ( w as f32 , h as f32 ) ;
 size *  = max_size . x / size . x . max ( max_size . x ) ;
 size *  = max_size . y / size . y . max ( max_size . y ) ;
 ui . image ( SizedTexture . new ( texture_id , size )  ) ;
@@ -2075,7 +2075,7 @@ ui . image ( SizedTexture . new ( texture_id , size )  ) ;
 }
  ) ;
 ui . label ( format !  ( "{w} x {h}" )  ) ;
-ui . label ( format !  ( "{:.3} MB" , meta . bytesUsed (  ) asf64 * 1e-6 )  ) ;
+ui . label ( format !  ( "{:.3} MB" , meta . bytesUsed (  )  as f64 * 1e-6 )  ) ;
 ui . label ( format !  ( "{:?}" , meta . name )  ) ;
 ui . endRow (  ) ;
 
