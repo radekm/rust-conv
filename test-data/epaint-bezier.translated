@@ -842,6 +842,4 @@ result . push ( pos ) ;
 assert_eq !  ( result . len (  )  , 223 ) ;
 
 }
-
-}
 // END: mod tests

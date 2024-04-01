@@ -2198,9 +2198,9 @@ fn translateRustToZig(
 
             try translateRustToZig(writer, toks, i, self_type);
 
-            _ = try writer.write("\n");
-            try translate(writer, toks, i, .@"}");
-            _ = try writer.write("\n");
+            if (toks.match(i.*, "}")) |m_closing| {
+                i.* += m_closing.len;
+            } else return ParserError.ClosingBracketNotFound;
             try writeCommentWithTokens(writer, toks, mod_from, mod_to_excl, "END: ");
         } else {
             break;
