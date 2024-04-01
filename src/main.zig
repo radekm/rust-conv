@@ -1539,6 +1539,9 @@ fn translateBody(writer: anytype, toks: Toks, i: *usize, self_type: ?SelfTypeRan
         } else if (toks.match(i.*, "use")) |m| {
             i.* += m.len;
             i.* += try toks.expressionLen(i.*, ";") + 1;
+        } else if (toks.match(i.*, "const")) |m| {
+            try writer.print("const ", .{});
+            i.* += m.len;
         } else if (toks.match(i.*, "&mut |")) |m| {
             _ = try writer.write("/* Ziggify: ");
             try writeTokens(writer, toks, i.*, i.* + m.len);
