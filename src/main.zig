@@ -215,8 +215,14 @@ fn getString(data: []const u8) TokenizerError!?[]const u8 {
 
         if (!closed)
             return TokenizerError.ClosingQuoteMissing;
-        if (std.mem.indexOfScalar(u8, data[0..i], '\n')) |_|
+        if (std.mem.indexOfScalar(u8, data[0..i], '\n')) |_| {
+            const context = if (data.len > 200)
+                data[0..200]
+            else
+                data;
+            std.debug.print("Multiline string: {s}", .{context});
             return TokenizerError.MultilineStringsNotSupported;
+        }
         return data[0..i];
     }
     return null;
