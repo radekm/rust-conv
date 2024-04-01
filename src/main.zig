@@ -782,6 +782,11 @@ fn tokenize(
             data = data[operator.str.len..];
             try s.addToken(operator.token);
         } else {
+            const context = if (data.len > 200)
+                data[0..200]
+            else
+                data;
+            std.debug.print("Unrecognized token: {s}", .{context});
             return TokenizerError.UnrecognizedToken;
         }
     }
